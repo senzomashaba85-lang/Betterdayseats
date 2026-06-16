@@ -10,23 +10,16 @@ import {
 // THEME - Warm & Luxurious
 // ============================================
 const S = {
-  // Primary colors
   gold: "#c9a84c", 
   goldDark: "#b8922e", 
   champagne: "#f5e6c8",
-  
-  // Backgrounds - Warm dark
   bg: "#0a0a0a", 
   card: "#111111", 
   cardHover: "#1a1a1a",
   border: "#1e1e1e",
-  
-  // Text
   text: "#e5e5e5", 
   muted: "#888888", 
   green: "#4caf50",
-  
-  // Warm accents
   rose: "#e8a87c",
   blush: "#f5d6c6",
   terracotta: "#c67b5c",
@@ -87,7 +80,7 @@ const countries = [
 ]
 
 // ============================================
-// CATEGORIES - FOOD CATEGORIES
+// CATEGORIES
 // ============================================
 const categories = [
   { id: "all", name: "All", icon: "🍽️" },
@@ -153,7 +146,7 @@ function ShareButtons({ recipe }) {
 }
 
 // ============================================
-// RECIPE CARD - Enhanced
+// RECIPE CARD
 // ============================================
 function RecipeCard({ recipe, onLike, currentUser }) {
   const [showComments, setShowComments] = useState(false)
@@ -220,7 +213,16 @@ function RecipeCard({ recipe, onLike, currentUser }) {
         <p style={{ color: "#bbb", lineHeight: "1.6", marginBottom: "12px" }}>{recipe.description}</p>
       </div>
       
-      {recipe.image && <img src={recipe.image} alt={recipe.title} style={{ width: "100%", maxHeight: "480px", objectFit: "cover", display: "block" }} />}
+      {/* IMAGE - Guaranteed to show */}
+      <img 
+        src={recipe.image} 
+        alt={recipe.title} 
+        style={{ width: "100%", maxHeight: "480px", objectFit: "cover", display: "block" }} 
+        onError={(e) => {
+          e.target.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600"
+        }}
+      />
+      
       {recipe.video && <video src={recipe.video} controls style={{ width: "100%", maxHeight: "480px", display: "block" }} />}
       
       <div style={{ padding: "16px 20px" }}>
@@ -539,152 +541,148 @@ export default function App() {
       setRecipes(JSON.parse(storedRecipes))
     } else {
       // ============================================
-      // DEMO RECIPES WITH REAL FOOD PHOTOS & COMMENTS
+      // DEMO RECIPES WITH WORKING IMAGES (IMAGUR)
       // ============================================
       const demo = [
         { 
           id: 1, 
           title: "Creamy Jollof Rice with Chicken", 
-          description: "A classic West African rice dish cooked in a rich tomato and pepper sauce, served with perfectly spiced grilled chicken. This is the ultimate comfort food that brings people together.",
+          description: "A classic West African rice dish cooked in a rich tomato and pepper sauce, served with perfectly spiced grilled chicken.",
           category: "african", 
-          ingredients: ["2 cups long-grain rice", "1 can tomato puree", "1 onion, diced", "2 bell peppers, blended", "4 chicken thighs", "2 tbsp curry powder", "Thyme, bay leaves, salt", "2 cups chicken stock"], 
-          instructions: "Blend tomatoes and peppers. Sauté onions until soft. Add tomato puree and spices. Cook for 10 minutes. Add rice and stock, cover and simmer 20 minutes. Grill chicken with salt, pepper, and lemon juice.",
-          image: "https://images.unsplash.com/photo-1599045118108-bf996e3c5b0a?w=600", 
+          ingredients: ["2 cups long-grain rice", "1 can tomato puree", "1 onion, diced", "2 bell peppers", "4 chicken thighs", "2 tbsp curry powder", "Thyme", "2 cups chicken stock"], 
+          instructions: "Blend tomatoes and peppers. Sauté onions. Add tomato puree and spices. Cook 10 minutes. Add rice and stock, simmer 20 minutes. Grill chicken with salt and pepper.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Chef Amara", 
           countryFlag: "🇳🇬",
-          userAvatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=1",
           date: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
           likes: 142, 
           liked: false, 
           comments: [
             { id: 1, author: "TasteOfAfrica", text: "This is the real deal! My family loved it ❤️", date: new Date().toISOString() },
-            { id: 2, author: "FoodieJourney", text: "The chicken looks incredible, will try this weekend!", date: new Date().toISOString() }
+            { id: 2, author: "FoodieJourney", text: "The chicken looks incredible!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 2, 
-          title: "Full English Breakfast Feast", 
-          description: "The ultimate weekend breakfast - crispy bacon, perfectly fried eggs, golden sausages, baked beans, grilled tomatoes, and mushrooms. Served with thick toast and butter.",
+          title: "Full English Breakfast", 
+          description: "The ultimate weekend breakfast - crispy bacon, fried eggs, sausages, baked beans, grilled tomatoes, and mushrooms.",
           category: "breakfast", 
-          image: "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600", 
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Breakfast Chef", 
           countryFlag: "🇬🇧",
-          userAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=2",
           date: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
           likes: 89, 
           liked: false, 
           comments: [
-            { id: 1, author: "MorningPerson", text: "This is what weekends are made for! 😍", date: new Date().toISOString() },
-            { id: 2, author: "BrunchQueen", text: "I need this right now", date: new Date().toISOString() }
+            { id: 1, author: "MorningPerson", text: "This is what weekends are made for! 😍", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 3, 
-          title: "Authentic Spaghetti Carbonara", 
-          description: "Roman pasta perfection - al dente spaghetti with crispy pancetta, creamy egg and pecorino cheese sauce, finished with freshly cracked black pepper. Simple ingredients, extraordinary taste.",
+          title: "Spaghetti Carbonara", 
+          description: "Roman pasta perfection - al dente spaghetti with crispy pancetta, creamy egg and pecorino cheese sauce.",
           category: "italian", 
-          ingredients: ["400g spaghetti", "150g pancetta", "4 egg yolks", "100g pecorino cheese", "Black pepper", "Salt"], 
-          instructions: "Cook spaghetti in salted water. Fry pancetta until crispy. Mix egg yolks with grated cheese. Combine everything with pasta water for creamy sauce.",
-          image: "https://images.unsplash.com/photo-1551892379-6e9f7e3ae5e4?w=600", 
+          ingredients: ["400g spaghetti", "150g pancetta", "4 egg yolks", "100g pecorino cheese", "Black pepper"], 
+          instructions: "Cook spaghetti. Fry pancetta until crispy. Mix egg yolks with cheese. Combine with pasta water for creamy sauce.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Chef Maria", 
           countryFlag: "🇮🇹",
-          userAvatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=3",
           date: new Date(Date.now() - 1000 * 60 * 60 * 8).toISOString(),
           likes: 203, 
           liked: false, 
           comments: [
-            { id: 1, author: "PastaLover", text: "This is THE ONLY carbonara recipe you need! ⭐⭐⭐⭐⭐", date: new Date().toISOString() },
-            { id: 2, author: "ItalianNonna", text: "This is how it's done! This recipe is authentic and delicious.", date: new Date().toISOString() },
-            { id: 3, author: "FoodieTraveler", text: "Tried this yesterday and it was amazing!", date: new Date().toISOString() }
+            { id: 1, author: "PastaLover", text: "THE ONLY carbonara recipe you need! ⭐⭐⭐⭐⭐", date: new Date().toISOString() },
+            { id: 2, author: "ItalianNonna", text: "Authentic and delicious!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 4, 
           title: "Honey Garlic Chicken Stir Fry", 
-          description: "Quick and easy 20-minute dinner - tender chicken pieces with crisp vegetables in a sticky sweet and savory honey garlic sauce. Perfect for busy weeknights when you want something delicious fast.",
+          description: "Quick 20-minute dinner - tender chicken with crisp vegetables in a sticky sweet and savory honey garlic sauce.",
           category: "quick", 
-          ingredients: ["2 chicken breasts, sliced", "1 bell pepper", "1 onion", "4 garlic cloves", "3 tbsp honey", "2 tbsp soy sauce", "1 tbsp oil", "Sesame seeds for garnish"], 
-          instructions: "Stir fry chicken until golden. Add vegetables and cook 3-4 minutes. Add garlic, honey, and soy sauce. Cook until sauce thickens. Serve with rice or noodles.",
-          image: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?w=600", 
+          ingredients: ["2 chicken breasts", "1 bell pepper", "1 onion", "4 garlic cloves", "3 tbsp honey", "2 tbsp soy sauce"], 
+          instructions: "Stir fry chicken until golden. Add vegetables. Add garlic, honey, and soy sauce. Cook until sauce thickens.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Quick Cook", 
           countryFlag: "🇨🇳",
-          userAvatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=4",
           date: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
           likes: 67, 
           liked: false, 
           comments: [
-            { id: 1, author: "BusyMom", text: "Made this tonight, family loved it! Will definitely make again.", date: new Date().toISOString() }
+            { id: 1, author: "BusyMom", text: "Made this tonight, family loved it!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 5, 
-          title: "Traditional South African Bunny Chow", 
-          description: "A Durban classic - hollowed out quarter loaf of bread filled with fragrant, spicy curry. This is hands-down one of the most satisfying street foods in the world. Don't be afraid to eat with your hands!",
+          title: "Traditional Bunny Chow", 
+          description: "A Durban classic - hollowed out bread filled with fragrant, spicy curry.",
           category: "african", 
-          ingredients: ["1 quarter loaf white bread", "500g beef or chicken", "2 onions, diced", "1 can tomatoes", "3 tbsp curry powder", "Garlic and ginger", "Fresh coriander"], 
-          instructions: "Brown meat and set aside. Sauté onions, garlic, and ginger. Add curry powder and tomatoes. Return meat, add water, and simmer 45 minutes. Hollow out bread and fill with curry. Garnish with coriander.",
-          image: "https://images.unsplash.com/photo-1545247181-516773cae754?w=600", 
+          ingredients: ["1 quarter loaf bread", "500g beef", "2 onions", "1 can tomatoes", "3 tbsp curry powder", "Garlic", "Coriander"], 
+          instructions: "Brown meat. Sauté onions, garlic, curry powder. Add tomatoes. Simmer 45 minutes. Hollow out bread and fill with curry.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Durban Chef", 
           countryFlag: "🇿🇦",
-          userAvatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=5",
           date: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
           likes: 178, 
           liked: false, 
           comments: [
             { id: 1, author: "DurbanBorn", text: "This is the real deal! 🇿🇦", date: new Date().toISOString() },
-            { id: 2, author: "StreetFoodFan", text: "Best bunny in SA, no argument!", date: new Date().toISOString() },
-            { id: 3, author: "TravelEatRepeat", text: "I dream about this!", date: new Date().toISOString() }
+            { id: 2, author: "StreetFoodFan", text: "Best bunny in SA!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 6, 
-          title: "Rich Dark Chocolate Lava Cake", 
-          description: "A decadent dessert with a melting chocolate center. Served warm with a scoop of vanilla ice cream, this is pure indulgence. It's surprisingly easy to make - the perfect date night dessert.",
+          title: "Chocolate Lava Cake", 
+          description: "Decadent dessert with a melting chocolate center. Served warm with vanilla ice cream.",
           category: "desserts", 
-          ingredients: ["200g dark chocolate", "100g butter", "3 eggs", "80g sugar", "50g flour", "Vanilla extract", "Pinch of salt"], 
-          instructions: "Melt chocolate and butter. Whisk eggs and sugar until fluffy. Fold in chocolate mixture. Add flour and salt. Bake at 200°C for 8-10 minutes. Serve immediately with ice cream.",
-          image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=600", 
+          ingredients: ["200g dark chocolate", "100g butter", "3 eggs", "80g sugar", "50g flour", "Vanilla"], 
+          instructions: "Melt chocolate and butter. Whisk eggs and sugar. Fold in chocolate. Add flour. Bake at 200°C for 8-10 minutes.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Pastry Chef", 
           countryFlag: "🇫🇷",
-          userAvatar: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=6",
           date: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(),
           likes: 256, 
           liked: false, 
           comments: [
-            { id: 1, author: "Chocoholic", text: "Made this for my wife - she said YES! 💍😂", date: new Date().toISOString() },
-            { id: 2, author: "FoodieDessert", text: "THE BEST LAVA CAKE EVER. Period.", date: new Date().toISOString() },
-            { id: 3, author: "HomeBaker", text: "This was so easy and everyone was impressed!", date: new Date().toISOString() }
+            { id: 1, author: "Chocoholic", text: "Made this for my wife - she said YES! 💍", date: new Date().toISOString() },
+            { id: 2, author: "FoodieDessert", text: "THE BEST LAVA CAKE EVER!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 7, 
-          title: "Fresh Grilled Salmon with Lemon Dill Sauce", 
-          description: "Perfectly grilled salmon fillets with a creamy, tangy lemon dill sauce. This restaurant-quality dish is surprisingly simple to make at home and looks stunning on the plate.",
+          title: "Grilled Salmon with Lemon Dill Sauce", 
+          description: "Perfectly grilled salmon with a creamy, tangy lemon dill sauce.",
           category: "seafood", 
-          ingredients: ["4 salmon fillets", "Olive oil", "Salt & pepper", "1 lemon", "Fresh dill", "1 cup sour cream", "Garlic powder"], 
-          instructions: "Season salmon with salt, pepper, and olive oil. Grill 4-5 minutes per side. Mix sour cream with lemon juice, dill, and garlic powder. Serve with roasted vegetables.",
-          image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=600", 
+          ingredients: ["4 salmon fillets", "Olive oil", "Salt & pepper", "1 lemon", "Fresh dill", "Sour cream"], 
+          instructions: "Season salmon. Grill 4-5 minutes per side. Mix sour cream with lemon and dill.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Seafood Chef", 
           countryFlag: "🇳🇴",
-          userAvatar: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=7",
           date: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
           likes: 145, 
           liked: false, 
           comments: [
-            { id: 1, author: "SalmonLover", text: "This is restaurant quality!", date: new Date().toISOString() }
+            { id: 1, author: "SalmonLover", text: "Restaurant quality!", date: new Date().toISOString() }
           ] 
         },
         { 
           id: 8, 
-          title: "Fresh Berry and Granola Smoothie Bowl", 
-          description: "A vibrant, nutrient-packed breakfast bowl - blended acai or mixed berries topped with crunchy granola, fresh banana slices, and a drizzle of honey. Instagram-worthy and delicious.",
+          title: "Berry & Granola Smoothie Bowl", 
+          description: "Nutrient-packed breakfast bowl with blended berries, crunchy granola, and fresh fruit toppings.",
           category: "smoothies", 
-          ingredients: ["1 cup frozen berries", "1 banana", "1/2 cup yogurt", "1/4 cup milk", "Granola", "Fresh fruit toppings"], 
-          instructions: "Blend berries, banana, yogurt, and milk until smooth. Pour into bowl. Top with granola, fresh fruit, and a drizzle of honey. Eat immediately with a spoon.",
-          image: "https://images.unsplash.com/photo-1517673136490-25c0ed55c9b8?w=600", 
+          ingredients: ["1 cup frozen berries", "1 banana", "1/2 cup yogurt", "1/4 cup milk", "Granola", "Fresh fruit"], 
+          instructions: "Blend berries, banana, yogurt, and milk. Pour into bowl. Top with granola and fresh fruit.",
+          image: "https://i.imgur.com/Z4qYWhi.jpg", 
           author: "Health Guru", 
           countryFlag: "🇦🇺",
-          userAvatar: "https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100",
+          userAvatar: "https://i.pravatar.cc/100?img=8",
           date: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(),
           likes: 97, 
           liked: false, 
@@ -793,7 +791,7 @@ export default function App() {
         </div>
       </nav>
 
-      {/* HERO SECTION - The Signature Element */}
+      {/* HERO SECTION */}
       {currentPage === "home" && (
         <>
           <div style={{
@@ -803,34 +801,15 @@ export default function App() {
             borderBottom: `1px solid ${S.gold}40`,
           }}>
             <div style={{ maxWidth: "800px", margin: "0 auto" }}>
-              <div style={{ 
-                fontSize: "64px", 
-                marginBottom: "16px",
-                display: "flex",
-                justifyContent: "center",
-                gap: "16px"
-              }}>
+              <div style={{ fontSize: "64px", marginBottom: "16px", display: "flex", justifyContent: "center", gap: "16px" }}>
                 <span>🍳</span>
                 <span>🥘</span>
                 <span>🍰</span>
               </div>
-              <h1 style={{ 
-                color: S.champagne, 
-                fontSize: "clamp(2rem, 5vw, 3.5rem)",
-                fontWeight: "300",
-                letterSpacing: "-0.02em",
-                marginBottom: "16px",
-                lineHeight: "1.2"
-              }}>
+              <h1 style={{ color: S.champagne, fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: "300", letterSpacing: "-0.02em", marginBottom: "16px", lineHeight: "1.2" }}>
                 A Place for Every <span style={{ color: S.gold }}>Story</span> & Every <span style={{ color: S.gold }}>Dish</span>
               </h1>
-              <p style={{ 
-                color: S.muted, 
-                fontSize: "1.2rem",
-                maxWidth: "500px",
-                margin: "0 auto 32px",
-                lineHeight: "1.6"
-              }}>
+              <p style={{ color: S.muted, fontSize: "1.2rem", maxWidth: "500px", margin: "0 auto 32px", lineHeight: "1.6" }}>
                 Share your recipes, discover new flavors, and connect with food lovers from around the world.
               </p>
               <div style={{ display: "flex", gap: "16px", justifyContent: "center", flexWrap: "wrap" }}>
@@ -867,29 +846,15 @@ export default function App() {
             </div>
           </div>
 
-          {/* ROTATING GALLERY - Community showcase */}
-          <div style={{
-            padding: "16px 24px",
-            backgroundColor: S.bg,
-            borderBottom: `1px solid ${S.border}`,
-          }}>
+          {/* ROTATING GALLERY */}
+          <div style={{ padding: "16px 24px", backgroundColor: S.bg, borderBottom: `1px solid ${S.border}` }}>
             <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
               <p style={{ color: S.muted, fontSize: "11px", marginBottom: "12px", textTransform: "uppercase", letterSpacing: "1px" }}>
                 🌟 Fresh from the Community
               </p>
-              <div style={{
-                display: "flex",
-                gap: "16px",
-                overflowX: "auto",
-                paddingBottom: "8px",
-                scrollbarWidth: "thin",
-              }}>
+              <div style={{ display: "flex", gap: "16px", overflowX: "auto", paddingBottom: "8px", scrollbarWidth: "thin" }}>
                 {recipes.slice(0, 6).map(recipe => (
-                  <div key={recipe.id} style={{
-                    flex: "0 0 100px",
-                    textAlign: "center",
-                    cursor: "pointer",
-                  }} onClick={() => {
+                  <div key={recipe.id} style={{ flex: "0 0 100px", textAlign: "center", cursor: "pointer" }} onClick={() => {
                     setSelectedCategory(recipe.category)
                     document.querySelector('main')?.scrollIntoView({ behavior: 'smooth' })
                   }}>
@@ -928,12 +893,7 @@ export default function App() {
                 <h2 style={{ color: S.gold, margin: 0, fontSize: "18px", fontWeight: "500" }}>Trending Now</h2>
                 <span style={{ color: S.muted, fontSize: "12px", marginLeft: "auto" }}>Most liked this week</span>
               </div>
-              <div style={{ 
-                display: "grid", 
-                gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", 
-                gap: "16px",
-                marginBottom: "24px"
-              }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: "16px", marginBottom: "24px" }}>
                 {recipes.filter(r => r.likes > 0).sort((a, b) => b.likes - a.likes).slice(0, 4).map(recipe => (
                   <div key={recipe.id} style={{
                     backgroundColor: S.card,
@@ -965,7 +925,7 @@ export default function App() {
         </>
       )}
 
-      {/* CATEGORIES (home only) */}
+      {/* CATEGORIES */}
       {currentPage === "home" && (
         <div style={{ backgroundColor: S.bg, borderBottom: `1px solid ${S.border}`, overflowX: "auto", whiteSpace: "nowrap", padding: "8px 24px" }}>
           <div style={{ display: "flex", justifyContent: "center", gap: "8px" }}>
