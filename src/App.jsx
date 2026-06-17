@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from "react"
+import { createClient } from "@supabase/supabase-js"
 import {
   FaFacebook, FaTwitter, FaWhatsapp, FaTiktok,
   FaHeart, FaComment, FaBookmark, FaSearch,
   FaBell, FaTimes, FaChevronDown, FaFire,
-  FaGlobeAfrica, FaUtensils, FaPlus, FaInstagram,
+  FaUtensils, FaPlus, FaInstagram,
   FaYoutube, FaLink
 } from "react-icons/fa"
+
+// ─── SUPABASE ───────────────────────────────────────────────────────────────
+const supabase = createClient(
+  "https://vrbkynfdcpnnshofhmju.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyYmt5bmZkY3BubnNob2ZobWp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE2ODUwOTksImV4cCI6MjA5NzI2MTA5OX0.1r4AwhLa_BAVw3OOKKWgfTSOknaKhbip6-Gs63fOPqI"
+)
 
 // ─── THEME ─────────────────────────────────────────────────────────────────
 const S = {
@@ -65,75 +72,81 @@ const categories = [
 
 const DEMO = [
   {
-    id:1, title:"Spiced Jollof Rice",
+    id:"demo-1", title:"Spiced Jollof Rice",
     description:"West African party rice with layers of sweet tomato, fire-roasted pepper and fragrant spices. Soul food at its finest — every bite tells a story.",
     category:"african",
-    image:"https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80",
-    author:"Chef Amara", countryFlag:"🇳🇬",
-    date: new Date(Date.now() - 86400000*1).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80",
+    author_name:"Chef Amara", author_flag:"🇳🇬",
+    author_avatar:"https://ui-avatars.com/api/?name=Chef+Amara&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*1).toISOString(),
     likes:284, liked:false, saved:false, comments:[
-      { id:1, text:"Made this last Sunday! Family loved it 😍", author:"Priya K.", date: new Date().toISOString() }
+      { id:1, text:"Made this last Sunday! Family loved it 😍", author_name:"Priya K.", created_at: new Date().toISOString() }
     ],
     ingredients:["2 cups long grain rice","4 ripe tomatoes","2 red bell peppers","1 large onion","2 cups chicken stock","1 tsp thyme","1 tsp curry powder","Bay leaves","Salt & pepper"],
     socials: { instagram: "@chefamara", twitter: "@chefamara", tiktok: "@chefamara" }
   },
   {
-    id:2, title:"Avocado Toast with Poached Eggs",
+    id:"demo-2", title:"Avocado Toast with Poached Eggs",
     description:"Creamy smashed avo on sourdough, topped with silky poached eggs, chilli flakes, and a drizzle of lemon. The brunch you deserve.",
     category:"breakfast",
-    image:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80",
-    author:"Maya Torres", countryFlag:"🇿🇦",
-    date: new Date(Date.now() - 86400000*2).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80",
+    author_name:"Maya Torres", author_flag:"🇿🇦",
+    author_avatar:"https://ui-avatars.com/api/?name=Maya+Torres&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*2).toISOString(),
     likes:412, liked:false, saved:false, comments:[
-      { id:1, text:"Obsessed with this recipe! 🥑", author:"Lerato M.", date: new Date().toISOString() }
+      { id:1, text:"Obsessed with this recipe! 🥑", author_name:"Lerato M.", created_at: new Date().toISOString() }
     ],
     ingredients:["2 slices sourdough","1 ripe avocado","2 eggs","Lemon juice","Chilli flakes","Microgreens","Salt & pepper","Olive oil"],
     socials: { instagram: "@mayacooks", website: "https://mayacooks.com" }
   },
   {
-    id:3, title:"Creamy Pasta Carbonara",
+    id:"demo-3", title:"Creamy Pasta Carbonara",
     description:"Silky, rich, utterly indulgent. Classic Roman carbonara made the proper way — no cream, just eggs, Pecorino and guanciale doing their magic.",
     category:"pasta",
-    image:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
-    author:"Marco Rossi", countryFlag:"🇮🇹",
-    date: new Date(Date.now() - 86400000*3).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
+    author_name:"Marco Rossi", author_flag:"🇮🇹",
+    author_avatar:"https://ui-avatars.com/api/?name=Marco+Rossi&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*3).toISOString(),
     likes:356, liked:false, saved:false, comments:[],
     ingredients:["200g spaghetti","100g guanciale","3 egg yolks","1 whole egg","50g Pecorino Romano","Black pepper","Salt"],
     socials: { instagram: "@marcorossi", youtube: "https://youtube.com/@marcorossi" }
   },
   {
-    id:4, title:"Chocolate Lava Cake",
+    id:"demo-4", title:"Chocolate Lava Cake",
     description:"That magical moment when the centre flows out — warm, dark, and sinfully rich. Ready in 12 minutes and guaranteed to impress anyone at the table.",
     category:"desserts",
-    image:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80",
-    author:"Chef Céleste", countryFlag:"🇫🇷",
-    date: new Date(Date.now() - 86400000*4).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80",
+    author_name:"Chef Céleste", author_flag:"🇫🇷",
+    author_avatar:"https://ui-avatars.com/api/?name=Chef+Celeste&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*4).toISOString(),
     likes:527, liked:false, saved:false, comments:[
-      { id:1, text:"Made these for my anniversary dinner, absolute hit! 💕", author:"Nomvula D.", date: new Date().toISOString() }
+      { id:1, text:"Made these for my anniversary dinner, absolute hit! 💕", author_name:"Nomvula D.", created_at: new Date().toISOString() }
     ],
     ingredients:["100g dark chocolate (70%)","100g butter","2 eggs + 2 yolks","80g caster sugar","30g plain flour","Pinch of salt","Cocoa powder for dusting"],
     socials: { instagram: "@celeste_pastry", facebook: "https://facebook.com/celestepastry" }
   },
   {
-    id:5, title:"Açaí Smoothie Bowl",
+    id:"demo-5", title:"Açaí Smoothie Bowl",
     description:"Vibrant, energising, and almost too pretty to eat. Topped with fresh fruit, granola, coconut flakes and a honey drizzle. Your morning just got an upgrade.",
     category:"smoothies",
-    image:"https://images.unsplash.com/photo-1490323814079-2e2bc5b1f7d2?w=800&q=80",
-    author:"Bella Santos", countryFlag:"🇧🇷",
-    date: new Date(Date.now() - 86400000*5).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80",
+    author_name:"Bella Santos", author_flag:"🇧🇷",
+    author_avatar:"https://ui-avatars.com/api/?name=Bella+Santos&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*5).toISOString(),
     likes:389, liked:false, saved:false, comments:[],
     ingredients:["200g frozen açaí","1 banana","100ml coconut milk","Granola","Fresh berries","Coconut flakes","Honey","Chia seeds"],
     socials: { instagram: "@bellasmoothies", tiktok: "@bellasmoothies" }
   },
   {
-    id:6, title:"Durban Bunny Chow",
+    id:"demo-6", title:"Durban Bunny Chow",
     description:"Iconic Durban street food — a hollowed-out quarter loaf filled with fragrant lamb curry. Straight from the streets of KZN to your table.",
     category:"african",
-    image:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
-    author:"BetterDays Chef", countryFlag:"🇿🇦",
-    date: new Date(Date.now() - 86400000*6).toISOString(),
+    image_url:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
+    author_name:"BetterDays Chef", author_flag:"🇿🇦",
+    author_avatar:"https://ui-avatars.com/api/?name=BetterDays+Chef&background=d4a855&color=09060a&bold=true",
+    created_at: new Date(Date.now() - 86400000*6).toISOString(),
     likes:631, liked:false, saved:false, comments:[
-      { id:1, text:"Nothing beats a KZN bunny 🙌🏾", author:"Sipho N.", date: new Date().toISOString() }
+      { id:1, text:"Nothing beats a KZN bunny 🙌🏾", author_name:"Sipho N.", created_at: new Date().toISOString() }
     ],
     ingredients:["500g lamb pieces","1 quarter bread loaf","1 tin tomatoes","2 onions","Durban masala mix","Curry leaves","Cardamom","Ginger & garlic","Potatoes"],
     socials: { instagram: "@betterdayschef", twitter: "@betterdayschef", tiktok: "@betterdayschef" }
@@ -149,7 +162,6 @@ function useFonts() {
     link.rel = "stylesheet"
     link.href = "https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600&display=swap"
     document.head.appendChild(link)
-
     const style = document.createElement("style")
     style.id = "bde-global"
     style.textContent = `
@@ -194,10 +206,10 @@ function ShareRow({ recipe }) {
   const url = encodeURIComponent(window.location.href)
   const text = encodeURIComponent(`🍽️ ${recipe.title} on BetterDays Eats!`)
   const shares = [
-    { Icon: FaTiktok,   href: `https://www.tiktok.com/share?url=${url}&text=${text}`,           color:"#fff" },
-    { Icon: FaWhatsapp, href: `https://wa.me/?text=${text}%20${url}`,                            color:"#25D366" },
-    { Icon: FaFacebook, href: `https://www.facebook.com/sharer/sharer.php?u=${url}`,             color:"#1877F2" },
-    { Icon: FaTwitter,  href: `https://twitter.com/intent/tweet?text=${text}&url=${url}`,        color:"#1DA1F2" },
+    { Icon: FaTiktok,   href: `https://www.tiktok.com/share?url=${url}&text=${text}`, color:"#fff" },
+    { Icon: FaWhatsapp, href: `https://wa.me/?text=${text}%20${url}`,                 color:"#25D366" },
+    { Icon: FaFacebook, href: `https://www.facebook.com/sharer/sharer.php?u=${url}`,  color:"#1877F2" },
+    { Icon: FaTwitter,  href: `https://twitter.com/intent/tweet?text=${text}&url=${url}`, color:"#1DA1F2" },
   ]
   return (
     <div style={{ display:"flex", gap:"14px", alignItems:"center" }}>
@@ -247,28 +259,19 @@ function HeroBanner({ recipe, onSignup, currentUser, onPost }) {
   return (
     <div style={{ position:"relative", width:"100%", height:"480px", overflow:"hidden",
       borderBottom:`1px solid ${S.border}` }}>
-      {/* BG Image */}
-      <img src={recipe.image} alt={recipe.title}
+      <img src={recipe.image_url} alt={recipe.title}
         style={{ width:"100%", height:"100%", objectFit:"cover", display:"block",
           filter:"brightness(0.55) saturate(1.2)" }} />
-
-      {/* Gradient overlay */}
       <div style={{ position:"absolute", inset:0,
         background:"linear-gradient(180deg, rgba(9,6,10,0.1) 0%, rgba(9,6,10,0.3) 40%, rgba(9,6,10,0.97) 100%)" }} />
-
-      {/* Floating badge */}
       <div className="bde-float" style={{ position:"absolute", top:"28px", left:"28px",
         display:"flex", alignItems:"center", gap:"8px",
         background:"rgba(9,6,10,0.6)", backdropFilter:"blur(12px)",
         border:`1px solid ${S.gold}40`, borderRadius:"40px", padding:"8px 16px" }}>
         <FaFire color={S.gold} size={12} />
-        <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600", letterSpacing:"0.5px" }}>
-          Featured Today
-        </span>
-        <span style={{ fontSize:"16px" }}>{recipe.countryFlag}</span>
+        <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600", letterSpacing:"0.5px" }}>Featured Today</span>
+        <span style={{ fontSize:"16px" }}>{recipe.author_flag}</span>
       </div>
-
-      {/* Text content */}
       <div style={{ position:"absolute", bottom:"36px", left:"32px", right:"32px", maxWidth:"680px" }}>
         <div className="bde-hero-text">
           <span style={{ display:"inline-block", fontSize:"11px", fontWeight:"600",
@@ -291,9 +294,9 @@ function HeroBanner({ recipe, onSignup, currentUser, onPost }) {
             {currentUser ? "✨ Share Your Recipe" : "Join the Community"}
           </button>
           <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-            <img src={`https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author)}&background=d4a855&color=09060a&bold=true`}
-              alt={recipe.author} style={{ width:"32px", height:"32px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-            <span style={{ color:S.champ, fontSize:"13px" }}>by <strong>{recipe.author}</strong></span>
+            <img src={recipe.author_avatar} alt={recipe.author_name}
+              style={{ width:"32px", height:"32px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+            <span style={{ color:S.champ, fontSize:"13px" }}>by <strong>{recipe.author_name}</strong></span>
             <span style={{ color:S.muted, fontSize:"13px" }}>· {recipe.likes} likes</span>
           </div>
         </div>
@@ -309,16 +312,32 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
   const [comments, setComments]         = useState(recipe.comments || [])
   const [imgLoaded, setImgLoaded]       = useState(false)
   const [showAllIngredients, setShowAllIngredients] = useState(false)
+  const [submittingComment, setSubmittingComment] = useState(false)
   const cat = categories.find(c => c.id === recipe.category)
 
-  const addComment = () => {
-    if (!newComment.trim()) return
-    setComments(prev => [...prev, {
-      id: Date.now(), text: newComment.trim(),
-      author: currentUser?.name || "Guest",
-      date: new Date().toISOString()
-    }])
+  const addComment = async () => {
+    if (!newComment.trim() || !currentUser) return
+    setSubmittingComment(true)
+    const isDemo = String(recipe.id).startsWith("demo-")
+    if (!isDemo) {
+      const { data, error } = await supabase.from("comments").insert({
+        recipe_id: recipe.id,
+        author_id: currentUser.id,
+        author_name: currentUser.name,
+        text: newComment.trim()
+      }).select().single()
+      if (!error && data) {
+        setComments(prev => [...prev, data])
+      }
+    } else {
+      setComments(prev => [...prev, {
+        id: Date.now(), text: newComment.trim(),
+        author_name: currentUser.name,
+        created_at: new Date().toISOString()
+      }])
+    }
     setNewComment("")
+    setSubmittingComment(false)
   }
 
   return (
@@ -335,11 +354,9 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
             🍽️
           </div>
         )}
-        <img src={recipe.image} alt={recipe.title} onLoad={() => setImgLoaded(true)}
+        <img src={recipe.image_url} alt={recipe.title} onLoad={() => setImgLoaded(true)}
           style={{ position:"absolute", inset:0, width:"100%", height:"100%",
             objectFit:"cover", display: imgLoaded ? "block" : "none" }} />
-
-        {/* Overlay */}
         <div style={{ position:"absolute", inset:0, background: S.overlay }} />
 
         {/* Category badge */}
@@ -360,16 +377,16 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
           <FaBookmark />
         </button>
 
-        {/* Author */}
+        {/* Author overlay */}
         <div style={{ position:"absolute", bottom:"14px", left:"14px",
           display:"flex", alignItems:"center", gap:"8px" }}>
-          <img src={recipe.userAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author)}&background=d4a855&color=09060a&bold=true`}
-            alt={recipe.author}
+          <img src={recipe.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author_name)}&background=d4a855&color=09060a&bold=true`}
+            alt={recipe.author_name}
             style={{ width:"30px", height:"30px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
           <div>
-            <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author}</div>
+            <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</div>
             <div style={{ color:"rgba(245,230,208,0.6)", fontSize:"10px" }}>
-              {recipe.countryFlag} · {new Date(recipe.date).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
+              {recipe.author_flag} · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
             </div>
           </div>
         </div>
@@ -378,53 +395,60 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
       {/* Content */}
       <div style={{ padding:"18px 18px 0 18px", flex:1 }}>
         <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700",
-          color:S.champ, lineHeight:"1.3", marginBottom:"8px" }}>
+          color:S.champ, lineHeight:"1.3", marginBottom:"6px" }}>
           {recipe.title}
         </h3>
+
+        {/* Flag + Author name under title */}
+        <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"8px" }}>
+          <span style={{ fontSize:"16px" }}>{recipe.author_flag}</span>
+          <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</span>
+        </div>
+
         <p style={{ color:"#a08898", fontSize:"13px", lineHeight:"1.65",
           display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden" }}>
           {recipe.description}
         </p>
 
         {/* Social Media Handles */}
-        {recipe.socials && (
+        {recipe.socials && Object.keys(recipe.socials).some(k => recipe.socials[k]) && (
           <div style={{ display:"flex", gap:"6px", marginTop:"10px", flexWrap:"wrap" }}>
             {recipe.socials.instagram && (
-              <a href={recipe.socials.instagram.startsWith('http') ? recipe.socials.instagram : `https://instagram.com/${recipe.socials.instagram.replace('@', '')}`} 
-                 target="_blank" rel="noopener noreferrer"
-                 style={{ color:"#E4405F", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+              <a href={recipe.socials.instagram.startsWith('http') ? recipe.socials.instagram : `https://instagram.com/${recipe.socials.instagram.replace('@', '')}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ color:"#E4405F", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaInstagram size={11} /> IG
               </a>
             )}
             {recipe.socials.twitter && (
-              <a href={recipe.socials.twitter.startsWith('http') ? recipe.socials.twitter : `https://twitter.com/${recipe.socials.twitter.replace('@', '')}`} 
-                 target="_blank" rel="noopener noreferrer"
-                 style={{ color:"#1DA1F2", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+              <a href={recipe.socials.twitter.startsWith('http') ? recipe.socials.twitter : `https://twitter.com/${recipe.socials.twitter.replace('@', '')}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ color:"#1DA1F2", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaTwitter size={11} /> X
               </a>
             )}
             {recipe.socials.tiktok && (
-              <a href={recipe.socials.tiktok.startsWith('http') ? recipe.socials.tiktok : `https://tiktok.com/${recipe.socials.tiktok.replace('@', '')}`} 
-                 target="_blank" rel="noopener noreferrer"
-                 style={{ color:"#fff", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+              <a href={recipe.socials.tiktok.startsWith('http') ? recipe.socials.tiktok : `https://tiktok.com/${recipe.socials.tiktok.replace('@', '')}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{ color:"#fff", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaTiktok size={11} /> TikTok
               </a>
             )}
             {recipe.socials.youtube && (
               <a href={recipe.socials.youtube} target="_blank" rel="noopener noreferrer"
-                 style={{ color:"#FF0000", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ color:"#FF0000", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaYoutube size={11} /> YouTube
               </a>
             )}
             {recipe.socials.website && (
               <a href={recipe.socials.website} target="_blank" rel="noopener noreferrer"
-                 style={{ color:S.gold, fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ color:S.gold, fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaLink size={11} /> Website
               </a>
             )}
             {recipe.socials.facebook && (
               <a href={recipe.socials.facebook} target="_blank" rel="noopener noreferrer"
-                 style={{ color:"#1877F2", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ color:"#1877F2", fontSize:"11px", textDecoration:"none", background:`${S.rose}15`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
                 <FaFacebook size={11} /> FB
               </a>
             )}
@@ -437,29 +461,16 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
             <div style={{ color:S.gold, fontSize:"11px", fontWeight:"600",
               marginBottom:"6px", letterSpacing:"0.5px" }}>🛒 Ingredients</div>
             <div style={{ display:"flex", flexWrap:"wrap", gap:"4px" }}>
-              {/* Show first 5 ingredients or all if expanded */}
               {(showAllIngredients ? recipe.ingredients : recipe.ingredients.slice(0,5)).map((ing,i) => (
                 <span key={i} style={{ background:`${S.gold}15`, color:S.champ,
                   borderRadius:"20px", padding:"2px 10px", fontSize:"11px" }}>{ing}</span>
               ))}
               {recipe.ingredients.length > 5 && (
-                <button 
-                  onClick={() => setShowAllIngredients(!showAllIngredients)}
-                  style={{ 
-                    background:`${S.gold}25`, 
-                    color:S.gold, 
-                    borderRadius:"20px", 
-                    padding:"2px 10px", 
-                    fontSize:"11px",
-                    border:"none",
-                    cursor:"pointer",
-                    transition:"all 0.2s",
-                    fontWeight:"600"
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = `${S.gold}40`}
-                  onMouseLeave={e => e.currentTarget.style.background = `${S.gold}25`}
-                >
-                  {showAllIngredients ? `Show less -${recipe.ingredients.length - 5}` : `+${recipe.ingredients.length - 5} more`}
+                <button onClick={() => setShowAllIngredients(!showAllIngredients)}
+                  style={{ background:`${S.gold}25`, color:S.gold, borderRadius:"20px",
+                    padding:"2px 10px", fontSize:"11px", border:"none", cursor:"pointer",
+                    fontWeight:"600" }}>
+                  {showAllIngredients ? `Show less` : `+${recipe.ingredients.length - 5} more`}
                 </button>
               )}
             </div>
@@ -493,7 +504,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
             {comments.map(c => (
               <div key={c.id} style={{ padding:"10px 12px", background:S.card2,
                 borderRadius:"10px", marginBottom:"8px", border:`1px solid ${S.border}` }}>
-                <strong style={{ color:S.gold, fontSize:"12px" }}>{c.author}</strong>
+                <strong style={{ color:S.gold, fontSize:"12px" }}>{c.author_name}</strong>
                 <p style={{ color:S.text, fontSize:"13px", marginTop:"3px", lineHeight:"1.5" }}>{c.text}</p>
               </div>
             ))}
@@ -505,9 +516,9 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
                   style={{ flex:1, background:S.card2, border:`1px solid ${S.border}`,
                     borderRadius:"40px", padding:"9px 16px", color:S.text,
                     fontSize:"13px", outline:"none" }} />
-                <button className="bde-btn-grad" onClick={addComment}
+                <button className="bde-btn-grad" onClick={addComment} disabled={submittingComment}
                   style={{ borderRadius:"40px", padding:"9px 18px", fontSize:"13px" }}>
-                  Post
+                  {submittingComment ? "..." : "Post"}
                 </button>
               </div>
             ) : (
@@ -521,23 +532,19 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, onComment }) {
     </article>
   )
 }
+
 // ─── CREATE POST MODAL ──────────────────────────────────────────────────────
 function CreateModal({ onClose, onCreate, currentUser }) {
   const [title, setTitle]             = useState("")
   const [description, setDescription] = useState("")
   const [category, setCategory]       = useState("breakfast")
   const [ingredients, setIngredients] = useState("")
-  const [socials, setSocials] = useState({
-    instagram: "",
-    twitter: "",
-    tiktok: "",
-    youtube: "",
-    website: "",
-    facebook: ""
-  })
+  const [socials, setSocials]         = useState({ instagram:"", twitter:"", tiktok:"", youtube:"", website:"", facebook:"" })
   const [mediaFile, setMediaFile]     = useState(null)
   const [mediaPreview, setMediaPreview] = useState("")
   const [mediaType, setMediaType]     = useState("image")
+  const [uploading, setUploading]     = useState(false)
+  const [error, setError]             = useState("")
 
   const handleMedia = e => {
     const file = e.target.files[0]
@@ -551,36 +558,61 @@ function CreateModal({ onClose, onCreate, currentUser }) {
 
   const iStyle = {
     width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-    borderRadius:"10px", padding:"12px 14px", color:S.text, fontSize:"14px",
-    outline:"none", transition:"border-color 0.2s",
+    borderRadius:"10px", padding:"12px 14px", color:S.text, fontSize:"14px", outline:"none",
   }
 
-  const handleSocialChange = (platform, value) => {
-    setSocials(prev => ({ ...prev, [platform]: value }))
-  }
+  const handleSocialChange = (platform, value) => setSocials(prev => ({ ...prev, [platform]: value }))
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
     if (!title.trim() || !description.trim()) return
-    onCreate({
-      id: Date.now(), 
-      title: title.trim(), 
-      description: description.trim(), 
-      category, 
-      ingredients: ingredients.split("\n").filter(i => i.trim()),
-      image: mediaType === "image" ? mediaPreview : null,
-      video: mediaType === "video" ? mediaPreview : null,
-      author: currentUser.name, 
-      userAvatar: currentUser.avatar,
-      countryFlag: currentUser.countryFlag,
-      date: new Date().toISOString(), 
-      likes:0, 
-      liked:false, 
-      saved:false, 
-      comments:[],
-      socials: socials
-    })
-    onClose()
+    setUploading(true)
+    setError("")
+
+    try {
+      let image_url = null
+      let video_url = null
+
+      // Upload media to Supabase Storage
+      if (mediaFile) {
+        const ext = mediaFile.name.split(".").pop()
+        const filename = `${currentUser.id}-${Date.now()}.${ext}`
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("recipes-media")
+          .upload(filename, mediaFile, { cacheControl:"3600", upsert:false })
+
+        if (uploadError) throw uploadError
+
+        const { data: urlData } = supabase.storage.from("recipes-media").getPublicUrl(filename)
+        if (mediaType === "image") image_url = urlData.publicUrl
+        else video_url = urlData.publicUrl
+      }
+
+      // Insert recipe into database
+      const { data, error: insertError } = await supabase.from("recipes").insert({
+        title: title.trim(),
+        description: description.trim(),
+        category,
+        ingredients: ingredients.split("\n").filter(i => i.trim()),
+        image_url,
+        video_url,
+        author_id: currentUser.id,
+        author_name: currentUser.name,
+        author_flag: currentUser.countryFlag,
+        author_avatar: currentUser.avatar,
+        socials,
+        likes: 0
+      }).select().single()
+
+      if (insertError) throw insertError
+
+      onCreate({ ...data, comments:[], liked:false, saved:false })
+      onClose()
+    } catch (err) {
+      setError(err.message || "Something went wrong. Please try again.")
+    } finally {
+      setUploading(false)
+    }
   }
 
   return (
@@ -599,6 +631,13 @@ function CreateModal({ onClose, onCreate, currentUser }) {
           </button>
         </div>
 
+        {error && (
+          <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px",
+            padding:"12px 16px", marginBottom:"16px", color:"#ef4444", fontSize:"13px" }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
             <input placeholder="Recipe title *" value={title} onChange={e => setTitle(e.target.value)} required style={iStyle} />
@@ -612,73 +651,36 @@ function CreateModal({ onClose, onCreate, currentUser }) {
               onChange={e => setIngredients(e.target.value)} rows={4}
               style={{ ...iStyle, resize:"vertical", fontFamily:"monospace", fontSize:"13px" }} />
 
-            {/* Social Media Section */}
-            <div style={{ 
-              background:S.card2, 
-              border:`1px solid ${S.border}`, 
-              borderRadius:"10px", 
-              padding:"16px",
-              marginTop:"4px"
-            }}>
-              <p style={{ color:S.gold, fontSize:"13px", fontWeight:"600", marginBottom:"12px" }}>
-                🌐 Connect Your Socials
-              </p>
+            {/* Socials */}
+            <div style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"10px", padding:"16px" }}>
+              <p style={{ color:S.gold, fontSize:"13px", fontWeight:"600", marginBottom:"12px" }}>🌐 Connect Your Socials</p>
               <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
-                <input 
-                  placeholder="📸 Instagram (e.g., @chefname or https://instagram.com/chefname)" 
-                  value={socials.instagram}
-                  onChange={e => handleSocialChange("instagram", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
-                <input 
-                  placeholder="🐦 Twitter/X (e.g., @chefname or https://twitter.com/chefname)" 
-                  value={socials.twitter}
-                  onChange={e => handleSocialChange("twitter", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
-                <input 
-                  placeholder="🎵 TikTok (e.g., @chefname or https://tiktok.com/@chefname)" 
-                  value={socials.tiktok}
-                  onChange={e => handleSocialChange("tiktok", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
-                <input 
-                  placeholder="▶️ YouTube (e.g., https://youtube.com/@chefname)" 
-                  value={socials.youtube}
-                  onChange={e => handleSocialChange("youtube", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
-                <input 
-                  placeholder="🌍 Website/Blog (e.g., https://chefname.com)" 
-                  value={socials.website}
-                  onChange={e => handleSocialChange("website", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
-                <input 
-                  placeholder="👥 Facebook (e.g., https://facebook.com/chefname)" 
-                  value={socials.facebook}
-                  onChange={e => handleSocialChange("facebook", e.target.value)}
-                  style={{ ...iStyle, fontSize:"13px" }} 
-                />
+                {[
+                  { key:"instagram", placeholder:"📸 Instagram (@chefname)" },
+                  { key:"twitter",   placeholder:"🐦 Twitter/X (@chefname)" },
+                  { key:"tiktok",    placeholder:"🎵 TikTok (@chefname)" },
+                  { key:"youtube",   placeholder:"▶️ YouTube (https://youtube.com/@chefname)" },
+                  { key:"website",   placeholder:"🌍 Website (https://yoursite.com)" },
+                  { key:"facebook",  placeholder:"👥 Facebook (https://facebook.com/page)" },
+                ].map(({ key, placeholder }) => (
+                  <input key={key} placeholder={placeholder} value={socials[key]}
+                    onChange={e => handleSocialChange(key, e.target.value)}
+                    style={{ ...iStyle, fontSize:"13px" }} />
+                ))}
               </div>
-              <p style={{ color:S.muted, fontSize:"11px", marginTop:"8px" }}>
-                Share your handles so people can follow you! (Optional)
-              </p>
+              <p style={{ color:S.muted, fontSize:"11px", marginTop:"8px" }}>Share your handles so people can follow you! (Optional)</p>
             </div>
 
             {/* Media upload */}
             <label style={{ cursor:"pointer" }}>
               <input type="file" accept="image/*,video/*" onChange={handleMedia} style={{ display:"none" }} />
               <div style={{ border:`2px dashed ${S.rose}60`, borderRadius:"14px", padding:"24px",
-                textAlign:"center", background:`${S.rose}05`,
-                transition:"background 0.2s" }}>
+                textAlign:"center", background:`${S.rose}05` }}>
                 <div style={{ fontSize:"36px", marginBottom:"8px" }}>📸</div>
                 <p style={{ color:S.rose, fontWeight:"600", fontSize:"14px", margin:0 }}>
                   {mediaPreview ? "Change photo / video" : "Add a photo or video"}
                 </p>
-                <p style={{ color:S.muted, fontSize:"11px", marginTop:"4px" }}>
-                  Show off your cooking! 🍴
-                </p>
+                <p style={{ color:S.muted, fontSize:"11px", marginTop:"4px" }}>Show off your cooking! 🍴</p>
               </div>
             </label>
 
@@ -691,15 +693,14 @@ function CreateModal({ onClose, onCreate, currentUser }) {
                 <button type="button" onClick={() => { setMediaFile(null); setMediaPreview("") }}
                   style={{ position:"absolute", top:"8px", right:"8px", background:S.bg,
                     border:"none", color:"#ef4444", borderRadius:"50%",
-                    width:"28px", height:"28px", cursor:"pointer", fontSize:"14px" }}>
-                  ×
-                </button>
+                    width:"28px", height:"28px", cursor:"pointer", fontSize:"14px" }}>×</button>
               </div>
             )}
 
-            <button type="submit" className="bde-btn-grad"
-              style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", marginTop:"4px" }}>
-              🍽️ Share Recipe
+            <button type="submit" className="bde-btn-grad" disabled={uploading}
+              style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", marginTop:"4px",
+                opacity: uploading ? 0.7 : 1 }}>
+              {uploading ? "⏳ Uploading..." : "🍽️ Share Recipe"}
             </button>
           </div>
         </form>
@@ -710,20 +711,73 @@ function CreateModal({ onClose, onCreate, currentUser }) {
 
 // ─── AUTH MODAL ─────────────────────────────────────────────────────────────
 function AuthModal({ onClose, onLogin }) {
-  const [email,   setEmail]   = useState("")
-  const [name,    setName]    = useState("")
-  const [country, setCountry] = useState("ZA")
+  const [email,    setEmail]    = useState("")
+  const [password, setPassword] = useState("")
+  const [name,     setName]     = useState("")
+  const [country,  setCountry]  = useState("ZA")
+  const [isSignUp, setIsSignUp] = useState(true)
+  const [loading,  setLoading]  = useState(false)
+  const [error,    setError]    = useState("")
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    const sel = countries.find(c => c.code === country)
-    onLogin({
-      id: Date.now(), email, name: name.trim() || email.split("@")[0],
-      countryFlag: sel?.flag || "🌍",
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`,
-      joinDate: new Date().toISOString()
-    })
-    onClose()
+    setLoading(true)
+    setError("")
+
+    try {
+      if (isSignUp) {
+        const sel = countries.find(c => c.code === country)
+        const { data, error: signUpError } = await supabase.auth.signUp({
+          email, password,
+          options: {
+            data: {
+              name: name.trim() || email.split("@")[0],
+              country_flag: sel?.flag || "🌍",
+              avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`
+            }
+          }
+        })
+        if (signUpError) throw signUpError
+
+        if (data.user) {
+          // Insert profile
+          await supabase.from("profiles").insert({
+            id: data.user.id,
+            name: name.trim() || email.split("@")[0],
+            email,
+            country_flag: sel?.flag || "🌍",
+            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`
+          })
+          onLogin({
+            id: data.user.id,
+            email,
+            name: name.trim() || email.split("@")[0],
+            countryFlag: sel?.flag || "🌍",
+            avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`
+          })
+          onClose()
+        }
+      } else {
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+        if (signInError) throw signInError
+
+        if (data.user) {
+          const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+          onLogin({
+            id: data.user.id,
+            email: data.user.email,
+            name: profile?.name || data.user.email.split("@")[0],
+            countryFlag: profile?.country_flag || "🌍",
+            avatar: profile?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.email)}&background=d4a855&color=09060a&bold=true`
+          })
+          onClose()
+        }
+      }
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const iStyle = {
@@ -743,35 +797,52 @@ function AuthModal({ onClose, onLogin }) {
           <FaTimes />
         </button>
 
-        {/* Logo mark */}
         <div style={{ textAlign:"center", marginBottom:"28px" }}>
           <div style={{ fontSize:"52px", marginBottom:"12px" }}>🍽️</div>
           <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"28px", fontWeight:"900",
             background: S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
-            margin:"0 0 6px 0" }}>
-            BetterDays Eats
-          </h1>
+            margin:"0 0 6px 0" }}>BetterDays Eats</h1>
           <p style={{ color:S.muted, fontSize:"13px" }}>
-            A global table. Share your recipe with the world 🌍
+            {isSignUp ? "Join our global food community 🌍" : "Welcome back! 👋"}
           </p>
         </div>
 
+        {error && (
+          <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px",
+            padding:"12px 16px", marginBottom:"16px", color:"#ef4444", fontSize:"13px" }}>
+            {error}
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:"12px" }}>
-          <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} style={iStyle} />
+          {isSignUp && (
+            <>
+              <input placeholder="Your name" value={name} onChange={e => setName(e.target.value)} style={iStyle} />
+              <select value={country} onChange={e => setCountry(e.target.value)} style={iStyle}>
+                {countries.map(c => <option key={c.code} value={c.code}>{c.flag} {c.name}</option>)}
+              </select>
+            </>
+          )}
           <input type="email" placeholder="Email address *" value={email}
             onChange={e => setEmail(e.target.value)} required style={iStyle} />
-          <select value={country} onChange={e => setCountry(e.target.value)} style={iStyle}>
-            {countries.map(c => <option key={c.code} value={c.code}>{c.flag} {c.name}</option>)}
-          </select>
-          <button type="submit" className="bde-btn-grad"
-            style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", marginTop:"4px" }}>
-            Join the Table
+          <input type="password" placeholder="Password *" value={password}
+            onChange={e => setPassword(e.target.value)} required minLength={6} style={iStyle} />
+          <button type="submit" className="bde-btn-grad" disabled={loading}
+            style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", marginTop:"4px",
+              opacity: loading ? 0.7 : 1 }}>
+            {loading ? "⏳ Please wait..." : isSignUp ? "Join the Table" : "Sign In"}
           </button>
         </form>
 
+        <button onClick={() => { setIsSignUp(!isSignUp); setError("") }}
+          style={{ background:"none", border:"none", color:S.gold, cursor:"pointer",
+            fontSize:"13px", width:"100%", textAlign:"center", marginTop:"16px" }}>
+          {isSignUp ? "Already have an account? Sign in" : "New here? Create account"}
+        </button>
+
         <button onClick={onClose}
           style={{ background:"none", border:"none", color:S.muted, cursor:"pointer",
-            fontSize:"12px", width:"100%", textAlign:"center", marginTop:"16px" }}>
+            fontSize:"12px", width:"100%", textAlign:"center", marginTop:"10px" }}>
           Browse as guest
         </button>
       </div>
@@ -780,50 +851,30 @@ function AuthModal({ onClose, onLogin }) {
 }
 
 // ─── STUB PAGES ─────────────────────────────────────────────────────────────
-// ─── STUB PAGES ─────────────────────────────────────────────────────────────
 function StubPage({ icon, title, body, onBack }) {
   return (
     <div style={{ maxWidth:"700px", margin:"0 auto", padding:"40px 24px" }}>
       <div style={{ background:S.card, borderRadius:"24px", padding:"48px 36px",
         border:`1px solid ${S.border}`, textAlign:"center", position:"relative" }}>
-        
-        {/* Back button */}
-        <button 
-          onClick={onBack}
-          style={{
-            position:"absolute",
-            top:"16px",
-            left:"16px",
-            background:"none",
-            border:"none",
-            color:S.muted,
-            fontSize:"20px",
-            cursor:"pointer",
-            padding:"8px",
-            borderRadius:"8px",
-            transition:"all 0.2s",
-            display:"flex",
-            alignItems:"center",
-            gap:"6px"
-          }}
-          onMouseEnter={e => { e.currentTarget.style.color = S.gold; e.currentTarget.style.background = S.card2 }}
-          onMouseLeave={e => { e.currentTarget.style.color = S.muted; e.currentTarget.style.background = "none" }}
-        >
+        <button onClick={onBack}
+          style={{ position:"absolute", top:"16px", left:"16px", background:"none", border:"none",
+            color:S.muted, fontSize:"20px", cursor:"pointer", padding:"8px", borderRadius:"8px",
+            display:"flex", alignItems:"center", gap:"6px" }}
+          onMouseEnter={e => { e.currentTarget.style.color = S.gold }}
+          onMouseLeave={e => { e.currentTarget.style.color = S.muted }}>
           ← Back
         </button>
-        
         <div style={{ fontSize:"52px", marginBottom:"16px" }}>{icon}</div>
         <h1 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"26px", marginBottom:"12px" }}>{title}</h1>
         <p style={{ color:S.muted }}>{body}</p>
         <div style={{ marginTop:"24px", padding:"12px 20px", background:`${S.gold}12`,
-          borderRadius:"40px", display:"inline-block",
-          border:`1px solid ${S.gold}30`, color:S.gold, fontSize:"13px" }}>
-          Coming soon ✨
-        </div>
+          borderRadius:"40px", display:"inline-block", border:`1px solid ${S.gold}30`,
+          color:S.gold, fontSize:"13px" }}>Coming soon ✨</div>
       </div>
     </div>
   )
 }
+
 // ─── DROPDOWN MENU ──────────────────────────────────────────────────────────
 function DropMenu({ currentPage, setCurrentPage, onClose }) {
   const groups = [
@@ -852,8 +903,7 @@ function DropMenu({ currentPage, setCurrentPage, onClose }) {
   return (
     <div style={{ position:"absolute", top:"100%", left:0, marginTop:"6px",
       background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px",
-      padding:"8px 0", zIndex:99999, minWidth:"220px",
-      boxShadow:"0 16px 48px rgba(0,0,0,0.7)" }}>
+      padding:"8px 0", zIndex:99999, minWidth:"220px", boxShadow:"0 16px 48px rgba(0,0,0,0.7)" }}>
       {groups.map((g, gi) => (
         <div key={gi}>
           <p style={{ color:S.muted, fontSize:"10px", textTransform:"uppercase",
@@ -869,9 +919,7 @@ function DropMenu({ currentPage, setCurrentPage, onClose }) {
               {item.label}
             </button>
           ))}
-          {gi < groups.length - 1 && (
-            <div style={{ height:"1px", background:S.border, margin:"6px 0" }} />
-          )}
+          {gi < groups.length - 1 && <div style={{ height:"1px", background:S.border, margin:"6px 0" }} />}
         </div>
       ))}
     </div>
@@ -885,13 +933,9 @@ function CookieBanner({ onAccept }) {
       background:S.card, borderTop:`1px solid ${S.border}`,
       padding:"14px 20px", display:"flex", justifyContent:"space-between",
       alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
-      <p style={{ color:S.muted, fontSize:"12px", margin:0 }}>
-        🍪 We use cookies to make your experience sweeter.
-      </p>
+      <p style={{ color:S.muted, fontSize:"12px", margin:0 }}>🍪 We use cookies to make your experience sweeter.</p>
       <button className="bde-btn-grad" onClick={onAccept}
-        style={{ padding:"7px 20px", borderRadius:"40px", fontSize:"12px" }}>
-        Accept
-      </button>
+        style={{ padding:"7px 20px", borderRadius:"40px", fontSize:"12px" }}>Accept</button>
     </div>
   )
 }
@@ -900,20 +944,22 @@ function CookieBanner({ onAccept }) {
 export default function App() {
   useFonts()
 
-  const [currentUser,      setCurrentUser]      = useState(null)
-  const [recipes,          setRecipes]           = useState(DEMO)
-  const [showCreate,       setShowCreate]        = useState(false)
-  const [showAuth,         setShowAuth]          = useState(false)
-  const [selectedCat,      setSelectedCat]       = useState("all")
-  const [searchTerm,       setSearchTerm]        = useState("")
-  const [currentPage,      setCurrentPage]       = useState("home")
-  const [showNotifs,       setShowNotifs]        = useState(false)
-  const [showDrop,         setShowDrop]          = useState(false)
-  const [notifications,    setNotifications]     = useState([])
-  const [unread,           setUnread]            = useState(0)
-  const [toast,            setToast]             = useState(null)
-  const [cookiesOk,        setCookiesOk]         = useState(false)
-  const [isMobile,         setIsMobile]          = useState(false)
+  const [currentUser,   setCurrentUser]   = useState(null)
+  const [recipes,       setRecipes]       = useState(DEMO)
+  const [dbRecipes,     setDbRecipes]     = useState([])
+  const [showCreate,    setShowCreate]    = useState(false)
+  const [showAuth,      setShowAuth]      = useState(false)
+  const [selectedCat,   setSelectedCat]   = useState("all")
+  const [searchTerm,    setSearchTerm]    = useState("")
+  const [currentPage,   setCurrentPage]   = useState("home")
+  const [showNotifs,    setShowNotifs]    = useState(false)
+  const [showDrop,      setShowDrop]      = useState(false)
+  const [notifications, setNotifications] = useState([])
+  const [unread,        setUnread]        = useState(0)
+  const [toast,         setToast]         = useState(null)
+  const [cookiesOk,     setCookiesOk]     = useState(false)
+  const [isMobile,      setIsMobile]      = useState(false)
+  const [loadingDb,     setLoadingDb]     = useState(true)
   const dropRef = useRef(null)
 
   // Responsive
@@ -931,6 +977,54 @@ export default function App() {
     return () => document.removeEventListener("mousedown", h)
   }, [])
 
+  // Check existing session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        supabase.from("profiles").select("*").eq("id", session.user.id).single().then(({ data: profile }) => {
+          if (profile) {
+            setCurrentUser({
+              id: session.user.id,
+              email: session.user.email,
+              name: profile.name,
+              countryFlag: profile.country_flag,
+              avatar: profile.avatar
+            })
+          }
+        })
+      }
+    })
+  }, [])
+
+  // Load recipes from Supabase
+  useEffect(() => {
+    const loadRecipes = async () => {
+      setLoadingDb(true)
+      const { data, error } = await supabase
+        .from("recipes")
+        .select("*")
+        .order("created_at", { ascending: false })
+
+      if (!error && data) {
+        // Load comments for each recipe
+        const recipesWithComments = await Promise.all(data.map(async recipe => {
+          const { data: comments } = await supabase
+            .from("comments")
+            .select("*")
+            .eq("recipe_id", recipe.id)
+            .order("created_at", { ascending: true })
+          return { ...recipe, comments: comments || [], liked: false, saved: false }
+        }))
+        setDbRecipes(recipesWithComments)
+      }
+      setLoadingDb(false)
+    }
+    loadRecipes()
+  }, [])
+
+  // Combine DB recipes with demo recipes (DB first)
+  const allRecipes = [...dbRecipes, ...recipes]
+
   const showToast = msg => setToast(msg)
 
   const addNotif = msg => {
@@ -944,60 +1038,82 @@ export default function App() {
     addNotif(`👋 Welcome to BetterDays Eats, ${user.name}!`)
   }
 
-  const handleLogout = () => { setCurrentUser(null); showToast("See you soon 👋") }
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    setCurrentUser(null)
+    showToast("See you soon 👋")
+  }
 
   const handleCreate = r => {
-    setRecipes(p => [r, ...p])
+    setDbRecipes(p => [r, ...p])
     showToast("Recipe shared! ✨")
     addNotif(`✨ "${r.title}" is now live!`)
   }
 
-  const handleLike = id =>
-    setRecipes(p => p.map(r => r.id === id
-      ? { ...r, likes: r.liked ? r.likes - 1 : r.likes + 1, liked: !r.liked } : r))
+  const handleLike = async id => {
+    const isDemo = String(id).startsWith("demo-")
+    if (isDemo) {
+      setRecipes(p => p.map(r => r.id === id
+        ? { ...r, likes: r.liked ? r.likes - 1 : r.likes + 1, liked: !r.liked } : r))
+      return
+    }
+    const recipe = dbRecipes.find(r => r.id === id)
+    if (!recipe || !currentUser) return
 
-  const handleSave = id =>
-    setRecipes(p => p.map(r => r.id === id ? { ...r, saved: !r.saved } : r))
+    if (recipe.liked) {
+      await supabase.from("likes").delete().match({ recipe_id: id, user_id: currentUser.id })
+      await supabase.from("recipes").update({ likes: recipe.likes - 1 }).eq("id", id)
+      setDbRecipes(p => p.map(r => r.id === id ? { ...r, likes: r.likes - 1, liked: false } : r))
+    } else {
+      await supabase.from("likes").insert({ recipe_id: id, user_id: currentUser.id })
+      await supabase.from("recipes").update({ likes: recipe.likes + 1 }).eq("id", id)
+      setDbRecipes(p => p.map(r => r.id === id ? { ...r, likes: r.likes + 1, liked: true } : r))
+    }
+  }
 
-  const filtered = recipes.filter(r =>
+  const handleSave = id => {
+    const isDemo = String(id).startsWith("demo-")
+    if (isDemo) {
+      setRecipes(p => p.map(r => r.id === id ? { ...r, saved: !r.saved } : r))
+    } else {
+      setDbRecipes(p => p.map(r => r.id === id ? { ...r, saved: !r.saved } : r))
+    }
+  }
+
+  const filtered = allRecipes.filter(r =>
     (selectedCat === "all" || selectedCat === "trending" || r.category === selectedCat) &&
     (!searchTerm || r.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.author.toLowerCase().includes(searchTerm.toLowerCase()))
+      r.author_name.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  const featured = recipes.find(r => r.featured) || recipes[0]
-
+  const featured = dbRecipes[0] || recipes[0]
   const openPost = () => { if (currentUser) setShowCreate(true); else setShowAuth(true) }
 
-  
-// ─── PAGES ────────────────────────────────────────────────────────────────
-const pages = {
-  restaurants: <StubPage icon="🏪" title="Restaurants" body="Discover the best restaurants near you." onBack={() => setCurrentPage("home")} />,
-  jobs:        <StubPage icon="💼" title="Food Industry Jobs" body="Find your next role in hospitality & food." onBack={() => setCurrentPage("home")} />,
-  equipment:   <StubPage icon="🛒" title="Kitchen Equipment" body="Shop tools used by top chefs." onBack={() => setCurrentPage("home")} />,
-  business:    <StubPage icon="💡" title="Business Ideas" body="Start your food business with our guides." onBack={() => setCurrentPage("home")} />,
-  schools:     <StubPage icon="🏫" title="Culinary Schools" body="Find culinary schools near you." onBack={() => setCurrentPage("home")} />,
-  kids:        <StubPage icon="👶" title="Kids Nutrition" body="Healthy meals for growing children." onBack={() => setCurrentPage("home")} />,
-  donations:   <StubPage icon="❤️" title="Donate" body="Support food NGOs fighting hunger across Africa." onBack={() => setCurrentPage("home")} />,
-  books:       <StubPage icon="📚" title="Cookbooks" body="Curated cookbooks from chefs around the world." onBack={() => setCurrentPage("home")} />,
-  about:       <StubPage icon="🌍" title="About BetterDays Eats" body="Born in South Africa. Built for the world. A luxury food community for people who believe great food tells great stories." onBack={() => setCurrentPage("home")} />,
-  faq:         <StubPage icon="❓" title="FAQ" body="Free platform for food lovers. Post recipes, like, comment, and share!" onBack={() => setCurrentPage("home")} />,
-  contact:     <StubPage icon="📧" title="Contact" body="Email: senzomashaba85@gmail.com · WhatsApp: +27 76 222 6325" onBack={() => setCurrentPage("home")} />,
-  privacy:     <StubPage icon="🔒" title="Privacy" body="We never sell your data. Ever." onBack={() => setCurrentPage("home")} />,
-  terms:       <StubPage icon="⚖️" title="Terms" body="Be respectful. Be generous. Give credit." onBack={() => setCurrentPage("home")} />,
-}
+  const pages = {
+    restaurants: <StubPage icon="🏪" title="Restaurants" body="Discover the best restaurants near you." onBack={() => setCurrentPage("home")} />,
+    jobs:        <StubPage icon="💼" title="Food Industry Jobs" body="Find your next role in hospitality & food." onBack={() => setCurrentPage("home")} />,
+    equipment:   <StubPage icon="🛒" title="Kitchen Equipment" body="Shop tools used by top chefs." onBack={() => setCurrentPage("home")} />,
+    business:    <StubPage icon="💡" title="Business Ideas" body="Start your food business with our guides." onBack={() => setCurrentPage("home")} />,
+    schools:     <StubPage icon="🏫" title="Culinary Schools" body="Find culinary schools near you." onBack={() => setCurrentPage("home")} />,
+    kids:        <StubPage icon="👶" title="Kids Nutrition" body="Healthy meals for growing children." onBack={() => setCurrentPage("home")} />,
+    donations:   <StubPage icon="❤️" title="Donate" body="Support food NGOs fighting hunger across Africa." onBack={() => setCurrentPage("home")} />,
+    books:       <StubPage icon="📚" title="Cookbooks" body="Curated cookbooks from chefs around the world." onBack={() => setCurrentPage("home")} />,
+    about:       <StubPage icon="🌍" title="About BetterDays Eats" body="Born in South Africa. Built for the world." onBack={() => setCurrentPage("home")} />,
+    faq:         <StubPage icon="❓" title="FAQ" body="Free platform for food lovers. Post recipes, like, comment, and share!" onBack={() => setCurrentPage("home")} />,
+    contact:     <StubPage icon="📧" title="Contact" body="Email: senzomashaba85@gmail.com · WhatsApp: +27 76 222 6325" onBack={() => setCurrentPage("home")} />,
+    privacy:     <StubPage icon="🔒" title="Privacy" body="We never sell your data. Ever." onBack={() => setCurrentPage("home")} />,
+    terms:       <StubPage icon="⚖️" title="Terms" body="Be respectful. Be generous. Give credit." onBack={() => setCurrentPage("home")} />,
+  }
 
   return (
     <div style={{ backgroundColor:S.bg, minHeight:"100vh" }}>
 
-      {/* ── HEADER ───────────────────────────────────────────────────────── */}
+      {/* HEADER */}
       <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)",
         borderBottom:`1px solid ${S.border}`, padding:"14px 24px",
         position:"sticky", top:0, zIndex:200 }}>
         <div style={{ maxWidth:"1200px", margin:"0 auto",
           display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px" }}>
-
-          {/* Logo */}
           <div onClick={() => setCurrentPage("home")}
             style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
             <span style={{ fontSize:"26px" }}>🍽️</span>
@@ -1006,8 +1122,6 @@ const pages = {
               BetterDays Eats
             </span>
           </div>
-
-          {/* Right actions */}
           <div style={{ display:"flex", alignItems:"center", gap:"12px" }}>
             {!isMobile && (
               <div style={{ position:"relative" }}>
@@ -1016,12 +1130,9 @@ const pages = {
                   style={{ background:S.card2, border:`1px solid ${S.border}`,
                     borderRadius:"40px", padding:"9px 16px 9px 38px",
                     color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
-                <FaSearch style={{ position:"absolute", left:"13px", top:"11px",
-                  color:S.muted, fontSize:"12px" }} />
+                <FaSearch style={{ position:"absolute", left:"13px", top:"11px", color:S.muted, fontSize:"12px" }} />
               </div>
             )}
-
-            {/* Notifications */}
             <div style={{ position:"relative" }}>
               <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
                 style={{ color:S.gold, position:"relative", padding:"4px" }}>
@@ -1030,8 +1141,7 @@ const pages = {
                   <span style={{ position:"absolute", top:"-4px", right:"-6px",
                     background:"#ef4444", color:"#fff", borderRadius:"50%",
                     width:"15px", height:"15px", fontSize:"9px",
-                    display:"flex", alignItems:"center", justifyContent:"center",
-                    fontWeight:"700" }}>
+                    display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>
                     {unread}
                   </span>
                 )}
@@ -1042,22 +1152,16 @@ const pages = {
                   onClose={() => setShowNotifs(false)} />
               )}
             </div>
-
-            {/* User */}
             {currentUser ? (
               <div style={{ display:"flex", alignItems:"center", gap:"10px" }}>
                 <img src={currentUser.avatar} alt={currentUser.name}
-                  style={{ width:"34px", height:"34px", borderRadius:"50%",
-                    border:`2px solid ${S.gold}` }} />
+                  style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
                 {!isMobile && (
-                  <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>
-                    {currentUser.name}
-                  </span>
+                  <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>
                 )}
                 <button onClick={handleLogout}
                   style={{ background:"none", border:`1px solid ${S.border}`,
-                    color:S.muted, borderRadius:"8px", padding:"6px 12px",
-                    cursor:"pointer", fontSize:"12px" }}>
+                    color:S.muted, borderRadius:"8px", padding:"6px 12px", cursor:"pointer", fontSize:"12px" }}>
                   Out
                 </button>
                 {!isMobile && (
@@ -1077,99 +1181,64 @@ const pages = {
         </div>
       </header>
 
-      {/* ─── NAV ──────────────────────────────────────────────────────────── */}
-      <nav style={{ 
-        background:`${S.card}cc`, 
-        backdropFilter:"blur(12px)",
-        borderBottom:`1px solid ${S.border}`, 
-        padding:"0 24px",
-        position:"relative",
-        zIndex:9998
-      }}>
-        <div style={{ maxWidth:"1200px", margin:"0 auto",
-          display:"flex", alignItems:"center", gap:"4px" }}>
-          
-          <button onClick={() => { setCurrentPage("home"); setShowDrop(false); }}
+      {/* NAV */}
+      <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)",
+        borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
+        <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", alignItems:"center", gap:"4px" }}>
+          <button onClick={() => { setCurrentPage("home"); setShowDrop(false) }}
             style={{ background: currentPage === "home" ? `${S.gold}18` : "none",
               color: currentPage === "home" ? S.gold : S.muted,
-              border:"none", borderRadius:"8px", padding:"12px 16px",
-              cursor:"pointer", fontSize:"13px", fontWeight: currentPage === "home" ? "600" : "400",
+              border:"none", borderRadius:"8px", padding:"12px 16px", cursor:"pointer", fontSize:"13px",
+              fontWeight: currentPage === "home" ? "600" : "400",
               borderBottom: currentPage === "home" ? `2px solid ${S.gold}` : "2px solid transparent",
               transition:"all 0.2s" }}>
             🏠 Home
           </button>
-
           <div ref={dropRef} style={{ position:"relative", display:"inline-block", zIndex:99999 }}>
-            <button onClick={() => {
-              setShowDrop(!showDrop);
-              if (showNotifs) setShowNotifs(false);
-            }}
-              style={{ 
-                background: showDrop ? `${S.rose}18` : "none",
-                color: showDrop ? S.rose : S.muted, 
-                border:"none", 
-                borderRadius:"8px",
-                padding:"12px 16px", 
-                cursor:"pointer", 
-                fontSize:"13px",
-                display:"flex", 
-                alignItems:"center", 
-                gap:"6px",
+            <button onClick={() => { setShowDrop(!showDrop); if (showNotifs) setShowNotifs(false) }}
+              style={{ background: showDrop ? `${S.rose}18` : "none",
+                color: showDrop ? S.rose : S.muted, border:"none", borderRadius:"8px",
+                padding:"12px 16px", cursor:"pointer", fontSize:"13px",
+                display:"flex", alignItems:"center", gap:"6px",
                 borderBottom: showDrop ? `2px solid ${S.rose}` : "2px solid transparent",
-                transition:"all 0.2s",
-                position:"relative",
-                zIndex:99999
-              }}>
-              More <FaChevronDown size={9}
-                style={{ 
-                  transform: showDrop ? "rotate(180deg)" : "rotate(0deg)", 
-                  transition:"transform 0.2s" 
-                }} />
+                transition:"all 0.2s" }}>
+              More <FaChevronDown size={9} style={{ transform: showDrop ? "rotate(180deg)" : "rotate(0deg)", transition:"transform 0.2s" }} />
             </button>
             {showDrop && <DropMenu currentPage={currentPage} setCurrentPage={setCurrentPage} onClose={() => setShowDrop(false)} />}
           </div>
         </div>
       </nav>
 
-      {/* ── HOME PAGE ────────────────────────────────────────────────────── */}
+      {/* HOME PAGE */}
       {currentPage === "home" && (
         <>
-          {/* Hero */}
           <HeroBanner recipe={featured} onSignup={() => setShowAuth(true)}
             currentUser={currentUser} onPost={() => setShowCreate(true)} />
 
-          {/* Mobile search */}
           {isMobile && (
-            <div style={{ padding:"16px 20px", background:S.card,
-              borderBottom:`1px solid ${S.border}` }}>
+            <div style={{ padding:"16px 20px", background:S.card, borderBottom:`1px solid ${S.border}` }}>
               <div style={{ position:"relative" }}>
                 <input placeholder="Search recipes…" value={searchTerm}
                   onChange={e => setSearchTerm(e.target.value)}
                   style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-                    borderRadius:"40px", padding:"10px 16px 10px 38px",
-                    color:S.text, fontSize:"13px", outline:"none" }} />
-                <FaSearch style={{ position:"absolute", left:"13px", top:"12px",
-                  color:S.muted, fontSize:"12px" }} />
+                    borderRadius:"40px", padding:"10px 16px 10px 38px", color:S.text, fontSize:"13px", outline:"none" }} />
+                <FaSearch style={{ position:"absolute", left:"13px", top:"12px", color:S.muted, fontSize:"12px" }} />
               </div>
             </div>
           )}
 
           {/* Categories */}
-          <div style={{ background:S.card, borderBottom:`1px solid ${S.border}`,
-            overflowX:"auto", padding:"12px 20px" }}>
+          <div style={{ background:S.card, borderBottom:`1px solid ${S.border}`, overflowX:"auto", padding:"12px 20px" }}>
             <div style={{ display:"flex", gap:"8px", minWidth:"max-content" }}>
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => setSelectedCat(cat.id)}
                   className={selectedCat === cat.id ? "bde-btn-grad" : ""}
-                  style={{
-                    background: selectedCat !== cat.id ? "none" : undefined,
+                  style={{ background: selectedCat !== cat.id ? "none" : undefined,
                     border: selectedCat === cat.id ? "none" : `1px solid ${S.border}`,
-                    borderRadius:"40px", padding:"7px 16px", cursor:"pointer",
-                    fontSize:"12px", display:"flex", alignItems:"center", gap:"5px",
-                    whiteSpace:"nowrap", fontWeight: selectedCat === cat.id ? "600" : "400",
-                    color: selectedCat === cat.id ? S.bg : S.muted,
-                    transition:"all 0.2s"
-                  }}>
+                    borderRadius:"40px", padding:"7px 16px", cursor:"pointer", fontSize:"12px",
+                    display:"flex", alignItems:"center", gap:"5px", whiteSpace:"nowrap",
+                    fontWeight: selectedCat === cat.id ? "600" : "400",
+                    color: selectedCat === cat.id ? S.bg : S.muted, transition:"all 0.2s" }}>
                   {cat.icon} {cat.name}
                 </button>
               ))}
@@ -1178,16 +1247,17 @@ const pages = {
 
           {/* Grid */}
           <main style={{ maxWidth:"1100px", margin:"0 auto", padding:"28px 20px 100px 20px" }}>
-            {filtered.length === 0 ? (
+            {loadingDb ? (
+              <div style={{ textAlign:"center", padding:"60px", color:S.muted }}>
+                <div style={{ fontSize:"40px", marginBottom:"16px", animation:"shimmer 1.5s infinite" }}>🍽️</div>
+                <p>Loading delicious recipes...</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div style={{ textAlign:"center", padding:"80px 24px",
                 background:S.card, borderRadius:"24px", border:`1px solid ${S.border}` }}>
                 <div style={{ fontSize:"52px", marginBottom:"16px" }}>🍽️</div>
-                <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, marginBottom:"8px" }}>
-                  No recipes yet
-                </h2>
-                <p style={{ color:S.muted, marginBottom:"24px" }}>
-                  Be the first to share something delicious.
-                </p>
+                <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, marginBottom:"8px" }}>No recipes yet</h2>
+                <p style={{ color:S.muted, marginBottom:"24px" }}>Be the first to share something delicious.</p>
                 <button className="bde-btn-grad" onClick={openPost}
                   style={{ padding:"12px 28px", borderRadius:"40px", fontSize:"14px" }}>
                   Share a Recipe
@@ -1197,8 +1267,7 @@ const pages = {
               <div style={{ columns: isMobile ? 1 : 2, columnGap:"20px" }}>
                 {filtered.map(r => (
                   <div key={r.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-                    <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave}
-                      currentUser={currentUser} />
+                    <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave} currentUser={currentUser} />
                   </div>
                 ))}
               </div>
@@ -1207,19 +1276,15 @@ const pages = {
         </>
       )}
 
-      {/* ── OTHER PAGES ──────────────────────────────────────────────────── */}
       {currentPage !== "home" && (pages[currentPage] ||
-        <StubPage icon="🔍" title="Page not found" body="Head back home." />)}
+        <StubPage icon="🔍" title="Page not found" body="Head back home." onBack={() => setCurrentPage("home")} />)}
 
-      {/* ── FOOTER ───────────────────────────────────────────────────────── */}
+      {/* FOOTER */}
       {currentPage === "home" && (
-        <footer style={{ textAlign:"center", padding:"32px 24px",
-          borderTop:`1px solid ${S.border}`, paddingBottom:"80px" }}>
+        <footer style={{ textAlign:"center", padding:"32px 24px", borderTop:`1px solid ${S.border}`, paddingBottom:"80px" }}>
           <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"16px",
             background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
-            marginBottom:"8px", fontWeight:"700" }}>
-            BetterDays Eats
-          </div>
+            marginBottom:"8px", fontWeight:"700" }}>BetterDays Eats</div>
           <p style={{ color:S.muted, fontSize:"11px", marginBottom:"12px" }}>
             © 2026 BetterDays Agile Technologies Inc · South Africa 🇿🇦
           </p>
@@ -1235,28 +1300,20 @@ const pages = {
         </footer>
       )}
 
-      {/* ── MOBILE BOTTOM NAV ────────────────────────────────────────────── */}
+      {/* MOBILE BOTTOM NAV */}
       <div style={{ position:"fixed", bottom:0, left:0, right:0,
         background:`${S.bg}f5`, backdropFilter:"blur(20px)",
         borderTop:`1px solid ${S.border}`, display:"flex",
         justifyContent:"space-around", padding:"10px 0 14px", zIndex:100 }}>
         <button className="bde-icon-btn" onClick={() => setCurrentPage("home")}
-          style={{ color: currentPage === "home" ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>
-          🏠
-        </button>
-        <button className="bde-icon-btn"
-          onClick={() => setSelectedCat("trending")}
-          style={{ color: selectedCat === "trending" ? S.rose : S.muted, fontSize:"20px", padding:"4px 16px" }}>
-          🔥
-        </button>
+          style={{ color: currentPage === "home" ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>🏠</button>
+        <button className="bde-icon-btn" onClick={() => setSelectedCat("trending")}
+          style={{ color: selectedCat === "trending" ? S.rose : S.muted, fontSize:"20px", padding:"4px 16px" }}>🔥</button>
         <button className="bde-btn-grad" onClick={openPost}
           style={{ borderRadius:"50%", width:"48px", height:"48px",
             display:"flex", alignItems:"center", justifyContent:"center",
-            fontSize:"20px", marginTop:"-10px", boxShadow:`0 4px 20px ${S.rose}50` }}>
-          +
-        </button>
-        <button className="bde-icon-btn"
-          onClick={() => setShowNotifs(!showNotifs)}
+            fontSize:"20px", marginTop:"-10px", boxShadow:`0 4px 20px ${S.rose}50` }}>+</button>
+        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
           style={{ color:S.muted, fontSize:"20px", padding:"4px 16px", position:"relative" }}>
           🔔
           {unread > 0 && (
@@ -1268,24 +1325,17 @@ const pages = {
             </span>
           )}
         </button>
-        <button className="bde-icon-btn"
-          onClick={() => currentUser ? null : setShowAuth(true)}
-          style={{ color: currentUser ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>
-          👤
-        </button>
+        <button className="bde-icon-btn" onClick={() => currentUser ? null : setShowAuth(true)}
+          style={{ color: currentUser ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>👤</button>
       </div>
 
-      {/* ── MODALS & OVERLAYS ─────────────────────────────────────────────── */}
+      {/* MODALS */}
       {showCreate && currentUser && (
         <CreateModal onClose={() => setShowCreate(false)} onCreate={handleCreate} currentUser={currentUser} />
       )}
-      {showAuth && (
-        <AuthModal onClose={() => setShowAuth(false)} onLogin={handleLogin} />
-      )}
+      {showAuth && <AuthModal onClose={() => setShowAuth(false)} onLogin={handleLogin} />}
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
-      {!cookiesOk && (
-        <CookieBanner onAccept={() => setCookiesOk(true)} />
-      )}
+      {!cookiesOk && <CookieBanner onAccept={() => setCookiesOk(true)} />}
     </div>
   )
 }
