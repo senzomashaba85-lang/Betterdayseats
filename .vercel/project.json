@@ -1,1 +1,16 @@
-{"projectId":"prj_OM47rnox6pNrTNsu94S0L9j39qZe","orgId":"team_NSGniTQLa8mPQmHmjmBa3DCv","projectName":"betterdayseats"}
+{
+  "projectId": "prj_OM47rnox6pNrTNsu94S0L9j39qZe",
+  "orgId": "team_NSGniTQLa8mPQmHmjmBa3DCv",
+  "projectName": "betterdayseats",
+  "settings": {
+    "createdAt": 1781216053078,
+    "framework": null,
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "24.x"
+  }
+}
