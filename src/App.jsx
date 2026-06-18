@@ -1082,7 +1082,7 @@ function AuthModal({ onClose, onLogin, S }) {
               <strong style={{ color:S.gold }}>{email}</strong>
             </p>
           </div>
-          <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.6", marginBottom:"24px" }}>
+          <p style={{ coalor:S.muted, fontSize:"13px", lineHeight:"1.6", marginBottom:"24px" }}>
             ⚠️ <strong>You must verify your email before you can post.</strong><br />
             Check your inbox (and spam folder) and click the link to activate.
           </p>
@@ -1384,65 +1384,77 @@ export default function App() {
     <div style={{ backgroundColor:S.bg, minHeight:"100vh", color:S.text, transition:"background 0.3s, color 0.3s" }}>
 
       <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)",
-        borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
-        <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
-          <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
-            <span style={{ fontSize:"26px" }}>🍽️</span>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"900",
-              background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>
-              BetterDays Eats
-            </span>
-          </div>
-          <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-            {!isMobile && (
-              <div style={{ position:"relative" }}>
-                <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px",
-                    padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
-                <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
-              </div>
-            )}
-            <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
-            <div style={{ position:"relative" }}>
-              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
-                style={{ color:S.gold, position:"relative", padding:"4px" }}>
-                <FaBell size={18} />
-                {unread > 0 && (
-                  <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff",
-                    borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px",
-                    display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
-                )}
-              </button>
-              {showNotifs && <NotifPanel items={notifications}
-                onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }}
-                onClose={() => setShowNotifs(false)} S={S} />}
-            </div>
-            {currentUser ? (
-              <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-                <img src={currentUser.avatar} alt={currentUser.name}
-                  style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-                {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
-                <button onClick={handleLogout}
-                  style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
-                    borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
-                {!isMobile && (
-                  <button onClick={() => setShowCreate(true)}
-                    style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-                      background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-                    ✨ Post
-                  </button>
-                )}
-              </div>
-            ) : (
-              <button onClick={() => setShowAuth(true)}
-                style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-                  background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-                Join Free
-              </button>
-            )}
-          </div>
+  borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
+  <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
+    
+    {/* ⭐ FIXED LOGO - ADDED key prop */}
+    <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
+      <span style={{ fontSize:"26px" }}>🍽️</span>
+      <span 
+        key={isDark ? "logo-dark" : "logo-light"} 
+        style={{ 
+          fontFamily:"'Playfair Display',serif", 
+          fontSize:"18px", 
+          fontWeight:"900",
+          background:S.grad, 
+          WebkitBackgroundClip:"text", 
+          WebkitTextFillColor:"transparent" 
+        }}
+      >
+        BetterDays Eats
+      </span>
+    </div>
+
+    <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+      {!isMobile && (
+        <div style={{ position:"relative" }}>
+          <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+            style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px",
+              padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
+          <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
         </div>
-      </header>
+      )}
+      <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
+      <div style={{ position:"relative" }}>
+        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
+          style={{ color:S.gold, position:"relative", padding:"4px" }}>
+          <FaBell size={18} />
+          {unread > 0 && (
+            <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff",
+              borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px",
+              display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
+          )}
+        </button>
+        {showNotifs && <NotifPanel items={notifications}
+          onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }}
+          onClose={() => setShowNotifs(false)} S={S} />}
+      </div>
+      {currentUser ? (
+        <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+          <img src={currentUser.avatar} alt={currentUser.name}
+            style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+          {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
+          <button onClick={handleLogout}
+            style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
+              borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
+          {!isMobile && (
+            <button onClick={() => setShowCreate(true)}
+              style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
+                background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
+              ✨ Post
+            </button>
+          )}
+        </div>
+      ) : (
+        <button onClick={() => setShowAuth(true)}
+          style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
+            background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
+          Join Free
+        </button>
+      )}
+    </div>
+  </div>
+</header>
 
       <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)",
         borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
