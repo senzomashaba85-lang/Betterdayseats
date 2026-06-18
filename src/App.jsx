@@ -5,7 +5,7 @@ import {
   FaHeart, FaComment, FaBookmark, FaSearch,
   FaBell, FaTimes, FaChevronDown, FaFire,
   FaInstagram, FaYoutube, FaLink, FaMoon, FaSun,
-  FaReply
+  FaReply, FaPlus, FaTrash
 } from "react-icons/fa"
 
 const supabase = createClient(
@@ -640,7 +640,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           </div>
         )}
 
-        {/* ⭐ AFFILIATE LINKS - DISPLAY */}
+        {/* AFFILIATE LINKS - DISPLAY */}
         {recipe.affiliate_links && recipe.affiliate_links.length > 0 && (
           <div style={{ marginTop:"10px", display:"flex", flexWrap:"wrap", gap:"6px" }}>
             {recipe.affiliate_links.map((link, index) => (
@@ -791,6 +791,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
     </article>
   )
 }
+
 // ─── HERO BANNER ──────────────────────────────────────────────────────────
 function HeroBanner({ recipe, onSignup, currentUser, onPost, S, isDark }) {
   if (!recipe) return null
@@ -869,7 +870,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     const r = new FileReader(); r.onloadend = () => setMediaPreview(r.result); r.readAsDataURL(file)
   }
 
-  // ⭐ AFFILIATE LINK FUNCTIONS
+  // AFFILIATE LINK FUNCTIONS
   const handleAffiliateChange = (index, field, value) => {
     const updated = [...affiliateLinks]
     updated[index][field] = value
@@ -926,7 +927,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
         else video_url = urlData.publicUrl;
       }
 
-      // ⭐ Filter out empty affiliate links
+      // Filter out empty affiliate links
       const filteredLinks = affiliateLinks.filter(link => link.name.trim() && link.url.trim());
 
       // Insert recipe with affiliate links
@@ -944,7 +945,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
           author_flag: currentUser.countryFlag || "🌍",
           author_avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
           socials,
-          affiliate_links: filteredLinks, // ⭐ THIS IS THE KEY
+          affiliate_links: filteredLinks,
           likes: 0
         })
         .select()
@@ -1034,7 +1035,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
               ))}
             </div>
 
-            {/* ⭐ AFFILIATE LINKS - WITH + BUTTON */}
+            {/* AFFILIATE LINKS - WITH + BUTTON */}
             <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`,
               borderRadius:"10px", padding:"14px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
@@ -1133,6 +1134,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     </div>
   )
 }
+
 // ─── AUTH MODAL ─────────────────────────────────────────────────────────────
 function AuthModal({ onClose, onLogin, S }) {
   const [email, setEmail] = useState("")
@@ -1195,7 +1197,7 @@ function AuthModal({ onClose, onLogin, S }) {
               <strong style={{ color:S.gold }}>{email}</strong>
             </p>
           </div>
-          <p style={{ coalor:S.muted, fontSize:"13px", lineHeight:"1.6", marginBottom:"24px" }}>
+          <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.6", marginBottom:"24px" }}>
             ⚠️ <strong>You must verify your email before you can post.</strong><br />
             Check your inbox (and spam folder) and click the link to activate.
           </p>
@@ -1401,6 +1403,13 @@ export default function App() {
   const [loadingDb, setLoadingDb] = useState(true)
   const dropRef = useRef(null)
 
+  // ─── INFINITE SCROLL STATE ────────────────────────────────────────────────
+  const [displayedPosts, setDisplayedPosts] = useState([])
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const observerRef = useRef(null)
+
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768)
     check(); window.addEventListener("resize", check)
@@ -1468,11 +1477,66 @@ export default function App() {
     else setDbPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
   }
 
+  // ─── FILTERED POSTS ──────────────────────────────────────────────────────
   const filtered = allPosts.filter(r =>
     (selectedCat === "all" || selectedCat === "trending" || r.category === selectedCat) &&
     (!searchTerm || r.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       r.author_name?.toLowerCase().includes(searchTerm.toLowerCase()))
   )
+
+  // ─── INFINITE SCROLL LOGIC ────────────────────────────────────────────────
+  const loadMorePosts = () => {
+    if (loadingMore || !hasMore || filtered.length <= displayedPosts.length) return
+    setLoadingMore(true)
+
+    setTimeout(() => {
+      const currentCount = displayedPosts.length
+      const nextBatch = filtered.slice(currentCount, currentCount + 5)
+      
+      if (nextBatch.length === 0) {
+        setHasMore(false)
+      } else {
+        setDisplayedPosts(prev => [...prev, ...nextBatch])
+      }
+      setLoadingMore(false)
+    }, 500)
+  }
+
+  // Reset pagination when filters change
+  useEffect(() => {
+    if (filtered.length > 0) {
+      setDisplayedPosts(filtered.slice(0, 5))
+      setHasMore(filtered.length > 5)
+      setPage(0)
+    } else {
+      setDisplayedPosts([])
+      setHasMore(false)
+    }
+  }, [selectedCat, searchTerm, filtered])
+
+  // Infinite scroll observer
+  useEffect(() => {
+    if (!hasMore || loadingMore || filtered.length <= displayedPosts.length) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMorePosts()
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px 0px 100px 0px" }
+    )
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current)
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observer.unobserve(observerRef.current)
+      }
+    }
+  }, [hasMore, loadingMore, filtered.length, displayedPosts.length])
 
   const featured = dbPosts[0] || posts[0]
   const openPost = () => { if (currentUser) setShowCreate(true); else setShowAuth(true) }
@@ -1497,77 +1561,75 @@ export default function App() {
     <div style={{ backgroundColor:S.bg, minHeight:"100vh", color:S.text, transition:"background 0.3s, color 0.3s" }}>
 
       <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)",
-  borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
-  <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
-    
-    {/* ⭐ FIXED LOGO - ADDED key prop */}
-    <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
-      <span style={{ fontSize:"26px" }}>🍽️</span>
-      <span 
-        key={isDark ? "logo-dark" : "logo-light"} 
-        style={{ 
-          fontFamily:"'Playfair Display',serif", 
-          fontSize:"18px", 
-          fontWeight:"900",
-          background:S.grad, 
-          WebkitBackgroundClip:"text", 
-          WebkitTextFillColor:"transparent" 
-        }}
-      >
-        BetterDays Eats
-      </span>
-    </div>
+        borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
+        <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
+          <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
+            <span style={{ fontSize:"26px" }}>🍽️</span>
+            <span 
+              key={isDark ? "logo-dark" : "logo-light"} 
+              style={{ 
+                fontFamily:"'Playfair Display',serif", 
+                fontSize:"18px", 
+                fontWeight:"900",
+                background:S.grad, 
+                WebkitBackgroundClip:"text", 
+                WebkitTextFillColor:"transparent" 
+              }}
+            >
+              BetterDays Eats
+            </span>
+          </div>
 
-    <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-      {!isMobile && (
-        <div style={{ position:"relative" }}>
-          <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-            style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px",
-              padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
-          <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
+          <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+            {!isMobile && (
+              <div style={{ position:"relative" }}>
+                <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
+                  style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px",
+                    padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
+                <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
+              </div>
+            )}
+            <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
+            <div style={{ position:"relative" }}>
+              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
+                style={{ color:S.gold, position:"relative", padding:"4px" }}>
+                <FaBell size={18} />
+                {unread > 0 && (
+                  <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff",
+                    borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px",
+                    display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
+                )}
+              </button>
+              {showNotifs && <NotifPanel items={notifications}
+                onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }}
+                onClose={() => setShowNotifs(false)} S={S} />}
+            </div>
+            {currentUser ? (
+              <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+                <img src={currentUser.avatar} alt={currentUser.name}
+                  style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+                {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
+                <button onClick={handleLogout}
+                  style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
+                    borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
+                {!isMobile && (
+                  <button onClick={() => setShowCreate(true)}
+                    style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
+                      background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
+                    ✨ Post
+                  </button>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => setShowAuth(true)}
+                style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
+                  background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
+                Join Free
+              </button>
+            )}
+          </div>
         </div>
-      )}
-      <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
-      <div style={{ position:"relative" }}>
-        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
-          style={{ color:S.gold, position:"relative", padding:"4px" }}>
-          <FaBell size={18} />
-          {unread > 0 && (
-            <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff",
-              borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px",
-              display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
-          )}
-        </button>
-        {showNotifs && <NotifPanel items={notifications}
-          onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }}
-          onClose={() => setShowNotifs(false)} S={S} />}
-      </div>
-      {currentUser ? (
-        <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-          <img src={currentUser.avatar} alt={currentUser.name}
-            style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-          {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
-          <button onClick={handleLogout}
-            style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
-              borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
-          {!isMobile && (
-            <button onClick={() => setShowCreate(true)}
-              style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-                background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-              ✨ Post
-            </button>
-          )}
-        </div>
-      ) : (
-        <button onClick={() => setShowAuth(true)}
-          style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-            background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-          Join Free
-        </button>
-      )}
-    </div> 
-  </div>
-</header>
+      </header>
 
       <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)",
         borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
@@ -1645,11 +1707,31 @@ export default function App() {
               </div>
             ) : (
               <div style={{ columns: isMobile ? 1 : 2, columnGap:"20px" }}>
-                {filtered.map(r => (
+                {(displayedPosts.length > 0 ? displayedPosts : filtered.slice(0, 5)).map(r => (
                   <div key={r.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
                     <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave} currentUser={currentUser} S={S} />
                   </div>
                 ))}
+              </div>
+            )}
+
+            {/* ─── INFINITE SCROLL TRIGGER ────────────────────────────────── */}
+            {hasMore && filtered.length > displayedPosts.length && (
+              <div ref={observerRef} style={{ textAlign:"center", padding:"20px 0", color:S.muted }}>
+                {loadingMore ? (
+                  <div>
+                    <span style={{ display:"inline-block", animation:"shimmer 1.5s infinite", fontSize:"32px" }}>🍽️</span>
+                    <p style={{ fontSize:"13px", marginTop:"8px" }}>Loading more recipes...</p>
+                  </div>
+                ) : (
+                  <p style={{ fontSize:"13px" }}>👇 Scroll for more recipes</p>
+                )}
+              </div>
+            )}
+
+            {!hasMore && filtered.length > 0 && (
+              <div style={{ textAlign:"center", padding:"20px 0", color:S.muted }}>
+                <p style={{ fontSize:"13px" }}>🎉 You've seen all {filtered.length} recipes!</p>
               </div>
             )}
           </main>
