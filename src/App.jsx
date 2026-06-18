@@ -5,7 +5,7 @@ import {
   FaHeart, FaComment, FaBookmark, FaSearch,
   FaBell, FaTimes, FaChevronDown, FaFire,
   FaInstagram, FaYoutube, FaLink, FaMoon, FaSun,
-  FaReply, FaPlus, FaTrash
+  FaReply
 } from "react-icons/fa"
 
 const supabase = createClient(
@@ -480,6 +480,7 @@ function CommentThread({ comment, currentUser, S }) {
 }
 
 // ─── RECIPE CARD ──────────────────────────────────────────────────────────
+// ─── RECIPE CARD ──────────────────────────────────────────────────────────
 function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
   const [showComments, setShowComments] = useState(false)
   const [newComment, setNewComment] = useState("")
@@ -488,6 +489,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
   const [showAllIngredients, setShowAllIngredients] = useState(false)
   const [reactions, setReactions] = useState(recipe.reactions || {})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [expanded, setExpanded] = useState(false) // ⭐ NEW: For description expand
   const cat = categories.find(c => c.id === recipe.category)
 
   const addComment = async () => {
@@ -569,10 +571,40 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</span>
         </div>
 
-        <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.65",
-          display:"-webkit-box", WebkitLineClamp:2, WebkitBoxOrient:"vertical", overflow:"hidden" }}>
-          {recipe.description}
-        </p>
+        {/* ⭐ EXPANDABLE DESCRIPTION - FIXED */}
+        <div style={{ marginBottom:"8px" }}>
+          <p style={{ 
+            color:S.muted, 
+            fontSize:"13px", 
+            lineHeight:"1.65",
+            overflow: "hidden",
+            display: "-webkit-box",
+            WebkitLineClamp: expanded ? "none" : 3,
+            WebkitBoxOrient: "vertical",
+            maxHeight: expanded ? "none" : "65px",
+            transition: "all 0.3s ease"
+          }}>
+            {recipe.description}
+          </p>
+          {recipe.description && recipe.description.length > 120 && (
+            <button 
+              onClick={() => setExpanded(!expanded)}
+              style={{
+                background: "none",
+                border: "none",
+                color: S.gold,
+                cursor: "pointer",
+                fontSize: "12px",
+                fontWeight: "600",
+                padding: "4px 0",
+                marginTop: "4px",
+                display: "inline-block"
+              }}
+            >
+              {expanded ? "Show less ▲" : "See more ▼"}
+            </button>
+          )}
+        </div>
 
         <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
 
@@ -724,7 +756,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
     </article>
   )
 }
-
 // ─── HERO BANNER ──────────────────────────────────────────────────────────
 function HeroBanner({ recipe, onSignup, currentUser, onPost, S, isDark }) {
   if (!recipe) return null
@@ -778,7 +809,7 @@ function HeroBanner({ recipe, onSignup, currentUser, onPost, S, isDark }) {
   )
 }
 
-// ─── CREATE MODAL - NO AFFILIATE LINKS ─────────────────────────────────────
+// ─── CREATE MODAL ──────────────────────────────────────────────────────────
 function CreateModal({ onClose, onCreate, currentUser, S }) {
   const [title, setTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -803,33 +834,91 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   }
 
   const handleSubmit = async e => {
-    e.preventDefault(); if (!title.trim() || !description.trim()) return
-    setUploading(true); setError("")
+    e.preventDefault();
+    if (!title.trim() || !description.trim()) return;
+    setUploading(true);
+    setError("");
+
     try {
-      let image_url = null, video_url = null
-      if (mediaFile) {
-        const ext = mediaFile.name.split(".").pop()
-        const filename = `${currentUser.id}-${Date.now()}.${ext}`
-        const { error: uploadError } = await supabase.storage.from("recipes-media").upload(filename, mediaFile, { cacheControl:"3600", upsert:false })
-        if (uploadError) throw uploadError
-        const { data: urlData } = supabase.storage.from("recipes-media").getPublicUrl(filename)
-        if (mediaType === "image") image_url = urlData.publicUrl
-        else video_url = urlData.publicUrl
+      // ✅ CHECK if profile exists
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", currentUser.id)
+        .single();
+
+      // ✅ If not, create it
+      if (!profile) {
+        const { error: insertProfileError } = await supabase
+          .from("profiles")
+          .insert({
+            id: currentUser.id,
+            name: currentUser.name,
+            email: currentUser.email || `${currentUser.id}@temp.com`,
+            country_flag: currentUser.countryFlag || "🌍",
+            avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
+          });
+        
+        if (insertProfileError) {
+          console.error("Profile insert error:", insertProfileError);
+          // Don't throw - continue anyway
+        }
       }
+
+      // ✅ NOW insert recipe
+      let image_url = null, video_url = null;
+      if (mediaFile) {
+        const ext = mediaFile.name.split(".").pop();
+        const filename = `${currentUser.id}-${Date.now()}.${ext}`;
+        const { error: uploadError } = await supabase.storage
+          .from("recipes-media")
+          .upload(filename, mediaFile, { cacheControl: "3600", upsert: false });
+        if (uploadError) throw uploadError;
+        const { data: urlData } = supabase.storage
+          .from("recipes-media")
+          .getPublicUrl(filename);
+        if (mediaType === "image") image_url = urlData.publicUrl;
+        else video_url = urlData.publicUrl;
+      }
+
+      const { data, error: insertError } = await supabase
+        .from("recipes")
+        .insert({
+          title: title.trim(),
+          description: description.trim(),
+          category,
+          ingredients: ingredients.split("\n").filter(i => i.trim()),
+          image_url,
+          video_url,
+          author_id: currentUser.id,
+          author_name: currentUser.name,
+          author_flag: currentUser.countryFlag || "🌍",
+          author_avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
+          socials,
+          likes: 0
+        })
+        .select()
+        .single();
+
+      if (insertError) throw insertError;
       
-      const { data, error: insertError } = await supabase.from("recipes").insert({
-        title: title.trim(), description: description.trim(), category,
-        ingredients: ingredients.split("\n").filter(i => i.trim()),
-        image_url, video_url,
-        author_id: currentUser.id, author_name: currentUser.name,
-        author_flag: currentUser.countryFlag, author_avatar: currentUser.avatar,
-        socials, likes: 0
-      }).select().single()
-      if (insertError) throw insertError
-      onCreate({ ...data, comments:[], liked:false, saved:false, reactions:{} })
-      onClose()
-    } catch (err) { setError(err.message) } finally { setUploading(false) }
-  }
+      // ✅ Add to UI
+      onCreate({ 
+        ...data, 
+        comments: [], 
+        liked: false, 
+        saved: false, 
+        reactions: {} 
+      });
+      onClose();
+      
+    } catch (err) {
+      console.error("Submit error:", err);
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
 
   return (
     <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.96)" : "rgba(60,30,20,0.7)",
@@ -855,17 +944,22 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
             <input placeholder="Recipe title *" value={title} onChange={e => setTitle(e.target.value)} required style={iStyle} />
 
             <div style={{ position:"relative" }}>
-              <textarea placeholder="Tell the story behind this dish... Use emojis!" value={description}
-                onChange={e => setDescription(e.target.value)} required rows={4}
-                style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} />
-              <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
-              {showEmojiPicker && (
-                <div style={{ position:"absolute", bottom:"40px", left:"0", zIndex:9999 }}>
-                  <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
-                </div>
-              )}
-            </div>
+  <textarea 
+    placeholder="Tell the story behind this dish... Use emojis!" 
+    value={description}
+    onChange={e => setDescription(e.target.value)} 
+    required 
+    rows={4}   // ⬅️ CHANGE THIS TO 5
+    style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} 
+  />
+  <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+    style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
+  {showEmojiPicker && (
+    <div style={{ position:"absolute", bottom:"40px", left:"0", zIndex:9999 }}>
+      <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
+    </div>
+  )}
+</div>
 
             <select value={category} onChange={e => setCategory(e.target.value)} style={iStyle}>
               {categories.filter(c => c.id !== "all" && c.id !== "trending").map(c =>
@@ -889,14 +983,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                   onChange={e => setSocials(p => ({ ...p, [key]: e.target.value }))}
                   style={{ ...iStyle, fontSize:"12px", marginBottom:"6px" }} />
               ))}
-            </div>
-
-            {/* No affiliate links - removed to avoid database errors */}
-            <div style={{ background:`rgba(100,100,100,0.05)`, border:`1px solid ${S.border}`,
-              borderRadius:"10px", padding:"14px" }}>
-              <p style={{ color:S.muted, fontSize:"12px", margin:0 }}>
-                🛒 Affiliate links coming soon! (Database update required)
-              </p>
             </div>
 
             <label style={{ cursor:"pointer" }}>
