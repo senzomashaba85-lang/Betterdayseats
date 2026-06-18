@@ -480,7 +480,6 @@ function CommentThread({ comment, currentUser, S }) {
 }
 
 // ─── RECIPE CARD ──────────────────────────────────────────────────────────
-// ─── RECIPE CARD ──────────────────────────────────────────────────────────
 function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
   const [showComments, setShowComments] = useState(false)
   const [newComment, setNewComment] = useState("")
@@ -489,7 +488,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
   const [showAllIngredients, setShowAllIngredients] = useState(false)
   const [reactions, setReactions] = useState(recipe.reactions || {})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
-  const [expanded, setExpanded] = useState(false) // ⭐ NEW: For description expand
+  const [expanded, setExpanded] = useState(false)
   const cat = categories.find(c => c.id === recipe.category)
 
   const addComment = async () => {
@@ -519,6 +518,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
       border:`1px solid ${S.border}`, overflow:"hidden", display:"flex", flexDirection:"column",
       boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none" }}>
 
+      {/* Image */}
       <div style={{ position:"relative", paddingTop:"65%", backgroundColor:S.card2 }}>
         {!imgLoaded && (
           <div style={{ position:"absolute", inset:0, background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
@@ -560,6 +560,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
         </div>
       </div>
 
+      {/* Content */}
       <div style={{ padding:"16px 16px 0 16px", flex:1 }}>
         <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700",
           color:S.champ, lineHeight:"1.3", marginBottom:"6px" }}>
@@ -571,7 +572,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</span>
         </div>
 
-        {/* ⭐ EXPANDABLE DESCRIPTION - FIXED */}
+        {/* Expandable Description */}
         <div style={{ marginBottom:"8px" }}>
           <p style={{ 
             color:S.muted, 
@@ -606,8 +607,10 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           )}
         </div>
 
+        {/* Reactions */}
         <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
 
+        {/* Socials */}
         {recipe.socials && Object.keys(recipe.socials).some(k => recipe.socials[k]) && (
           <div style={{ display:"flex", gap:"6px", marginTop:"10px", flexWrap:"wrap" }}>
             {recipe.socials.instagram && (
@@ -637,6 +640,36 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           </div>
         )}
 
+        {/* ⭐ AFFILIATE LINKS - DISPLAY */}
+        {recipe.affiliate_links && recipe.affiliate_links.length > 0 && (
+          <div style={{ marginTop:"10px", display:"flex", flexWrap:"wrap", gap:"6px" }}>
+            {recipe.affiliate_links.map((link, index) => (
+              <a 
+                key={index} 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer sponsored"
+                style={{ 
+                  color:"#fff", 
+                  fontSize:"11px", 
+                  textDecoration:"none",
+                  background:"linear-gradient(135deg, #f5a623, #e67e22)",
+                  padding:"5px 14px", 
+                  borderRadius:"16px", 
+                  fontWeight:"600",
+                  boxShadow:"0 2px 8px rgba(245,166,35,0.3)",
+                  display:"inline-flex", 
+                  alignItems:"center", 
+                  gap:"5px" 
+                }}
+              >
+                🛒 {link.name || "Shop Now"}
+              </a>
+            ))}
+          </div>
+        )}
+
+        {/* Ingredients */}
         {recipe.ingredients?.length > 0 && (
           <div style={{ marginTop:"10px", padding:"10px 12px", background:S.card2,
             borderRadius:"10px", border:`1px solid ${S.border}` }}>
@@ -657,6 +690,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
         )}
       </div>
 
+      {/* Actions */}
       <div style={{ padding:"12px 16px 16px 16px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
           paddingTop:"10px", borderTop:`1px solid ${S.border}` }}>
@@ -676,6 +710,7 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           <ShareRow post={recipe} />
         </div>
 
+        {/* Comments */}
         {showComments && (
           <div style={{ marginTop:"12px" }}>
             {comments.map(c => (
@@ -816,6 +851,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   const [category, setCategory] = useState("african")
   const [ingredients, setIngredients] = useState("")
   const [socials, setSocials] = useState({ instagram:"", tiktok:"", website:"", facebook:"" })
+  const [affiliateLinks, setAffiliateLinks] = useState([{ name: "", url: "" }])
   const [mediaFile, setMediaFile] = useState(null)
   const [mediaPreview, setMediaPreview] = useState("")
   const [mediaType, setMediaType] = useState("image")
@@ -833,6 +869,23 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     const r = new FileReader(); r.onloadend = () => setMediaPreview(r.result); r.readAsDataURL(file)
   }
 
+  // ⭐ AFFILIATE LINK FUNCTIONS
+  const handleAffiliateChange = (index, field, value) => {
+    const updated = [...affiliateLinks]
+    updated[index][field] = value
+    setAffiliateLinks(updated)
+  }
+
+  const addAffiliateLink = () => {
+    setAffiliateLinks([...affiliateLinks, { name: "", url: "" }])
+  }
+
+  const removeAffiliateLink = (index) => {
+    if (affiliateLinks.length <= 1) return
+    const updated = affiliateLinks.filter((_, i) => i !== index)
+    setAffiliateLinks(updated)
+  }
+
   const handleSubmit = async e => {
     e.preventDefault();
     if (!title.trim() || !description.trim()) return;
@@ -840,32 +893,24 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     setError("");
 
     try {
-      // ✅ CHECK if profile exists
+      // Check if profile exists
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id")
         .eq("id", currentUser.id)
         .single();
 
-      // ✅ If not, create it
       if (!profile) {
-        const { error: insertProfileError } = await supabase
-          .from("profiles")
-          .insert({
-            id: currentUser.id,
-            name: currentUser.name,
-            email: currentUser.email || `${currentUser.id}@temp.com`,
-            country_flag: currentUser.countryFlag || "🌍",
-            avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
-          });
-        
-        if (insertProfileError) {
-          console.error("Profile insert error:", insertProfileError);
-          // Don't throw - continue anyway
-        }
+        await supabase.from("profiles").insert({
+          id: currentUser.id,
+          name: currentUser.name,
+          email: currentUser.email || `${currentUser.id}@temp.com`,
+          country_flag: currentUser.countryFlag || "🌍",
+          avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
+        });
       }
 
-      // ✅ NOW insert recipe
+      // Upload media
       let image_url = null, video_url = null;
       if (mediaFile) {
         const ext = mediaFile.name.split(".").pop();
@@ -881,6 +926,10 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
         else video_url = urlData.publicUrl;
       }
 
+      // ⭐ Filter out empty affiliate links
+      const filteredLinks = affiliateLinks.filter(link => link.name.trim() && link.url.trim());
+
+      // Insert recipe with affiliate links
       const { data, error: insertError } = await supabase
         .from("recipes")
         .insert({
@@ -895,6 +944,7 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
           author_flag: currentUser.countryFlag || "🌍",
           author_avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
           socials,
+          affiliate_links: filteredLinks, // ⭐ THIS IS THE KEY
           likes: 0
         })
         .select()
@@ -902,7 +952,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
 
       if (insertError) throw insertError;
       
-      // ✅ Add to UI
       onCreate({ 
         ...data, 
         comments: [], 
@@ -944,22 +993,22 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
             <input placeholder="Recipe title *" value={title} onChange={e => setTitle(e.target.value)} required style={iStyle} />
 
             <div style={{ position:"relative" }}>
-  <textarea 
-    placeholder="Tell the story behind this dish... Use emojis!" 
-    value={description}
-    onChange={e => setDescription(e.target.value)} 
-    required 
-    rows={4}   // ⬅️ CHANGE THIS TO 5
-    style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} 
-  />
-  <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-    style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
-  {showEmojiPicker && (
-    <div style={{ position:"absolute", bottom:"40px", left:"0", zIndex:9999 }}>
-      <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
-    </div>
-  )}
-</div>
+              <textarea 
+                placeholder="Tell the story behind this dish... Use emojis!" 
+                value={description}
+                onChange={e => setDescription(e.target.value)} 
+                required 
+                rows={5}
+                style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} 
+              />
+              <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
+              {showEmojiPicker && (
+                <div style={{ position:"absolute", bottom:"40px", left:"0", zIndex:9999 }}>
+                  <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
+                </div>
+              )}
+            </div>
 
             <select value={category} onChange={e => setCategory(e.target.value)} style={iStyle}>
               {categories.filter(c => c.id !== "all" && c.id !== "trending").map(c =>
@@ -983,6 +1032,71 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                   onChange={e => setSocials(p => ({ ...p, [key]: e.target.value }))}
                   style={{ ...iStyle, fontSize:"12px", marginBottom:"6px" }} />
               ))}
+            </div>
+
+            {/* ⭐ AFFILIATE LINKS - WITH + BUTTON */}
+            <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`,
+              borderRadius:"10px", padding:"14px" }}>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
+                <p style={{ color:"#f5a623", fontSize:"12px", fontWeight:"700", margin:0 }}>
+                  🛒 Affiliate / Shop Links (Optional)
+                </p>
+                <button 
+                  type="button"
+                  onClick={addAffiliateLink}
+                  style={{
+                    background: S.grad,
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "28px",
+                    height: "28px",
+                    cursor: "pointer",
+                    color: "#fff",
+                    fontSize: "16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center"
+                  }}
+                >
+                  <FaPlus size={12} />
+                </button>
+              </div>
+              
+              {affiliateLinks.map((link, index) => (
+                <div key={index} style={{ display:"flex", gap:"6px", marginBottom:"6px", alignItems:"center" }}>
+                  <input 
+                    placeholder="Product name"
+                    value={link.name}
+                    onChange={e => handleAffiliateChange(index, "name", e.target.value)}
+                    style={{ ...iStyle, fontSize:"11px", flex:"1" }}
+                  />
+                  <input 
+                    placeholder="https://amzn.to/..."
+                    value={link.url}
+                    onChange={e => handleAffiliateChange(index, "url", e.target.value)}
+                    style={{ ...iStyle, fontSize:"11px", flex:"2" }}
+                  />
+                  {affiliateLinks.length > 1 && (
+                    <button 
+                      type="button"
+                      onClick={() => removeAffiliateLink(index)}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#ef4444",
+                        cursor: "pointer",
+                        fontSize: "16px",
+                        padding: "4px"
+                      }}
+                    >
+                      <FaTrash size={14} />
+                    </button>
+                  )}
+                </div>
+              ))}
+              <p style={{ color:S.muted, fontSize:"10px", marginTop:"6px" }}>
+                Add product links (Amazon, cookbooks, equipment). Shows as "Shop" buttons on your post.
+              </p>
             </div>
 
             <label style={{ cursor:"pointer" }}>
@@ -1019,7 +1133,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     </div>
   )
 }
-
 // ─── AUTH MODAL ─────────────────────────────────────────────────────────────
 function AuthModal({ onClose, onLogin, S }) {
   const [email, setEmail] = useState("")
@@ -1452,7 +1565,7 @@ export default function App() {
           Join Free
         </button>
       )}
-    </div>
+    </div> 
   </div>
 </header>
 
