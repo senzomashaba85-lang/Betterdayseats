@@ -1,11 +1,13 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { createClient } from "@supabase/supabase-js"
 import {
   FaFacebook, FaTwitter, FaWhatsapp, FaTiktok,
   FaHeart, FaComment, FaBookmark, FaSearch,
   FaBell, FaTimes, FaChevronDown, FaFire,
   FaInstagram, FaYoutube, FaLink, FaMoon, FaSun,
-  FaReply, FaPlus, FaTrash, FaUser, FaStar, FaList
+  FaReply, FaPlus, FaTrash, FaUser, FaStar, FaList,
+  FaExpand, FaChevronLeft, FaChevronRight, FaDownload,
+  FaPlay, FaShoppingCart
 } from "react-icons/fa"
 
 const supabase = createClient(
@@ -74,6 +76,7 @@ const DEMO = [
     id:"demo-1", title:"Spiced Jollof Rice",
     description:"West African party rice with layers of sweet tomato, fire-roasted pepper and fragrant spices.",
     category:"african",
+    images:["https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80"],
     image_url:"https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80",
     author_name:"Chef Amara", author_flag:"🇳🇬",
     author_id:"demo-user-1",
@@ -83,12 +86,16 @@ const DEMO = [
     reactions:{ "🔥":12, "😍":8 },
     comments:[{ id:1, text:"Made this last Sunday! Family loved it 😍", author_name:"Priya K.", author_flag:"🇮🇳", created_at:new Date().toISOString(), replies:[], reactions:{} }],
     ingredients:["2 cups long grain rice","4 ripe tomatoes","2 red bell peppers","1 large onion","2 cups chicken stock","1 tsp thyme"],
-    socials:{ instagram:"@chefamara", tiktok:"@chefamara" }
+    socials:{ instagram:"@chefamara", tiktok:"@chefamara" },
+    affiliate_links:[
+      { name:"Rice Cooker", url:"https://amzn.to/rice-cooker", image:"https://images.unsplash.com/photo-1586201375761-83865001e31c?w=120&q=80" }
+    ]
   },
   {
     id:"demo-2", title:"Avocado Toast with Poached Eggs",
     description:"Creamy smashed avo on sourdough, topped with silky poached eggs, chilli flakes, and a drizzle of lemon.",
     category:"breakfast",
+    images:["https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80"],
     image_url:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80",
     author_name:"Maya Torres", author_flag:"🇿🇦",
     author_id:"demo-user-2",
@@ -104,6 +111,11 @@ const DEMO = [
     id:"demo-3", title:"Creamy Pasta Carbonara",
     description:"Classic Roman carbonara made the proper way — no cream, just eggs, Pecorino and guanciale.",
     category:"pasta",
+    images:[
+      "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
+      "https://images.unsplash.com/photo-1551183053-bf91798b94f3?w=800&q=80",
+      "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?w=800&q=80"
+    ],
     image_url:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
     author_name:"Marco Rossi", author_flag:"🇮🇹",
     author_id:"demo-user-3",
@@ -118,6 +130,7 @@ const DEMO = [
     id:"demo-4", title:"Chocolate Lava Cake",
     description:"Warm, dark, and sinfully rich. Ready in 12 minutes and guaranteed to impress.",
     category:"desserts",
+    images:["https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80"],
     image_url:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80",
     author_name:"Chef Céleste", author_flag:"🇫🇷",
     author_id:"demo-user-4",
@@ -133,6 +146,7 @@ const DEMO = [
     id:"demo-5", title:"Açaí Smoothie Bowl",
     description:"Vibrant, energising, and almost too pretty to eat. Topped with fresh fruit, granola, coconut flakes.",
     category:"smoothies",
+    images:["https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80"],
     image_url:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80",
     author_name:"Bella Santos", author_flag:"🇧🇷",
     author_id:"demo-user-5",
@@ -147,6 +161,7 @@ const DEMO = [
     id:"demo-6", title:"Durban Bunny Chow",
     description:"Iconic Durban street food — a hollowed-out quarter loaf filled with fragrant lamb curry.",
     category:"african",
+    images:["https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80"],
     image_url:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
     author_name:"BetterDays Chef", author_flag:"🇿🇦",
     author_id:"demo-user-6",
@@ -156,7 +171,10 @@ const DEMO = [
     reactions:{ "🔥":28, "🤤":19 },
     comments:[{ id:1, text:"Nothing beats a KZN bunny 🙌🏾", author_name:"Sipho N.", author_flag:"🇿🇦", created_at:new Date().toISOString(), replies:[], reactions:{} }],
     ingredients:["500g lamb pieces","1 quarter bread loaf","1 tin tomatoes","2 onions","Durban masala mix","Curry leaves","Potatoes"],
-    socials:{ instagram:"@betterdayschef", tiktok:"@betterdayschef" }
+    socials:{ instagram:"@betterdayschef", tiktok:"@betterdayschef" },
+    affiliate_links:[
+      { name:"Bread Loaf Pan", url:"https://amzn.to/loafpan", image:"https://images.unsplash.com/photo-1608767221051-2b9d18f35a2f?w=120&q=80" }
+    ]
   },
 ]
 
@@ -185,13 +203,385 @@ function useFonts() {
       @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
       @keyframes shimmer { 0%,100%{opacity:0.6} 50%{opacity:1} }
       @keyframes floatPulse { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+      @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
       .bde-hero-text { animation: fadeUp 0.9s ease both; }
       .bde-hero-text-delay { animation: fadeUp 0.9s 0.2s ease both; }
       .bde-float { animation: floatPulse 3s ease-in-out infinite; }
       .theme-toggle { transition: all 0.3s ease; }
+      .bde-modal-overlay { animation: fadeIn 0.2s ease; }
+      video { display: block; width: 100%; }
     `
     document.head.appendChild(style)
   }, [])
+}
+
+// ─── IMAGE CAROUSEL ─────────────────────────────────────────────────────────
+function ImageCarousel({ images, video_url, S, fullscreen = false }) {
+  const [current, setCurrent] = useState(0)
+  const [imgLoaded, setImgLoaded] = useState(false)
+  const videoRef = useRef(null)
+
+  const allMedia = []
+  if (images && images.length > 0) images.forEach(img => allMedia.push({ type:"image", url:img }))
+  if (video_url) allMedia.push({ type:"video", url:video_url })
+
+  if (allMedia.length === 0) return null
+
+  const media = allMedia[current]
+  const hasMultiple = allMedia.length > 1
+
+  const height = fullscreen ? "500px" : "65%"
+
+  return (
+    <div style={{ position:"relative", paddingTop: fullscreen ? "0" : "65%", height: fullscreen ? "420px" : "auto", backgroundColor:S.card2, overflow:"hidden" }}>
+      {/* Media display */}
+      <div style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0, height: fullscreen ? "420px" : "auto" }}>
+        {media.type === "image" ? (
+          <>
+            {!imgLoaded && (
+              <div style={{ position:"absolute", inset:0, background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
+                animation:"shimmer 1.5s ease infinite", display:"flex", alignItems:"center",
+                justifyContent:"center", fontSize:"32px", zIndex:1 }}>🍽️</div>
+            )}
+            <img
+              key={media.url}
+              src={media.url}
+              alt=""
+              onLoad={() => setImgLoaded(true)}
+              style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0,
+                width:"100%", height: fullscreen ? "420px" : "100%",
+                objectFit:"cover", display: imgLoaded ? "block" : "none" }}
+            />
+          </>
+        ) : (
+          // ── FIX 3: Proper video player ──
+          <div style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0,
+            width:"100%", height: fullscreen ? "420px" : "100%",
+            background:"#000", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <video
+              ref={videoRef}
+              src={media.url}
+              controls
+              playsInline
+              preload="metadata"
+              style={{ width:"100%", height:"100%", maxHeight: fullscreen ? "420px" : "100%", objectFit:"contain" }}
+              onError={(e) => console.error("Video error:", e)}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        )}
+
+        {/* Gradient overlay for images only */}
+        {media.type === "image" && (
+          <div style={{ position:"absolute", inset:0, pointerEvents:"none",
+            background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)" }} />
+        )}
+      </div>
+
+      {/* Nav arrows */}
+      {hasMultiple && (
+        <>
+          <button
+            onClick={(e) => { e.stopPropagation(); setCurrent(c => (c - 1 + allMedia.length) % allMedia.length); setImgLoaded(false) }}
+            style={{ position:"absolute", left:"10px", top:"50%", transform:"translateY(-50%)",
+              background:"rgba(0,0,0,0.5)", border:"none", color:"#fff", borderRadius:"50%",
+              width:"32px", height:"32px", cursor:"pointer", display:"flex", alignItems:"center",
+              justifyContent:"center", zIndex:10, backdropFilter:"blur(4px)" }}>
+            <FaChevronLeft size={12} />
+          </button>
+          <button
+            onClick={(e) => { e.stopPropagation(); setCurrent(c => (c + 1) % allMedia.length); setImgLoaded(false) }}
+            style={{ position:"absolute", right:"10px", top:"50%", transform:"translateY(-50%)",
+              background:"rgba(0,0,0,0.5)", border:"none", color:"#fff", borderRadius:"50%",
+              width:"32px", height:"32px", cursor:"pointer", display:"flex", alignItems:"center",
+              justifyContent:"center", zIndex:10, backdropFilter:"blur(4px)" }}>
+            <FaChevronRight size={12} />
+          </button>
+
+          {/* Dots */}
+          <div style={{ position:"absolute", bottom:"10px", left:"50%", transform:"translateX(-50%)",
+            display:"flex", gap:"5px", zIndex:10 }}>
+            {allMedia.map((m, i) => (
+              <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); setImgLoaded(false) }}
+                style={{ width: i === current ? "18px" : "7px", height:"7px",
+                  borderRadius:"4px", border:"none", cursor:"pointer",
+                  background: i === current ? S.gold : "rgba(255,255,255,0.5)",
+                  transition:"all 0.3s ease", padding:0 }} />
+            ))}
+          </div>
+
+          {/* Counter */}
+          <div style={{ position:"absolute", top:"10px", right:"10px",
+            background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)",
+            borderRadius:"20px", padding:"3px 10px", fontSize:"11px", color:"#fff", zIndex:10 }}>
+            {current + 1}/{allMedia.length} {media.type === "video" ? "📹" : "📷"}
+          </div>
+        </>
+      )}
+
+      {/* Single video indicator */}
+      {!hasMultiple && media.type === "video" && (
+        <div style={{ position:"absolute", top:"10px", right:"10px",
+          background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)",
+          borderRadius:"20px", padding:"3px 10px", fontSize:"11px", color:"#fff", zIndex:10 }}>
+          📹 Video
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── POST DETAIL MODAL (FIX 2: Selected post comes front) ──────────────────
+function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUser, S }) {
+  const [comments, setComments] = useState(recipe.comments || [])
+  const [newComment, setNewComment] = useState("")
+  const [reactions, setReactions] = useState(recipe.reactions || {})
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const isAuthor = currentUser && currentUser.id === recipe.author_id
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden"
+    return () => { document.body.style.overflow = "" }
+  }, [])
+
+  const addComment = async () => {
+    if (!newComment.trim() || !currentUser) return
+    const isDemo = String(recipe.id).startsWith("demo-")
+    const comment = {
+      id: Date.now(), text: newComment.trim(),
+      author_name: currentUser.name, author_flag: currentUser.countryFlag,
+      created_at: new Date().toISOString(), replies: [], reactions: {}
+    }
+    if (!isDemo) {
+      await supabase.from("comments").insert({
+        recipe_id: recipe.id, author_id: currentUser.id,
+        author_name: currentUser.name, text: newComment.trim()
+      })
+    }
+    setComments(prev => [...prev, comment])
+    setNewComment("")
+  }
+
+  const handleReact = (emoji) => {
+    setReactions(prev => ({ ...prev, [emoji]: (prev[emoji] || 0) + 1 }))
+  }
+
+  const allImages = recipe.images || (recipe.image_url ? [recipe.image_url] : [])
+
+  return (
+    <div className="bde-modal-overlay" onClick={onClose}
+      style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.92)", zIndex:2000,
+        display:"flex", alignItems:"flex-start", justifyContent:"center",
+        padding:"20px", overflowY:"auto", backdropFilter:"blur(6px)" }}>
+      <div onClick={e => e.stopPropagation()}
+        style={{ background:S.card, borderRadius:"24px", width:"100%", maxWidth:"680px",
+          border:`1px solid ${S.border}`, overflow:"hidden", position:"relative",
+          marginTop:"20px", marginBottom:"40px", boxShadow:`0 32px 80px rgba(0,0,0,0.8)` }}>
+
+        {/* Close & Delete buttons */}
+        <div style={{ position:"absolute", top:"14px", right:"14px", zIndex:10, display:"flex", gap:"8px" }}>
+          {/* ── FIX 1: Delete button for author ── */}
+          {isAuthor && !showDeleteConfirm && (
+            <button onClick={() => setShowDeleteConfirm(true)}
+              style={{ background:"rgba(239,68,68,0.15)", border:"1px solid rgba(239,68,68,0.3)",
+                borderRadius:"50%", width:"34px", height:"34px", cursor:"pointer",
+                color:"#ef4444", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              <FaTrash size={13} />
+            </button>
+          )}
+          <button onClick={onClose}
+            style={{ background:"rgba(0,0,0,0.5)", border:"none", borderRadius:"50%",
+              width:"34px", height:"34px", cursor:"pointer", color:"#fff",
+              display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
+            <FaTimes size={14} />
+          </button>
+        </div>
+
+        {/* Delete confirm */}
+        {showDeleteConfirm && (
+          <div style={{ position:"absolute", inset:0, zIndex:50, background:"rgba(9,6,10,0.95)",
+            display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"16px", padding:"32px", borderRadius:"24px" }}>
+            <div style={{ fontSize:"48px" }}>🗑️</div>
+            <h3 style={{ color:S.champ, fontFamily:"'Playfair Display',serif", textAlign:"center" }}>Delete this recipe?</h3>
+            <p style={{ color:S.muted, fontSize:"13px", textAlign:"center" }}>This cannot be undone. Your post will be permanently removed.</p>
+            <div style={{ display:"flex", gap:"12px" }}>
+              <button onClick={() => setShowDeleteConfirm(false)}
+                style={{ padding:"10px 24px", borderRadius:"40px", border:`1px solid ${S.border}`,
+                  background:"none", color:S.text, cursor:"pointer", fontWeight:"600" }}>
+                Cancel
+              </button>
+              <button onClick={() => { onDelete(recipe.id); onClose() }}
+                style={{ padding:"10px 24px", borderRadius:"40px", border:"none",
+                  background:"linear-gradient(135deg, #ef4444, #dc2626)", color:"#fff", cursor:"pointer", fontWeight:"700" }}>
+                Yes, Delete
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Media carousel fullscreen */}
+        <ImageCarousel images={allImages} video_url={recipe.video_url} S={S} fullscreen={true} />
+
+        {/* Content */}
+        <div style={{ padding:"24px" }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"12px" }}>
+            <div>
+              <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"24px", fontWeight:"900",
+                color:S.champ, lineHeight:"1.2", marginBottom:"6px" }}>{recipe.title}</h2>
+              <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
+                <img src={recipe.author_avatar} alt={recipe.author_name}
+                  style={{ width:"28px", height:"28px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+                <span style={{ color:S.gold, fontSize:"13px", fontWeight:"600" }}>{recipe.author_name}</span>
+                <span style={{ fontSize:"16px" }}>{recipe.author_flag}</span>
+                <span style={{ color:S.muted, fontSize:"11px" }}>· {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}</span>
+              </div>
+            </div>
+            <button onClick={() => onSave(recipe.id)}
+              style={{ background:"none", border:"none", cursor:"pointer",
+                color: recipe.saved ? S.gold : S.muted, fontSize:"20px" }}>
+              <FaBookmark />
+            </button>
+          </div>
+
+          <p style={{ color:S.muted, fontSize:"14px", lineHeight:"1.7", marginBottom:"16px" }}>{recipe.description}</p>
+
+          {/* Reactions */}
+          <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
+
+          {/* Likes / saves row */}
+          <div style={{ display:"flex", gap:"20px", alignItems:"center", margin:"14px 0",
+            paddingTop:"12px", borderTop:`1px solid ${S.border}` }}>
+            <button onClick={() => onLike(recipe.id)}
+              style={{ background:"none", border:"none", cursor:"pointer", display:"flex", alignItems:"center", gap:"6px",
+                color: recipe.liked ? "#ff6b8a" : S.muted, fontSize:"14px", fontWeight:"600" }}>
+              <FaHeart size={16} /> {recipe.likes}
+            </button>
+            <span style={{ color:S.muted, fontSize:"13px" }}>{comments.length} comments</span>
+            <div style={{ marginLeft:"auto" }}>
+              <ShareRow post={recipe} />
+            </div>
+          </div>
+
+          {/* Ingredients */}
+          {recipe.ingredients?.length > 0 && (
+            <div style={{ marginBottom:"16px", padding:"12px 14px", background:S.card2,
+              borderRadius:"12px", border:`1px solid ${S.border}` }}>
+              <div style={{ color:S.gold, fontSize:"12px", fontWeight:"700", marginBottom:"8px" }}>🛒 Ingredients</div>
+              <div style={{ display:"flex", flexWrap:"wrap", gap:"5px" }}>
+                {recipe.ingredients.map((ing, i) => (
+                  <span key={i} style={{ background:`${S.gold}18`, color:S.champ, borderRadius:"20px", padding:"3px 12px", fontSize:"12px" }}>{ing}</span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── FIX 4: Affiliate links with product images ── */}
+          {recipe.affiliate_links?.filter(l => l.name && l.url).length > 0 && (
+            <div style={{ marginBottom:"16px" }}>
+              <div style={{ color:S.gold, fontSize:"12px", fontWeight:"700", marginBottom:"8px" }}>🛒 Shop the Recipe</div>
+              <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
+                {recipe.affiliate_links.filter(l => l.name && l.url).map((link, i) => (
+                  <a key={i} href={link.url} target="_blank" rel="noopener noreferrer sponsored"
+                    style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 14px",
+                      background:`${S.card2}`, border:`1px solid rgba(245,166,35,0.3)`,
+                      borderRadius:"12px", textDecoration:"none", transition:"all 0.2s" }}
+                    onMouseEnter={e => { e.currentTarget.style.background = `rgba(245,166,35,0.1)`; e.currentTarget.style.transform = "scale(1.01)" }}
+                    onMouseLeave={e => { e.currentTarget.style.background = S.card2; e.currentTarget.style.transform = "scale(1)" }}>
+                    {link.image ? (
+                      <img src={link.image} alt={link.name}
+                        style={{ width:"52px", height:"52px", objectFit:"cover", borderRadius:"8px", border:`1px solid ${S.border}`, flexShrink:0 }} />
+                    ) : (
+                      <div style={{ width:"52px", height:"52px", background:`${S.gold}20`,
+                        borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"22px", flexShrink:0 }}>
+                        🛒
+                      </div>
+                    )}
+                    <div style={{ flex:1 }}>
+                      <div style={{ color:S.champ, fontSize:"13px", fontWeight:"600" }}>{link.name}</div>
+                      <div style={{ color:S.muted, fontSize:"11px", marginTop:"2px" }}>Tap to shop on Amazon →</div>
+                    </div>
+                    <div style={{ background:"linear-gradient(135deg, #f5a623, #e67e22)", borderRadius:"8px",
+                      padding:"6px 12px", color:"#fff", fontSize:"11px", fontWeight:"700", flexShrink:0 }}>
+                      Shop
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Socials */}
+          {recipe.socials && Object.values(recipe.socials).some(v => v) && (
+            <div style={{ display:"flex", gap:"6px", flexWrap:"wrap", marginBottom:"16px" }}>
+              {recipe.socials.instagram && (
+                <a href={`https://instagram.com/${recipe.socials.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
+                  style={{ color:"#E4405F", fontSize:"12px", textDecoration:"none", background:`rgba(228,64,95,0.12)`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  <FaInstagram size={12} /> {recipe.socials.instagram}
+                </a>
+              )}
+              {recipe.socials.tiktok && (
+                <a href={`https://tiktok.com/${recipe.socials.tiktok.replace('@','')}`} target="_blank" rel="noopener noreferrer"
+                  style={{ color: S.mode === "dark" ? "#fff" : "#010101", fontSize:"12px", textDecoration:"none", background:`rgba(0,0,0,0.1)`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  <FaTiktok size={12} /> {recipe.socials.tiktok}
+                </a>
+              )}
+              {recipe.socials.website && (
+                <a href={recipe.socials.website} target="_blank" rel="noopener noreferrer"
+                  style={{ color:S.gold, fontSize:"12px", textDecoration:"none", background:`${S.gold}15`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  <FaLink size={12} /> Website
+                </a>
+              )}
+            </div>
+          )}
+
+          {/* Comments */}
+          <div style={{ borderTop:`1px solid ${S.border}`, paddingTop:"16px" }}>
+            <div style={{ color:S.gold, fontSize:"13px", fontWeight:"700", marginBottom:"12px" }}>
+              💬 Comments ({comments.length})
+            </div>
+            <div style={{ maxHeight:"260px", overflowY:"auto", marginBottom:"12px" }}>
+              {comments.map(c => (
+                <CommentThread key={c.id} comment={c} currentUser={currentUser} S={S} />
+              ))}
+              {comments.length === 0 && (
+                <p style={{ color:S.muted, fontSize:"13px", textAlign:"center", padding:"20px 0" }}>
+                  Be the first to comment! 💬
+                </p>
+              )}
+            </div>
+            {currentUser ? (
+              <div style={{ display:"flex", gap:"8px", position:"relative" }}>
+                <div style={{ flex:1, position:"relative" }}>
+                  <input value={newComment} onChange={e => setNewComment(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && addComment()}
+                    placeholder="Write a comment..."
+                    style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
+                      borderRadius:"40px", padding:"10px 44px 10px 16px", color:S.text, fontSize:"13px", outline:"none" }} />
+                  <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%)",
+                      background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
+                  {showEmojiPicker && (
+                    <div style={{ position:"absolute", bottom:"50px", left:0, zIndex:9999 }}>
+                      <EmojiPicker onSelect={e => setNewComment(p => p + e)} onClose={() => setShowEmojiPicker(false)} />
+                    </div>
+                  )}
+                </div>
+                <button onClick={addComment}
+                  style={{ background:S.grad, border:"none", borderRadius:"40px",
+                    padding:"10px 20px", color:"#fff", fontSize:"13px", cursor:"pointer", fontWeight:"700" }}>
+                  Post
+                </button>
+              </div>
+            ) : (
+              <p style={{ color:S.muted, fontSize:"12px", textAlign:"center" }}>Sign in to comment</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 function Toast({ message, onClose, S }) {
@@ -246,61 +636,23 @@ function ShareRow({ post }) {
 // ─── EMOJI PICKER ──────────────────────────────────────────────────────────
 function EmojiPicker({ onSelect, onClose }) {
   const pickerRef = useRef(null)
-
   useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (pickerRef.current && !pickerRef.current.contains(e.target)) {
-        onClose()
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => document.removeEventListener("mousedown", handleClickOutside)
+    const h = e => { if (pickerRef.current && !pickerRef.current.contains(e.target)) onClose() }
+    document.addEventListener("mousedown", h)
+    return () => document.removeEventListener("mousedown", h)
   }, [onClose])
-
   return (
-    <div ref={pickerRef} style={{ 
-      display: "grid",
-      gridTemplateColumns: "repeat(8, 1fr)",
-      gap: "4px",
-      padding: "12px",
-      background: "#1d1420",
-      border: "1px solid #2d1d28",
-      borderRadius: "14px",
-      position: "absolute",
-      bottom: "50px",
-      left: "0",
-      zIndex: 9999,
-      boxShadow: "0 8px 32px rgba(0,0,0,0.8)",
-      width: "280px",
-      maxHeight: "200px",
-      overflowY: "auto"
+    <div ref={pickerRef} style={{
+      display:"grid", gridTemplateColumns:"repeat(8, 1fr)", gap:"4px", padding:"12px",
+      background:"#1d1420", border:"1px solid #2d1d28", borderRadius:"14px",
+      position:"absolute", bottom:"50px", left:0, zIndex:9999,
+      boxShadow:"0 8px 32px rgba(0,0,0,0.8)", width:"280px", maxHeight:"200px", overflowY:"auto"
     }}>
       {EMOJIS.map(e => (
-        <button 
-          key={e} 
-          onClick={() => { 
-            onSelect(e); 
-            onClose(); 
-          }}
-          style={{ 
-            background: "none", 
-            border: "none", 
-            cursor: "pointer", 
-            fontSize: "24px",
-            padding: "4px",
-            borderRadius: "8px",
-            lineHeight: 1,
-            transition: "all 0.15s"
-          }}
-          onMouseEnter={ev => { 
-            ev.currentTarget.style.transform = "scale(1.3)"; 
-            ev.currentTarget.style.background = "rgba(255,255,255,0.1)";
-          }}
-          onMouseLeave={ev => { 
-            ev.currentTarget.style.transform = "scale(1)"; 
-            ev.currentTarget.style.background = "none";
-          }}
-        >
+        <button key={e} onClick={() => { onSelect(e); onClose() }}
+          style={{ background:"none", border:"none", cursor:"pointer", fontSize:"24px", padding:"4px", borderRadius:"8px", lineHeight:1, transition:"all 0.15s" }}
+          onMouseEnter={ev => { ev.currentTarget.style.transform="scale(1.3)"; ev.currentTarget.style.background="rgba(255,255,255,0.1)" }}
+          onMouseLeave={ev => { ev.currentTarget.style.transform="scale(1)"; ev.currentTarget.style.background="none" }}>
           {e}
         </button>
       ))}
@@ -313,7 +665,6 @@ function ReactionBar({ reactions, onReact, S }) {
   const [showReactions, setShowReactions] = useState(false)
   const total = Object.values(reactions || {}).reduce((a,b) => a+b, 0)
   const topReactions = Object.entries(reactions || {}).filter(([,c]) => c > 0).sort((a,b) => b[1]-a[1]).slice(0,3)
-
   return (
     <div style={{ display:"flex", alignItems:"center", gap:"8px", flexWrap:"wrap", position:"relative" }}>
       <div style={{ position:"relative" }}
@@ -362,21 +713,11 @@ function CommentThread({ comment, currentUser, S }) {
 
   const handleReply = () => {
     if (!replyText.trim() || !currentUser) return
-    const newReply = {
-      id: Date.now(),
-      text: replyText.trim(),
-      author_name: currentUser.name,
-      author_flag: currentUser.countryFlag,
-      created_at: new Date().toISOString()
-    }
+    const newReply = { id:Date.now(), text:replyText.trim(), author_name:currentUser.name, author_flag:currentUser.countryFlag, created_at:new Date().toISOString() }
     setReplies(prev => [...prev, newReply])
     setReplyText("")
     setShowReplyInput(false)
     setShowReplies(true)
-  }
-
-  const handleReact = (emoji) => {
-    setReactions(prev => ({ ...prev, [emoji]: (prev[emoji] || 0) + 1 }))
   }
 
   return (
@@ -389,7 +730,7 @@ function CommentThread({ comment, currentUser, S }) {
         </div>
         <p style={{ color:S.text, fontSize:"13px", lineHeight:"1.5", marginBottom:"8px" }}>{comment.text}</p>
         <div style={{ display:"flex", alignItems:"center", gap:"10px", flexWrap:"wrap" }}>
-          <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
+          <ReactionBar reactions={reactions} onReact={e => setReactions(prev => ({ ...prev, [e]:(prev[e]||0)+1 }))} S={S} />
           {currentUser && (
             <button onClick={() => setShowReplyInput(!showReplyInput)}
               style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"11px", display:"flex", alignItems:"center", gap:"4px" }}>
@@ -404,13 +745,11 @@ function CommentThread({ comment, currentUser, S }) {
           )}
         </div>
       </div>
-
       {showReplies && replies.length > 0 && (
         <div style={{ marginLeft:"20px", marginTop:"6px" }}>
           {replies.map(r => (
-            <div key={r.id} style={{ padding:"8px 12px", background:S.card2,
-              borderRadius:"10px", border:`1px solid ${S.border}`, marginBottom:"6px",
-              borderLeft:`3px solid ${S.gold}` }}>
+            <div key={r.id} style={{ padding:"8px 12px", background:S.card2, borderRadius:"10px",
+              border:`1px solid ${S.border}`, marginBottom:"6px", borderLeft:`3px solid ${S.gold}` }}>
               <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"4px" }}>
                 <span style={{ fontSize:"12px" }}>{r.author_flag}</span>
                 <strong style={{ color:S.gold, fontSize:"11px" }}>{r.author_name}</strong>
@@ -420,65 +759,24 @@ function CommentThread({ comment, currentUser, S }) {
           ))}
         </div>
       )}
-
       {showReplyInput && currentUser && (
         <div style={{ marginLeft:"20px", marginTop:"6px", display:"flex", gap:"6px", position:"relative" }}>
           <div style={{ position:"relative", flex:1 }}>
-            <input 
-              value={replyText} 
-              onChange={e => setReplyText(e.target.value)}
+            <input value={replyText} onChange={e => setReplyText(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleReply()}
               placeholder={`Reply to ${comment.author_name}...`}
-              style={{ 
-                width:"100%", 
-                background:S.card2, 
-                border:`1px solid ${S.border}`,
-                borderRadius:"40px", 
-                padding:"7px 40px 7px 14px",
-                color:S.text, 
-                fontSize:"12px", 
-                outline:"none" 
-              }} 
-            />
-            <button 
-              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              style={{ 
-                position:"absolute", 
-                right:"10px", 
-                top:"50%",
-                transform:"translateY(-50%)",
-                background:"none", 
-                border:"none", 
-                cursor:"pointer",
-                color:S.muted, 
-                fontSize:"16px",
-                padding:"2px"
-              }}
-            >
-              😊
-            </button>
+              style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
+                borderRadius:"40px", padding:"7px 40px 7px 14px", color:S.text, fontSize:"12px", outline:"none" }} />
+            <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              style={{ position:"absolute", right:"10px", top:"50%", transform:"translateY(-50%)",
+                background:"none", border:"none", cursor:"pointer", color:S.muted, fontSize:"16px" }}>😊</button>
             {showEmojiPicker && (
-              <div style={{ position:"absolute", bottom:"45px", left:"0", zIndex:9999 }}>
-                <EmojiPicker 
-                  onSelect={e => setReplyText(prev => prev + e)} 
-                  onClose={() => setShowEmojiPicker(false)} 
-                />
-              </div>
+              <EmojiPicker onSelect={e => setReplyText(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
             )}
           </div>
           <button onClick={handleReply}
-            style={{ 
-              background:S.grad, 
-              border:"none", 
-              borderRadius:"40px",
-              padding:"7px 14px", 
-              color:"#fff", 
-              fontSize:"12px", 
-              cursor:"pointer", 
-              fontWeight:"600" 
-            }}>
-            Reply
-          </button>
+            style={{ background:S.grad, border:"none", borderRadius:"40px", padding:"7px 14px",
+              color:"#fff", fontSize:"12px", cursor:"pointer", fontWeight:"600" }}>Reply</button>
         </div>
       )}
     </div>
@@ -486,88 +784,107 @@ function CommentThread({ comment, currentUser, S }) {
 }
 
 // ─── RECIPE CARD ──────────────────────────────────────────────────────────
-function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
-  const [showComments, setShowComments] = useState(false)
-  const [newComment, setNewComment] = useState("")
+function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDetail }) {
   const [comments, setComments] = useState(recipe.comments || [])
-  const [imgLoaded, setImgLoaded] = useState(false)
-  const [showAllIngredients, setShowAllIngredients] = useState(false)
+  const [newComment, setNewComment] = useState("")
+  const [showComments, setShowComments] = useState(false)
   const [reactions, setReactions] = useState(recipe.reactions || {})
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
   const [expanded, setExpanded] = useState(false)
+  const [showAllIngredients, setShowAllIngredients] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const isAuthor = currentUser && currentUser.id === recipe.author_id
   const cat = categories.find(c => c.id === recipe.category)
+  const allImages = recipe.images || (recipe.image_url ? [recipe.image_url] : [])
 
   const addComment = async () => {
     if (!newComment.trim() || !currentUser) return
     const isDemo = String(recipe.id).startsWith("demo-")
-    const comment = {
-      id: Date.now(), text: newComment.trim(),
-      author_name: currentUser.name, author_flag: currentUser.countryFlag,
-      created_at: new Date().toISOString(), replies: [], reactions: {}
-    }
+    const comment = { id:Date.now(), text:newComment.trim(), author_name:currentUser.name, author_flag:currentUser.countryFlag, created_at:new Date().toISOString(), replies:[], reactions:{} }
     if (!isDemo) {
-      await supabase.from("comments").insert({
-        recipe_id: recipe.id, author_id: currentUser.id,
-        author_name: currentUser.name, text: newComment.trim()
-      })
+      await supabase.from("comments").insert({ recipe_id:recipe.id, author_id:currentUser.id, author_name:currentUser.name, text:newComment.trim() })
     }
     setComments(prev => [...prev, comment])
     setNewComment("")
   }
 
-  const handleReact = (emoji) => {
-    setReactions(prev => ({ ...prev, [emoji]: (prev[emoji] || 0) + 1 }))
-  }
-
   return (
     <article className="bde-card" style={{ backgroundColor:S.card, borderRadius:"20px",
       border:`1px solid ${S.border}`, overflow:"hidden", display:"flex", flexDirection:"column",
-      boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none" }}>
+      boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none", position:"relative" }}>
 
-      <div style={{ position:"relative", paddingTop:"65%", backgroundColor:S.card2 }}>
-        {!imgLoaded && (
-          <div style={{ position:"absolute", inset:0, background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
-            animation:"shimmer 1.5s ease infinite", display:"flex", alignItems:"center",
-            justifyContent:"center", fontSize:"32px" }}>🍽️</div>
-        )}
-        <img src={recipe.image_url} alt={recipe.title} onLoad={() => setImgLoaded(true)}
-          style={{ position:"absolute", inset:0, width:"100%", height:"100%",
-            objectFit:"cover", display: imgLoaded ? "block" : "none" }} />
-        <div style={{ position:"absolute", inset:0,
-          background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)" }} />
-
-        {cat && (
-          <div style={{ position:"absolute", top:"14px", left:"14px",
-            background: S.mode === "dark" ? "rgba(9,6,10,0.65)" : "rgba(253,248,244,0.9)",
-            backdropFilter:"blur(8px)", border:`1px solid ${S.border}`, borderRadius:"40px",
-            padding:"4px 12px", display:"flex", alignItems:"center", gap:"5px" }}>
-            <span style={{ fontSize:"11px" }}>{cat.icon}</span>
-            <span style={{ color:S.champ, fontSize:"11px", fontWeight:"500" }}>{cat.name}</span>
+      {/* Delete confirm overlay on card */}
+      {showDeleteConfirm && (
+        <div style={{ position:"absolute", inset:0, zIndex:50, background:"rgba(9,6,10,0.95)",
+          display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"12px", padding:"24px", borderRadius:"20px" }}>
+          <div style={{ fontSize:"36px" }}>🗑️</div>
+          <p style={{ color:S.champ, fontWeight:"700", textAlign:"center" }}>Delete this recipe?</p>
+          <p style={{ color:S.muted, fontSize:"12px", textAlign:"center" }}>This cannot be undone.</p>
+          <div style={{ display:"flex", gap:"10px" }}>
+            <button onClick={() => setShowDeleteConfirm(false)}
+              style={{ padding:"8px 20px", borderRadius:"40px", border:`1px solid ${S.border}`, background:"none", color:S.text, cursor:"pointer" }}>Cancel</button>
+            <button onClick={() => { onDelete(recipe.id); setShowDeleteConfirm(false) }}
+              style={{ padding:"8px 20px", borderRadius:"40px", border:"none", background:"linear-gradient(135deg,#ef4444,#dc2626)", color:"#fff", cursor:"pointer", fontWeight:"700" }}>Delete</button>
           </div>
-        )}
+        </div>
+      )}
 
-        <button className="bde-icon-btn" onClick={() => onSave(recipe.id)}
-          style={{ position:"absolute", top:"12px", right:"14px",
-            color: recipe.saved ? S.gold : "rgba(255,255,255,0.7)", fontSize:"16px" }}>
-          <FaBookmark />
-        </button>
-
-        <div style={{ position:"absolute", bottom:"14px", left:"14px", display:"flex", alignItems:"center", gap:"8px" }}>
-          <img src={recipe.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author_name)}&background=d4a855&color=09060a&bold=true`}
-            alt={recipe.author_name}
-            style={{ width:"30px", height:"30px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-          <div>
-            <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</div>
-            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>
-              {recipe.author_flag} · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
+      {/* Media */}
+      <div style={{ position:"relative" }}>
+        <div style={{ position:"relative", paddingTop:"65%" }} onClick={() => onOpenDetail(recipe)} >
+          <ImageCarousel images={allImages} video_url={recipe.video_url} S={S} />
+          {/* Category badge */}
+          {cat && (
+            <div style={{ position:"absolute", top:"14px", left:"14px", zIndex:5,
+              background: S.mode === "dark" ? "rgba(9,6,10,0.65)" : "rgba(253,248,244,0.9)",
+              backdropFilter:"blur(8px)", border:`1px solid ${S.border}`, borderRadius:"40px",
+              padding:"4px 12px", display:"flex", alignItems:"center", gap:"5px", pointerEvents:"none" }}>
+              <span style={{ fontSize:"11px" }}>{cat.icon}</span>
+              <span style={{ color:S.champ, fontSize:"11px", fontWeight:"500" }}>{cat.name}</span>
+            </div>
+          )}
+          {/* Expand icon */}
+          <div style={{ position:"absolute", bottom:"14px", right:"14px", zIndex:5,
+            background:"rgba(0,0,0,0.5)", borderRadius:"8px", padding:"5px 8px",
+            color:"rgba(255,255,255,0.8)", fontSize:"11px", display:"flex", alignItems:"center", gap:"4px", pointerEvents:"none" }}>
+            <FaExpand size={10} /> View
+          </div>
+          {/* Author overlay */}
+          <div style={{ position:"absolute", bottom:"14px", left:"14px", display:"flex", alignItems:"center", gap:"8px", zIndex:5, pointerEvents:"none" }}>
+            <img src={recipe.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author_name)}&background=d4a855&color=09060a&bold=true`}
+              alt={recipe.author_name} style={{ width:"30px", height:"30px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+            <div>
+              <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</div>
+              <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>
+                {recipe.author_flag} · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
+              </div>
             </div>
           </div>
+        </div>
+
+        {/* Save & delete buttons outside carousel click zone */}
+        <div style={{ position:"absolute", top:"12px", right:"14px", zIndex:20, display:"flex", gap:"6px" }}>
+          {/* ── FIX 1: Delete for author ── */}
+          {isAuthor && (
+            <button onClick={e => { e.stopPropagation(); setShowDeleteConfirm(true) }}
+              style={{ background:"rgba(239,68,68,0.2)", border:"1px solid rgba(239,68,68,0.4)",
+                borderRadius:"50%", width:"30px", height:"30px", cursor:"pointer", color:"#ef4444",
+                display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
+              <FaTrash size={11} />
+            </button>
+          )}
+          <button onClick={e => { e.stopPropagation(); onSave(recipe.id) }}
+            style={{ background:"rgba(0,0,0,0.4)", border:"none", borderRadius:"50%", width:"30px", height:"30px",
+              cursor:"pointer", color: recipe.saved ? S.gold : "rgba(255,255,255,0.7)", fontSize:"14px",
+              display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
+            <FaBookmark />
+          </button>
         </div>
       </div>
 
       <div style={{ padding:"16px 16px 0 16px", flex:1 }}>
-        <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700",
-          color:S.champ, lineHeight:"1.3", marginBottom:"6px" }}>
+        <h3 onClick={() => onOpenDetail(recipe)} style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px",
+          fontWeight:"700", color:S.champ, lineHeight:"1.3", marginBottom:"6px", cursor:"pointer" }}>
           {recipe.title}
         </h3>
 
@@ -577,41 +894,23 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
         </div>
 
         <div style={{ marginBottom:"8px" }}>
-          <p style={{ 
-            color:S.muted, 
-            fontSize:"13px", 
-            lineHeight:"1.65",
-            overflow: "hidden",
-            display: "-webkit-box",
-            WebkitLineClamp: expanded ? "none" : 3,
-            WebkitBoxOrient: "vertical",
-            maxHeight: expanded ? "none" : "65px",
-            transition: "all 0.3s ease"
-          }}>
+          <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.65",
+            overflow:"hidden", display:"-webkit-box", WebkitLineClamp: expanded ? "none" : 3,
+            WebkitBoxOrient:"vertical", maxHeight: expanded ? "none" : "65px" }}>
             {recipe.description}
           </p>
-          {recipe.description && recipe.description.length > 120 && (
-            <button 
-              onClick={() => setExpanded(!expanded)}
-              style={{
-                background: "none",
-                border: "none",
-                color: S.gold,
-                cursor: "pointer",
-                fontSize: "12px",
-                fontWeight: "600",
-                padding: "4px 0",
-                marginTop: "4px",
-                display: "inline-block"
-              }}
-            >
+          {recipe.description?.length > 120 && (
+            <button onClick={() => setExpanded(!expanded)}
+              style={{ background:"none", border:"none", color:S.gold, cursor:"pointer",
+                fontSize:"12px", fontWeight:"600", padding:"4px 0" }}>
               {expanded ? "Show less ▲" : "See more ▼"}
             </button>
           )}
         </div>
 
-        <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
+        <ReactionBar reactions={reactions} onReact={e => setReactions(prev => ({ ...prev, [e]:(prev[e]||0)+1 }))} S={S} />
 
+        {/* Socials */}
         {recipe.socials && Object.keys(recipe.socials).some(k => recipe.socials[k]) && (
           <div style={{ display:"flex", gap:"6px", marginTop:"10px", flexWrap:"wrap" }}>
             {recipe.socials.instagram && (
@@ -632,46 +931,35 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
                 <FaLink size={11} /> Website
               </a>
             )}
-            {recipe.socials.facebook && (
-              <a href={recipe.socials.facebook} target="_blank" rel="noopener noreferrer"
-                style={{ color:"#1877F2", fontSize:"11px", textDecoration:"none", background:`${S.rose}18`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
-                <FaFacebook size={11} /> FB
-              </a>
-            )}
           </div>
         )}
 
-        {recipe.affiliate_links && recipe.affiliate_links.length > 0 && (
-          <div style={{ marginTop:"10px", display:"flex", flexWrap:"wrap", gap:"6px" }}>
-            {recipe.affiliate_links.map((link, index) => (
-              <a 
-                key={index} 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer sponsored"
-                style={{ 
-                  color:"#fff", 
-                  fontSize:"11px", 
-                  textDecoration:"none",
-                  background:"linear-gradient(135deg, #f5a623, #e67e22)",
-                  padding:"5px 14px", 
-                  borderRadius:"16px", 
-                  fontWeight:"600",
-                  boxShadow:"0 2px 8px rgba(245,166,35,0.3)",
-                  display:"inline-flex", 
-                  alignItems:"center", 
-                  gap:"5px" 
-                }}
-              >
-                🛒 {link.name || "Shop Now"}
+        {/* ── FIX 4: Affiliate links with product image thumbnails on card ── */}
+        {recipe.affiliate_links?.filter(l => l.name && l.url).length > 0 && (
+          <div style={{ marginTop:"10px", display:"flex", gap:"6px", flexWrap:"wrap" }}>
+            {recipe.affiliate_links.filter(l => l.name && l.url).map((link, i) => (
+              <a key={i} href={link.url} target="_blank" rel="noopener noreferrer sponsored"
+                style={{ display:"inline-flex", alignItems:"center", gap:"6px",
+                  background:"linear-gradient(135deg, rgba(245,166,35,0.12), rgba(230,126,34,0.12))",
+                  border:"1px solid rgba(245,166,35,0.3)", borderRadius:"10px",
+                  padding:"5px 10px 5px 6px", textDecoration:"none", transition:"all 0.2s" }}
+                onMouseEnter={e => e.currentTarget.style.transform="scale(1.02)"}
+                onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}>
+                {link.image ? (
+                  <img src={link.image} alt={link.name}
+                    style={{ width:"28px", height:"28px", objectFit:"cover", borderRadius:"5px", border:`1px solid ${S.border}` }} />
+                ) : (
+                  <span style={{ fontSize:"18px" }}>🛒</span>
+                )}
+                <span style={{ color:"#f5a623", fontSize:"11px", fontWeight:"700" }}>{link.name}</span>
               </a>
             ))}
           </div>
         )}
 
+        {/* Ingredients */}
         {recipe.ingredients?.length > 0 && (
-          <div style={{ marginTop:"10px", padding:"10px 12px", background:S.card2,
-            borderRadius:"10px", border:`1px solid ${S.border}` }}>
+          <div style={{ marginTop:"10px", padding:"10px 12px", background:S.card2, borderRadius:"10px", border:`1px solid ${S.border}` }}>
             <div style={{ color:S.gold, fontSize:"11px", fontWeight:"600", marginBottom:"6px" }}>🛒 Ingredients</div>
             <div style={{ display:"flex", flexWrap:"wrap", gap:"4px" }}>
               {(showAllIngredients ? recipe.ingredients : recipe.ingredients.slice(0,4)).map((ing,i) => (
@@ -710,77 +998,28 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
 
         {showComments && (
           <div style={{ marginTop:"12px" }}>
-            {comments.map(c => (
-              <CommentThread key={c.id} comment={c} currentUser={currentUser} S={S} />
-            ))}
+            {comments.map(c => <CommentThread key={c.id} comment={c} currentUser={currentUser} S={S} />)}
             {currentUser ? (
               <div style={{ display:"flex", gap:"8px", marginTop:"8px", position:"relative" }}>
                 <div style={{ position:"relative", flex:1 }}>
-                  <input 
-                    value={newComment} 
-                    onChange={e => setNewComment(e.target.value)}
+                  <input value={newComment} onChange={e => setNewComment(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && addComment()}
                     placeholder="Write a comment..."
-                    style={{ 
-                      width:"100%", 
-                      background:S.card2, 
-                      border:`1px solid ${S.border}`,
-                      borderRadius:"40px", 
-                      padding:"9px 45px 9px 16px",
-                      color:S.text, 
-                      fontSize:"13px", 
-                      outline:"none" 
-                    }} 
-                  />
-                  <button 
-                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    style={{ 
-                      position:"absolute", 
-                      right:"12px", 
-                      top:"50%",
-                      transform:"translateY(-50%)",
-                      background:"none", 
-                      border:"none", 
-                      cursor:"pointer",
-                      color:S.muted, 
-                      fontSize:"18px",
-                      padding:"4px",
-                      borderRadius:"50%",
-                      transition:"all 0.2s"
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.background = `${S.gold}30`}
-                    onMouseLeave={e => e.currentTarget.style.background = "none"}
-                  >
-                    😊
-                  </button>
+                    style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
+                      borderRadius:"40px", padding:"9px 45px 9px 16px", color:S.text, fontSize:"13px", outline:"none" }} />
+                  <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%)",
+                      background:"none", border:"none", cursor:"pointer", color:S.muted, fontSize:"18px" }}>😊</button>
                   {showEmojiPicker && (
-                    <div style={{ position:"absolute", bottom:"50px", left:"0", zIndex:9999 }}>
-                      <EmojiPicker 
-                        onSelect={e => setNewComment(prev => prev + e)} 
-                        onClose={() => setShowEmojiPicker(false)} 
-                      />
-                    </div>
+                    <EmojiPicker onSelect={e => setNewComment(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
                   )}
                 </div>
                 <button onClick={addComment}
-                  style={{ 
-                    background:S.grad, 
-                    border:"none", 
-                    borderRadius:"40px",
-                    padding:"9px 20px", 
-                    color:"#fff", 
-                    fontSize:"13px",
-                    cursor:"pointer", 
-                    fontWeight:"600", 
-                    whiteSpace:"nowrap" 
-                  }}>
-                  Post
-                </button>
+                  style={{ background:S.grad, border:"none", borderRadius:"40px",
+                    padding:"9px 20px", color:"#fff", fontSize:"13px", cursor:"pointer", fontWeight:"600", whiteSpace:"nowrap" }}>Post</button>
               </div>
             ) : (
-              <p style={{ color:S.muted, fontSize:"12px", textAlign:"center", marginTop:"10px" }}>
-                Sign in to comment
-              </p>
+              <p style={{ color:S.muted, fontSize:"12px", textAlign:"center", marginTop:"10px" }}>Sign in to comment</p>
             )}
           </div>
         )}
@@ -792,9 +1031,10 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
 // ─── HERO BANNER ──────────────────────────────────────────────────────────
 function HeroBanner({ recipe, onSignup, currentUser, onPost, S, isDark }) {
   if (!recipe) return null
+  const allImages = recipe.images || (recipe.image_url ? [recipe.image_url] : [])
   return (
     <div style={{ position:"relative", width:"100%", height:"460px", overflow:"hidden", borderBottom:`1px solid ${S.border}` }}>
-      <img src={recipe.image_url} alt={recipe.title}
+      <img src={allImages[0] || recipe.image_url} alt={recipe.title}
         style={{ width:"100%", height:"100%", objectFit:"cover", filter:"brightness(0.55) saturate(1.2)" }} />
       <div style={{ position:"absolute", inset:0,
         background: isDark
@@ -849,10 +1089,11 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   const [category, setCategory] = useState("african")
   const [ingredients, setIngredients] = useState("")
   const [socials, setSocials] = useState({ instagram:"", tiktok:"", website:"", facebook:"" })
-  const [affiliateLinks, setAffiliateLinks] = useState([{ name: "", url: "" }])
-  const [mediaFile, setMediaFile] = useState(null)
-  const [mediaPreview, setMediaPreview] = useState("")
-  const [mediaType, setMediaType] = useState("image")
+  const [affiliateLinks, setAffiliateLinks] = useState([{ name:"", url:"", image:"" }])
+  // ── FIX 2: Multiple images support ──
+  const [mediaFiles, setMediaFiles] = useState([]) // array of {file, preview, type}
+  const [videoFile, setVideoFile] = useState(null)
+  const [videoPreview, setVideoPreview] = useState("")
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
@@ -860,107 +1101,91 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   const iStyle = { width:"100%", background:S.card2, border:`1px solid ${S.border}`,
     borderRadius:"10px", padding:"12px 14px", color:S.text, fontSize:"14px", outline:"none" }
 
-  const handleMedia = e => {
-    const file = e.target.files[0]; if (!file) return
-    setMediaType(file.type.startsWith("video") ? "video" : "image")
-    setMediaFile(file)
-    const r = new FileReader(); r.onloadend = () => setMediaPreview(r.result); r.readAsDataURL(file)
+  // Handle multiple images
+  const handleImages = e => {
+    const files = Array.from(e.target.files).filter(f => f.type.startsWith("image/"))
+    const newMedia = files.map(file => {
+      const preview = URL.createObjectURL(file)
+      return { file, preview, type:"image" }
+    })
+    setMediaFiles(prev => [...prev, ...newMedia].slice(0, 6)) // max 6 images
   }
 
-  const handleAffiliateChange = (index, field, value) => {
-    const updated = [...affiliateLinks]
-    updated[index][field] = value
-    setAffiliateLinks(updated)
+  const handleVideo = e => {
+    const file = e.target.files[0]
+    if (!file || !file.type.startsWith("video/")) return
+    setVideoFile(file)
+    setVideoPreview(URL.createObjectURL(file))
   }
 
-  const addAffiliateLink = () => {
-    setAffiliateLinks([...affiliateLinks, { name: "", url: "" }])
-  }
+  const removeImage = idx => setMediaFiles(prev => prev.filter((_,i) => i !== idx))
 
-  const removeAffiliateLink = (index) => {
-    if (affiliateLinks.length <= 1) return
-    const updated = affiliateLinks.filter((_, i) => i !== index)
-    setAffiliateLinks(updated)
+  const handleAffiliateChange = (i, field, val) => {
+    const updated = [...affiliateLinks]; updated[i][field] = val; setAffiliateLinks(updated)
   }
 
   const handleSubmit = async e => {
-    e.preventDefault();
-    if (!title.trim() || !description.trim()) return;
-    setUploading(true);
-    setError("");
+    e.preventDefault()
+    if (!title.trim() || !description.trim()) return
+    setUploading(true); setError("")
 
     try {
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("id", currentUser.id)
-        .single();
-
+      const { data: profile } = await supabase.from("profiles").select("id").eq("id", currentUser.id).single()
       if (!profile) {
         await supabase.from("profiles").insert({
-          id: currentUser.id,
-          name: currentUser.name,
-          email: currentUser.email || `${currentUser.id}@temp.com`,
-          country_flag: currentUser.countryFlag || "🌍",
-          avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
-        });
-      }
-
-      let image_url = null, video_url = null;
-      if (mediaFile) {
-        const ext = mediaFile.name.split(".").pop();
-        const filename = `${currentUser.id}-${Date.now()}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("recipes-media")
-          .upload(filename, mediaFile, { cacheControl: "3600", upsert: false });
-        if (uploadError) throw uploadError;
-        const { data: urlData } = supabase.storage
-          .from("recipes-media")
-          .getPublicUrl(filename);
-        if (mediaType === "image") image_url = urlData.publicUrl;
-        else video_url = urlData.publicUrl;
-      }
-
-      const filteredLinks = affiliateLinks.filter(link => link.name.trim() && link.url.trim());
-
-      const { data, error: insertError } = await supabase
-        .from("recipes")
-        .insert({
-          title: title.trim(),
-          description: description.trim(),
-          category,
-          ingredients: ingredients.split("\n").filter(i => i.trim()),
-          image_url,
-          video_url,
-          author_id: currentUser.id,
-          author_name: currentUser.name,
-          author_flag: currentUser.countryFlag || "🌍",
-          author_avatar: currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
-          socials,
-          affiliate_links: filteredLinks,
-          likes: 0
+          id:currentUser.id, name:currentUser.name,
+          email:currentUser.email || `${currentUser.id}@temp.com`,
+          country_flag:currentUser.countryFlag || "🌍",
+          avatar:currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
         })
-        .select()
-        .single();
+      }
 
-      if (insertError) throw insertError;
-      
-      onCreate({ 
-        ...data, 
-        comments: [], 
-        liked: false, 
-        saved: false, 
-        reactions: {} 
-      });
-      onClose();
-      
+      // Upload multiple images
+      const uploadedImages = []
+      for (const media of mediaFiles) {
+        const ext = media.file.name.split(".").pop()
+        const filename = `${currentUser.id}-${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+        const { error: uploadErr } = await supabase.storage.from("recipes-media").upload(filename, media.file, { cacheControl:"3600", upsert:false })
+        if (uploadErr) throw uploadErr
+        const { data: urlData } = supabase.storage.from("recipes-media").getPublicUrl(filename)
+        uploadedImages.push(urlData.publicUrl)
+      }
+
+      // Upload video
+      let video_url = null
+      if (videoFile) {
+        const ext = videoFile.name.split(".").pop()
+        const filename = `${currentUser.id}-video-${Date.now()}.${ext}`
+        const { error: uploadErr } = await supabase.storage.from("recipes-media").upload(filename, videoFile, { cacheControl:"3600", upsert:false })
+        if (uploadErr) throw uploadErr
+        const { data: urlData } = supabase.storage.from("recipes-media").getPublicUrl(filename)
+        video_url = urlData.publicUrl
+      }
+
+      const filteredLinks = affiliateLinks.filter(l => l.name.trim() && l.url.trim())
+
+      const { data, error: insertError } = await supabase.from("recipes").insert({
+        title:title.trim(), description:description.trim(), category,
+        ingredients:ingredients.split("\n").filter(i => i.trim()),
+        image_url: uploadedImages[0] || null,
+        images: uploadedImages,
+        video_url,
+        author_id:currentUser.id, author_name:currentUser.name,
+        author_flag:currentUser.countryFlag || "🌍",
+        author_avatar:currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
+        socials, affiliate_links:filteredLinks, likes:0
+      }).select().single()
+
+      if (insertError) throw insertError
+      onCreate({ ...data, comments:[], liked:false, saved:false, reactions:{} })
+      onClose()
     } catch (err) {
-      console.error("Submit error:", err);
-      setError(err.message || "Something went wrong. Please try again.");
+      console.error("Submit error:", err)
+      setError(err.message || "Something went wrong.")
     } finally {
-      setUploading(false);
+      setUploading(false)
     }
-  };
+  }
 
   return (
     <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.96)" : "rgba(60,30,20,0.7)",
@@ -968,39 +1193,24 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
       <div style={{ background:S.card, borderRadius:"24px", width:"100%", maxWidth:"560px",
         maxHeight:"90vh", overflowY:"auto", border:`1px solid ${S.border}`,
         padding:"28px", position:"relative", boxShadow:`0 32px 80px ${S.shadow}` }}>
-
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px" }}>
-          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"20px", fontWeight:"700" }}>
-            🍽️ Share Your Recipe
-          </h2>
+          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"20px", fontWeight:"700" }}>🍽️ Share Your Recipe</h2>
           <button className="bde-icon-btn" onClick={onClose} style={{ color:S.muted, fontSize:"20px" }}><FaTimes /></button>
         </div>
 
-        {error && (
-          <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px",
-            padding:"12px 16px", marginBottom:"16px", color:"#ef4444", fontSize:"13px" }}>{error}</div>
-        )}
+        {error && <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px", padding:"12px 16px", marginBottom:"16px", color:"#ef4444", fontSize:"13px" }}>{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
             <input placeholder="Recipe title *" value={title} onChange={e => setTitle(e.target.value)} required style={iStyle} />
 
             <div style={{ position:"relative" }}>
-              <textarea 
-                placeholder="Tell the story behind this dish... Use emojis!" 
-                value={description}
-                onChange={e => setDescription(e.target.value)} 
-                required 
-                rows={5}
-                style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} 
-              />
+              <textarea placeholder="Tell the story behind this dish... Use emojis!" value={description}
+                onChange={e => setDescription(e.target.value)} required rows={5}
+                style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} />
               <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                 style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
-              {showEmojiPicker && (
-                <div style={{ position:"absolute", bottom:"40px", left:"0", zIndex:9999 }}>
-                  <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
-                </div>
-              )}
+              {showEmojiPicker && <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />}
             </div>
 
             <select value={category} onChange={e => setCategory(e.target.value)} style={iStyle}>
@@ -1014,104 +1224,97 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
 
             <div style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"10px", padding:"14px" }}>
               <p style={{ color:S.gold, fontSize:"12px", fontWeight:"600", marginBottom:"10px" }}>🌐 Connect Your Socials</p>
-              {[
-                { key:"instagram", placeholder:"📸 Instagram (@handle)" },
-                { key:"tiktok", placeholder:"🎵 TikTok (@handle)" },
-                { key:"website", placeholder:"🌍 Website / Portfolio" },
-                { key:"facebook", placeholder:"👥 Facebook page" },
-              ].map(({ key, placeholder }) => (
+              {[{ key:"instagram", placeholder:"📸 Instagram (@handle)" },{ key:"tiktok", placeholder:"🎵 TikTok (@handle)" },
+                { key:"website", placeholder:"🌍 Website / Portfolio" },{ key:"facebook", placeholder:"👥 Facebook page" }].map(({ key, placeholder }) => (
                 <input key={key} placeholder={placeholder} value={socials[key]}
-                  onChange={e => setSocials(p => ({ ...p, [key]: e.target.value }))}
+                  onChange={e => setSocials(p => ({ ...p, [key]:e.target.value }))}
                   style={{ ...iStyle, fontSize:"12px", marginBottom:"6px" }} />
               ))}
             </div>
 
-            <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`,
-              borderRadius:"10px", padding:"14px" }}>
+            {/* Affiliate links with image field */}
+            <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`, borderRadius:"10px", padding:"14px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
-                <p style={{ color:"#f5a623", fontSize:"12px", fontWeight:"700", margin:0 }}>
-                  🛒 Affiliate / Shop Links (Optional)
-                </p>
-                <button 
-                  type="button"
-                  onClick={addAffiliateLink}
-                  style={{
-                    background: S.grad,
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "28px",
-                    height: "28px",
-                    cursor: "pointer",
-                    color: "#fff",
-                    fontSize: "16px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center"
-                  }}
-                >
+                <p style={{ color:"#f5a623", fontSize:"12px", fontWeight:"700", margin:0 }}>🛒 Affiliate / Shop Links</p>
+                <button type="button" onClick={() => setAffiliateLinks([...affiliateLinks, { name:"", url:"", image:"" }])}
+                  style={{ background:S.grad, border:"none", borderRadius:"50%", width:"28px", height:"28px",
+                    cursor:"pointer", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center" }}>
                   <FaPlus size={12} />
                 </button>
               </div>
-              
-              {affiliateLinks.map((link, index) => (
-                <div key={index} style={{ display:"flex", gap:"6px", marginBottom:"6px", alignItems:"center" }}>
-                  <input 
-                    placeholder="Product name"
-                    value={link.name}
-                    onChange={e => handleAffiliateChange(index, "name", e.target.value)}
-                    style={{ ...iStyle, fontSize:"11px", flex:"1" }}
-                  />
-                  <input 
-                    placeholder="https://amzn.to/..."
-                    value={link.url}
-                    onChange={e => handleAffiliateChange(index, "url", e.target.value)}
-                    style={{ ...iStyle, fontSize:"11px", flex:"2" }}
-                  />
-                  {affiliateLinks.length > 1 && (
-                    <button 
-                      type="button"
-                      onClick={() => removeAffiliateLink(index)}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        color: "#ef4444",
-                        cursor: "pointer",
-                        fontSize: "16px",
-                        padding: "4px"
-                      }}
-                    >
-                      <FaTrash size={14} />
-                    </button>
+              {affiliateLinks.map((link, i) => (
+                <div key={i} style={{ marginBottom:"10px", padding:"10px", background:`rgba(0,0,0,0.15)`, borderRadius:"8px" }}>
+                  <div style={{ display:"flex", gap:"6px", marginBottom:"6px" }}>
+                    <input placeholder="Product name" value={link.name}
+                      onChange={e => handleAffiliateChange(i, "name", e.target.value)}
+                      style={{ ...iStyle, fontSize:"11px", flex:1 }} />
+                    {affiliateLinks.length > 1 && (
+                      <button type="button" onClick={() => setAffiliateLinks(affiliateLinks.filter((_,j) => j !== i))}
+                        style={{ background:"none", border:"none", color:"#ef4444", cursor:"pointer" }}><FaTrash size={14} /></button>
+                    )}
+                  </div>
+                  <input placeholder="Product link (https://amzn.to/...)" value={link.url}
+                    onChange={e => handleAffiliateChange(i, "url", e.target.value)}
+                    style={{ ...iStyle, fontSize:"11px", marginBottom:"6px" }} />
+                  <input placeholder="Product image URL (optional — paste any image link)" value={link.image}
+                    onChange={e => handleAffiliateChange(i, "image", e.target.value)}
+                    style={{ ...iStyle, fontSize:"11px" }} />
+                  {link.image && (
+                    <img src={link.image} alt="preview"
+                      style={{ width:"48px", height:"48px", objectFit:"cover", borderRadius:"6px", marginTop:"6px", border:`1px solid ${S.border}` }} />
                   )}
                 </div>
               ))}
-              <p style={{ color:S.muted, fontSize:"10px", marginTop:"6px" }}>
-                Add product links (Amazon, cookbooks, equipment). Shows as "Shop" buttons on your post.
-              </p>
+              <p style={{ color:S.muted, fontSize:"10px" }}>Paste an Amazon product image URL for the thumbnail. It shows as a shop card with photo.</p>
             </div>
 
-            <label style={{ cursor:"pointer" }}>
-              <input type="file" accept="image/*,video/*" onChange={handleMedia} style={{ display:"none" }} />
-              <div style={{ border:`2px dashed ${S.rose}60`, borderRadius:"12px", padding:"20px",
-                textAlign:"center", background:`${S.rose}05` }}>
-                <div style={{ fontSize:"32px", marginBottom:"6px" }}>📸</div>
-                <p style={{ color:S.rose, fontWeight:"600", fontSize:"13px", margin:0 }}>
-                  {mediaPreview ? "Change photo / video" : "Add a photo or video"}
-                </p>
-              </div>
-            </label>
+            {/* ── FIX 2: Multiple images upload ── */}
+            <div style={{ border:`2px dashed ${S.rose}60`, borderRadius:"12px", padding:"16px", background:`${S.rose}05` }}>
+              <p style={{ color:S.rose, fontWeight:"700", fontSize:"13px", marginBottom:"10px", textAlign:"center" }}>
+                📸 Photos (up to 6 images)
+              </p>
+              <label style={{ cursor:"pointer", display:"block", textAlign:"center" }}>
+                <input type="file" accept="image/*" multiple onChange={handleImages} style={{ display:"none" }} />
+                <div style={{ padding:"10px", background:`${S.gold}15`, borderRadius:"8px", color:S.gold, fontSize:"12px", fontWeight:"600" }}>
+                  + Add Photos ({mediaFiles.length}/6)
+                </div>
+              </label>
+              {mediaFiles.length > 0 && (
+                <div style={{ display:"flex", gap:"8px", flexWrap:"wrap", marginTop:"10px" }}>
+                  {mediaFiles.map((m, i) => (
+                    <div key={i} style={{ position:"relative" }}>
+                      <img src={m.preview} alt="" style={{ width:"72px", height:"72px", objectFit:"cover", borderRadius:"8px", border:`2px solid ${i === 0 ? S.gold : S.border}` }} />
+                      {i === 0 && <div style={{ position:"absolute", bottom:"2px", left:"2px", background:S.gold, borderRadius:"4px", fontSize:"8px", color:"#000", padding:"1px 4px", fontWeight:"700" }}>MAIN</div>}
+                      <button type="button" onClick={() => removeImage(i)}
+                        style={{ position:"absolute", top:"-6px", right:"-6px", background:"#ef4444", border:"none",
+                          borderRadius:"50%", width:"18px", height:"18px", cursor:"pointer", color:"#fff",
+                          display:"flex", alignItems:"center", justifyContent:"center", fontSize:"10px" }}>×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
 
-            {mediaPreview && (
-              <div style={{ position:"relative", borderRadius:"12px", overflow:"hidden" }}>
-                {mediaType === "image"
-                  ? <img src={mediaPreview} alt="Preview" style={{ width:"100%", maxHeight:"180px", objectFit:"cover" }} />
-                  : <video src={mediaPreview} controls style={{ width:"100%", maxHeight:"180px" }} />
-                }
-                <button type="button" onClick={() => { setMediaFile(null); setMediaPreview("") }}
-                  style={{ position:"absolute", top:"8px", right:"8px", background:S.bg,
-                    border:"none", color:"#ef4444", borderRadius:"50%", width:"26px", height:"26px", cursor:"pointer" }}>×</button>
-              </div>
-            )}
+            {/* Video upload */}
+            <div style={{ border:`2px dashed ${S.border}`, borderRadius:"12px", padding:"16px" }}>
+              <p style={{ color:S.muted, fontWeight:"600", fontSize:"13px", marginBottom:"10px", textAlign:"center" }}>
+                📹 Video (optional — 1 video per post)
+              </p>
+              <label style={{ cursor:"pointer", display:"block", textAlign:"center" }}>
+                <input type="file" accept="video/*" onChange={handleVideo} style={{ display:"none" }} />
+                <div style={{ padding:"10px", background:`${S.card2}`, borderRadius:"8px", color:S.muted, fontSize:"12px" }}>
+                  {videoPreview ? "Change video" : "+ Add a video"}
+                </div>
+              </label>
+              {videoPreview && (
+                <div style={{ position:"relative", marginTop:"10px", borderRadius:"8px", overflow:"hidden" }}>
+                  <video src={videoPreview} controls style={{ width:"100%", maxHeight:"160px" }} />
+                  <button type="button" onClick={() => { setVideoFile(null); setVideoPreview("") }}
+                    style={{ position:"absolute", top:"6px", right:"6px", background:"rgba(239,68,68,0.9)",
+                      border:"none", color:"#fff", borderRadius:"50%", width:"24px", height:"24px", cursor:"pointer" }}>×</button>
+                </div>
+              )}
+            </div>
 
             <button type="submit" disabled={uploading}
               style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", fontWeight:"700",
@@ -1145,25 +1348,18 @@ function AuthModal({ onClose, onLogin, S }) {
       if (isSignUp) {
         const sel = countries.find(c => c.code === country)
         const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`
-        const { data, error: err } = await supabase.auth.signUp({ email, password,
-          options: { data: { name: name.trim() || email.split("@")[0], country_flag: sel?.flag || "🌍", avatar } } })
+        const { data, error:err } = await supabase.auth.signUp({ email, password, options:{ data:{ name:name.trim()||email.split("@")[0], country_flag:sel?.flag||"🌍", avatar } } })
         if (err) throw err
         if (data.user) {
-          await supabase.from("profiles").insert({
-            id: data.user.id, name: name.trim() || email.split("@")[0],
-            email, country_flag: sel?.flag || "🌍", avatar
-          })
+          await supabase.from("profiles").insert({ id:data.user.id, name:name.trim()||email.split("@")[0], email, country_flag:sel?.flag||"🌍", avatar })
           setVerifyEmailSent(true)
         }
       } else {
-        const { data, error: err } = await supabase.auth.signInWithPassword({ email, password })
+        const { data, error:err } = await supabase.auth.signInWithPassword({ email, password })
         if (err) throw err
         if (data.user) {
-          const { data: profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
-          onLogin({ id: data.user.id, email: data.user.email,
-            name: profile?.name || data.user.email.split("@")[0],
-            countryFlag: profile?.country_flag || "🌍",
-            avatar: profile?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.email)}&background=d4a855&color=09060a&bold=true` })
+          const { data:profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
+          onLogin({ id:data.user.id, email:data.user.email, name:profile?.name||data.user.email.split("@")[0], countryFlag:profile?.country_flag||"🌍", avatar:profile?.avatar||`https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.email)}&background=d4a855&color=09060a&bold=true` })
           onClose()
         }
       }
@@ -1172,57 +1368,86 @@ function AuthModal({ onClose, onLogin, S }) {
 
   if (verifyEmailSent) {
     return (
-      <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)",
-        zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
-        <div style={{ background:S.card, borderRadius:"28px", maxWidth:"400px", width:"100%",
-          border:`1px solid ${S.border}`, padding:"48px 32px", textAlign:"center",
-          boxShadow:`0 40px 100px ${S.shadow}` }}>
-          <div style={{ fontSize:"64px", marginBottom:"16px" }}>📧</div>
-          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"22px", marginBottom:"12px" }}>
-            Check Your Email!
+      <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
+        <div style={{ background:S.card, borderRadius:"28px", maxWidth:"420px", width:"100%", border:`1px solid ${S.border}`, padding:"40px 32px", textAlign:"center", boxShadow:`0 40px 100px ${S.shadow}` }}>
+
+          <div style={{ fontSize:"60px", marginBottom:"12px" }}>📧</div>
+          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"22px", marginBottom:"6px" }}>
+            Almost there!
           </h2>
-          <div style={{ background:`${S.gold}15`, border:`1px solid ${S.gold}40`, borderRadius:"12px", padding:"16px", marginBottom:"20px" }}>
-            <p style={{ color:S.text, fontSize:"14px", lineHeight:"1.7", margin:0 }}>
+          <p style={{ color:S.muted, fontSize:"13px", marginBottom:"20px" }}>
+            One quick step before you can start posting.
+          </p>
+
+          {/* Email highlight */}
+          <div style={{ background:`${S.gold}15`, border:`1px solid ${S.gold}50`, borderRadius:"12px", padding:"14px 16px", marginBottom:"24px" }}>
+            <p style={{ color:S.text, fontSize:"13px", margin:0, lineHeight:"1.6" }}>
               We sent a verification link to<br />
-              <strong style={{ color:S.gold }}>{email}</strong>
+              <strong style={{ color:S.gold, fontSize:"15px" }}>{email}</strong>
             </p>
           </div>
-          <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.6", marginBottom:"24px" }}>
-            ⚠️ <strong>You must verify your email before you can post.</strong><br />
-            Check your inbox (and spam folder) and click the link to activate.
-          </p>
+
+          {/* Step by step instructions */}
+          <div style={{ display:"flex", flexDirection:"column", gap:"10px", marginBottom:"28px", textAlign:"left" }}>
+            {[
+              { step:"1", icon:"📬", text:"Open your email inbox (check spam too if you don't see it)" },
+              { step:"2", icon:"🔗", text:'Find the email from BetterDays Eats and click the "Verify my email" link' },
+              { step:"3", icon:"↩️", text:"Come back to this app after clicking the link" },
+              { step:"4", icon:"🔑", text:'Click "Sign In" and log in with your email and password' },
+              { step:"5", icon:"🍽️", text:"You're in! Start sharing your recipes with the world" },
+            ].map(({ step, icon, text }) => (
+              <div key={step} style={{ display:"flex", alignItems:"flex-start", gap:"12px",
+                background:S.card2, borderRadius:"10px", padding:"10px 14px",
+                border:`1px solid ${S.border}` }}>
+                <div style={{ background:S.grad, borderRadius:"50%", width:"24px", height:"24px",
+                  display:"flex", alignItems:"center", justifyContent:"center",
+                  fontSize:"11px", fontWeight:"800", color:"#fff", flexShrink:0, marginTop:"1px" }}>
+                  {step}
+                </div>
+                <p style={{ color:S.text, fontSize:"12px", lineHeight:"1.6", margin:0 }}>
+                  <span style={{ fontSize:"14px", marginRight:"6px" }}>{icon}</span>
+                  {text}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Warning */}
+          <div style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.25)",
+            borderRadius:"10px", padding:"10px 14px", marginBottom:"20px" }}>
+            <p style={{ color:"#ef4444", fontSize:"12px", margin:0, lineHeight:"1.6" }}>
+              ⚠️ <strong>Do not skip this step.</strong> You will not be able to post recipes or comment until your email is verified.
+            </p>
+          </div>
+
           <button onClick={onClose}
-            style={{ padding:"13px", borderRadius:"12px", fontSize:"14px", fontWeight:"700",
+            style={{ padding:"14px", borderRadius:"12px", fontSize:"14px", fontWeight:"700",
               background:S.grad, color:"#fff", border:"none", cursor:"pointer", width:"100%" }}>
-            Got it — I'll check my email ✅
+            Got it — opening my email now 📬
           </button>
+
+          <p style={{ color:S.muted, fontSize:"11px", marginTop:"14px", lineHeight:"1.6" }}>
+            Didn't get the email? Check your spam folder or{" "}
+            <button onClick={() => { setVerifyEmailSent(false); setError("") }}
+              style={{ background:"none", border:"none", color:S.gold, cursor:"pointer", fontSize:"11px", fontWeight:"600", padding:0 }}>
+              try again with a different email
+            </button>
+          </p>
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)",
-      zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
-      <div style={{ background:S.card, borderRadius:"28px", maxWidth:"400px", width:"100%",
-        border:`1px solid ${S.border}`, padding:"40px 32px", position:"relative",
-        boxShadow:`0 40px 100px ${S.shadow}` }}>
-        <button className="bde-icon-btn" onClick={onClose}
-          style={{ position:"absolute", top:"16px", right:"16px", color:S.muted, fontSize:"18px" }}><FaTimes /></button>
+    <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
+      <div style={{ background:S.card, borderRadius:"28px", maxWidth:"400px", width:"100%", border:`1px solid ${S.border}`, padding:"40px 32px", position:"relative", boxShadow:`0 40px 100px ${S.shadow}` }}>
+        <button className="bde-icon-btn" onClick={onClose} style={{ position:"absolute", top:"16px", right:"16px", color:S.muted, fontSize:"18px" }}><FaTimes /></button>
         <div style={{ textAlign:"center", marginBottom:"24px" }}>
           <div style={{ fontSize:"48px", marginBottom:"10px" }}>👨‍🍳</div>
-          <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"24px", fontWeight:"900",
-            background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", margin:"0 0 6px 0" }}>
-            BetterDays Eats
-          </h1>
-          <p style={{ color:S.muted, fontSize:"12px" }}>
-            {isSignUp ? "Join our global food community 🌍" : "Welcome back! 👋"}
-          </p>
+          <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"24px", fontWeight:"900", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", margin:"0 0 6px 0" }}>BetterDays Eats</h1>
+          <p style={{ color:S.muted, fontSize:"12px" }}>{isSignUp ? "Join our global food community 🌍" : "Welcome back! 👋"}</p>
         </div>
-        {error && (
-          <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px",
-            padding:"12px", marginBottom:"14px", color:"#ef4444", fontSize:"13px" }}>{error}</div>
-        )}
+        {error && <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px", padding:"12px", marginBottom:"14px", color:"#ef4444", fontSize:"13px" }}>{error}</div>}
         <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
           {isSignUp && (
             <>
@@ -1235,19 +1460,16 @@ function AuthModal({ onClose, onLogin, S }) {
           <input type="email" placeholder="Email *" value={email} onChange={e => setEmail(e.target.value)} required style={iStyle} />
           <input type="password" placeholder="Password *" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} style={iStyle} />
           <button type="submit" disabled={loading}
-            style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", fontWeight:"700",
-              background:S.grad, color:"#fff", border:"none", cursor:"pointer", opacity: loading ? 0.7 : 1 }}>
+            style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer", opacity: loading ? 0.7 : 1 }}>
             {loading ? "⏳ Please wait..." : isSignUp ? "Join the Community" : "Sign In"}
           </button>
         </form>
         <button onClick={() => { setIsSignUp(!isSignUp); setError("") }}
-          style={{ background:"none", border:"none", color:S.gold, cursor:"pointer",
-            fontSize:"13px", width:"100%", textAlign:"center", marginTop:"14px" }}>
+          style={{ background:"none", border:"none", color:S.gold, cursor:"pointer", fontSize:"13px", width:"100%", textAlign:"center", marginTop:"14px" }}>
           {isSignUp ? "Already a member? Sign in" : "New here? Create account"}
         </button>
         <button onClick={onClose}
-          style={{ background:"none", border:"none", color:S.muted, cursor:"pointer",
-            fontSize:"12px", width:"100%", textAlign:"center", marginTop:"8px" }}>
+          style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"12px", width:"100%", textAlign:"center", marginTop:"8px" }}>
           Browse as guest
         </button>
       </div>
@@ -1256,90 +1478,40 @@ function AuthModal({ onClose, onLogin, S }) {
 }
 
 // ─── MY POSTS PAGE ──────────────────────────────────────────────────────────
-function MyPostsPage({ currentUser, allPosts, onLike, onSave, S, setShowCreate }) {
+function MyPostsPage({ currentUser, allPosts, onLike, onSave, onDelete, S, setShowCreate, onOpenDetail }) {
   const myPosts = allPosts.filter(p => p.author_id === currentUser?.id)
   const savedPosts = allPosts.filter(p => p.saved)
-
   return (
     <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
-      {/* Profile Header */}
-      <div style={{
-        background:S.card,
-        borderRadius:"20px",
-        border:`1px solid ${S.border}`,
-        padding:"32px",
-        marginBottom:"24px",
-        display:"flex",
-        alignItems:"center",
-        gap:"24px",
-        flexWrap:"wrap"
-      }}>
-        <img 
-          src={currentUser?.avatar} 
-          alt={currentUser?.name}
-          style={{ width:"80px", height:"80px", borderRadius:"50%", border:`3px solid ${S.gold}` }}
-        />
+      <div style={{ background:S.card, borderRadius:"20px", border:`1px solid ${S.border}`, padding:"32px", marginBottom:"24px", display:"flex", alignItems:"center", gap:"24px", flexWrap:"wrap" }}>
+        <img src={currentUser?.avatar} alt={currentUser?.name} style={{ width:"80px", height:"80px", borderRadius:"50%", border:`3px solid ${S.gold}` }} />
         <div>
           <h2 style={{ color:S.champ, marginBottom:"4px" }}>{currentUser?.name}</h2>
-          <p style={{ color:S.muted, fontSize:"13px" }}>
-            {currentUser?.countryFlag} · Joined {new Date(currentUser?.joinDate || Date.now()).toLocaleDateString()}
-          </p>
+          <p style={{ color:S.muted, fontSize:"13px" }}>{currentUser?.countryFlag} · Joined {new Date(currentUser?.joinDate || Date.now()).toLocaleDateString()}</p>
           <div style={{ display:"flex", gap:"20px", marginTop:"8px" }}>
             <span><strong style={{ color:S.gold }}>{myPosts.length}</strong> Recipes</span>
             <span><strong style={{ color:S.gold }}>{savedPosts.length}</strong> Favorites</span>
           </div>
         </div>
-        <button 
-          onClick={() => setShowCreate(true)}
-          className="bde-btn-grad"
-          style={{ padding:"10px 24px", borderRadius:"40px", marginLeft:"auto" }}
-        >
+        <button onClick={() => setShowCreate(true)} className="bde-btn-grad"
+          style={{ padding:"10px 24px", borderRadius:"40px", marginLeft:"auto", background:S.grad, color:"#fff" }}>
           ✨ New Recipe
         </button>
       </div>
-
-      {/* Tabs */}
-      <div style={{ display:"flex", gap:"8px", marginBottom:"16px", borderBottom:`1px solid ${S.border}`, paddingBottom:"12px" }}>
-        <button 
-          style={{ 
-            background:S.grad, 
-            color:"#fff", 
-            border:"none", 
-            padding:"10px 20px", 
-            borderRadius:"8px",
-            display:"flex",
-            alignItems:"center",
-            gap:"6px"
-          }}
-        >
-          <FaList size={14} /> My Recipes ({myPosts.length})
-        </button>
-      </div>
-
-      {/* Recipe Grid */}
       {myPosts.length === 0 ? (
         <div style={{ textAlign:"center", padding:"60px", color:S.muted }}>
           <div style={{ fontSize:"48px", marginBottom:"16px" }}>📝</div>
           <p style={{ fontSize:"16px" }}>You haven't posted any recipes yet.</p>
-          <button 
-            onClick={() => setShowCreate(true)}
-            className="bde-btn-grad"
-            style={{ padding:"12px 28px", borderRadius:"40px", marginTop:"16px" }}
-          >
+          <button onClick={() => setShowCreate(true)} className="bde-btn-grad"
+            style={{ padding:"12px 28px", borderRadius:"40px", marginTop:"16px", background:S.grad, color:"#fff" }}>
             ✨ Share Your First Recipe
           </button>
         </div>
       ) : (
-        <div style={{ columns: 2, columnGap:"20px" }}>
+        <div style={{ columns:2, columnGap:"20px" }}>
           {myPosts.map(post => (
             <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-              <RecipeCard 
-                recipe={post} 
-                onLike={onLike} 
-                onSave={onSave} 
-                currentUser={currentUser} 
-                S={S} 
-              />
+              <RecipeCard recipe={post} onLike={onLike} onSave={onSave} onDelete={onDelete} currentUser={currentUser} S={S} onOpenDetail={onOpenDetail} />
             </div>
           ))}
         </div>
@@ -1349,32 +1521,24 @@ function MyPostsPage({ currentUser, allPosts, onLike, onSave, S, setShowCreate }
 }
 
 // ─── FAVORITES PAGE ──────────────────────────────────────────────────────────
-function FavoritesPage({ allPosts, onLike, onSave, currentUser, S }) {
+function FavoritesPage({ allPosts, onLike, onSave, onDelete, currentUser, S, onOpenDetail }) {
   const savedPosts = allPosts.filter(p => p.saved)
-
   return (
     <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
       <h2 style={{ color:S.champ, marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}>
         <FaStar color={S.gold} /> Your Favorites
       </h2>
-
       {savedPosts.length === 0 ? (
         <div style={{ textAlign:"center", padding:"60px", color:S.muted }}>
           <div style={{ fontSize:"48px", marginBottom:"16px" }}>⭐</div>
           <p style={{ fontSize:"16px" }}>No favorites yet.</p>
-          <p style={{ fontSize:"13px" }}>Save recipes you love by clicking the bookmark icon!</p>
+          <p style={{ fontSize:"13px" }}>Save recipes by clicking the bookmark icon!</p>
         </div>
       ) : (
-        <div style={{ columns: 2, columnGap:"20px" }}>
+        <div style={{ columns:2, columnGap:"20px" }}>
           {savedPosts.map(post => (
             <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-              <RecipeCard 
-                recipe={post} 
-                onLike={onLike} 
-                onSave={onSave} 
-                currentUser={currentUser} 
-                S={S} 
-              />
+              <RecipeCard recipe={post} onLike={onLike} onSave={onSave} onDelete={onDelete} currentUser={currentUser} S={S} onOpenDetail={onOpenDetail} />
             </div>
           ))}
         </div>
@@ -1387,20 +1551,12 @@ function FavoritesPage({ allPosts, onLike, onSave, currentUser, S }) {
 function StubPage({ icon, title, body, onBack, S }) {
   return (
     <div style={{ maxWidth:"700px", margin:"0 auto", padding:"40px 24px" }}>
-      <div style={{ background:S.card, borderRadius:"24px", padding:"48px 36px",
-        border:`1px solid ${S.border}`, textAlign:"center", position:"relative" }}>
-        <button onClick={onBack}
-          style={{ position:"absolute", top:"16px", left:"16px", background:"none", border:"none",
-            color:S.muted, fontSize:"16px", cursor:"pointer", display:"flex", alignItems:"center", gap:"6px" }}
-          onMouseEnter={e => e.currentTarget.style.color = S.gold}
-          onMouseLeave={e => e.currentTarget.style.color = S.muted}>← Back</button>
+      <div style={{ background:S.card, borderRadius:"24px", padding:"48px 36px", border:`1px solid ${S.border}`, textAlign:"center", position:"relative" }}>
+        <button onClick={onBack} style={{ position:"absolute", top:"16px", left:"16px", background:"none", border:"none", color:S.muted, fontSize:"16px", cursor:"pointer" }}>← Back</button>
         <div style={{ fontSize:"52px", marginBottom:"16px" }}>{icon}</div>
         <h1 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"26px", marginBottom:"12px" }}>{title}</h1>
         <p style={{ color:S.muted }}>{body}</p>
-        <div style={{ marginTop:"24px", padding:"12px 20px", background:`${S.gold}12`,
-          borderRadius:"40px", display:"inline-block", border:`1px solid ${S.gold}30`, color:S.gold, fontSize:"13px" }}>
-          Coming soon ✨
-        </div>
+        <div style={{ marginTop:"24px", padding:"12px 20px", background:`${S.gold}12`, borderRadius:"40px", display:"inline-block", border:`1px solid ${S.gold}30`, color:S.gold, fontSize:"13px" }}>Coming soon ✨</div>
       </div>
     </div>
   )
@@ -1409,37 +1565,20 @@ function StubPage({ icon, title, body, onBack, S }) {
 // ─── DROP MENU ──────────────────────────────────────────────────────────────
 function DropMenu({ currentPage, setCurrentPage, onClose, S }) {
   const groups = [
-    { label:"Food Business", items:[
-      { id:"restaurants", label:"🏪 Restaurants" }, { id:"jobs", label:"💼 Jobs" },
-      { id:"business", label:"💡 Business Ideas" }, { id:"equipment", label:"🛒 Equipment" },
-      { id:"schools", label:"🏫 Culinary Schools" },
-    ]},
-    { label:"Resources", items:[
-      { id:"kids", label:"👶 Kids Nutrition" }, { id:"fasting", label:"🕐 Fasting Guide" },
-      { id:"disorders", label:"💙 Food Wellness" }, { id:"donations", label:"❤️ Donate" },
-      { id:"books", label:"📚 Books" },
-    ]},
-    { label:"Info", items:[
-      { id:"about", label:"📖 About" }, { id:"faq", label:"❓ FAQ" },
-      { id:"contact", label:"📧 Contact" }, { id:"privacy", label:"🔒 Privacy" },
-      { id:"terms", label:"⚖️ Terms" },
-    ]},
+    { label:"Food Business", items:[{ id:"restaurants",label:"🏪 Restaurants" },{ id:"jobs",label:"💼 Jobs" },{ id:"business",label:"💡 Business Ideas" },{ id:"equipment",label:"🛒 Equipment" },{ id:"schools",label:"🏫 Culinary Schools" }] },
+    { label:"Resources", items:[{ id:"kids",label:"👶 Kids Nutrition" },{ id:"fasting",label:"🕐 Fasting Guide" },{ id:"disorders",label:"💙 Food Wellness" },{ id:"donations",label:"❤️ Donate" },{ id:"books",label:"📚 Books" }] },
+    { label:"Info", items:[{ id:"about",label:"📖 About" },{ id:"faq",label:"❓ FAQ" },{ id:"contact",label:"📧 Contact" },{ id:"privacy",label:"🔒 Privacy" },{ id:"terms",label:"⚖️ Terms" }] },
   ]
   return (
-    <div style={{ position:"absolute", top:"100%", left:0, marginTop:"6px",
-      background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px",
-      padding:"8px 0", zIndex:99999, minWidth:"220px", boxShadow:`0 16px 48px ${S.shadow}` }}>
+    <div style={{ position:"absolute", top:"100%", left:0, marginTop:"6px", background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"8px 0", zIndex:99999, minWidth:"220px", boxShadow:`0 16px 48px ${S.shadow}` }}>
       {groups.map((g, gi) => (
         <div key={gi}>
           <p style={{ color:S.muted, fontSize:"10px", textTransform:"uppercase", letterSpacing:"1.5px", padding:"8px 18px 4px", margin:0 }}>{g.label}</p>
           {g.items.map(item => (
             <button key={item.id} onClick={() => { setCurrentPage(item.id); onClose() }}
-              style={{ display:"block", width:"100%", textAlign:"left", padding:"9px 18px",
-                background:"none", border:"none", cursor:"pointer", fontSize:"13px",
-                color: currentPage === item.id ? S.gold : S.text,
-                fontWeight: currentPage === item.id ? "600" : "400" }}
-              onMouseEnter={e => e.currentTarget.style.background = S.card2}
-              onMouseLeave={e => e.currentTarget.style.background = "none"}>
+              style={{ display:"block", width:"100%", textAlign:"left", padding:"9px 18px", background:"none", border:"none", cursor:"pointer", fontSize:"13px", color: currentPage === item.id ? S.gold : S.text, fontWeight: currentPage === item.id ? "600" : "400" }}
+              onMouseEnter={e => e.currentTarget.style.background=S.card2}
+              onMouseLeave={e => e.currentTarget.style.background="none"}>
               {item.label}
             </button>
           ))}
@@ -1453,20 +1592,15 @@ function DropMenu({ currentPage, setCurrentPage, onClose, S }) {
 // ─── NOTIFICATION PANEL ─────────────────────────────────────────────────────
 function NotifPanel({ items, onRead, onClose, S }) {
   return (
-    <div style={{ position:"absolute", top:"48px", right:0, backgroundColor:S.card,
-      borderRadius:"16px", border:`1px solid ${S.border}`, width:"300px",
-      maxHeight:"360px", overflowY:"auto", zIndex:300, boxShadow:`0 16px 48px ${S.shadow}` }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-        padding:"14px 16px", borderBottom:`1px solid ${S.border}` }}>
-        <span style={{ color:S.champ, fontWeight:"600", fontSize:"14px", fontFamily:"'Playfair Display',serif" }}>Notifications</span>
-        <button onClick={() => { onRead(); onClose() }}
-          style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"11px" }}>Mark all read</button>
+    <div style={{ position:"absolute", top:"48px", right:0, backgroundColor:S.card, borderRadius:"16px", border:`1px solid ${S.border}`, width:"300px", maxHeight:"360px", overflowY:"auto", zIndex:300, boxShadow:`0 16px 48px ${S.shadow}` }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", borderBottom:`1px solid ${S.border}` }}>
+        <span style={{ color:S.champ, fontWeight:"600", fontSize:"14px" }}>Notifications</span>
+        <button onClick={() => { onRead(); onClose() }} style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"11px" }}>Mark all read</button>
       </div>
       {items.length === 0
         ? <div style={{ padding:"32px", textAlign:"center", color:S.muted, fontSize:"13px" }}>All caught up ✨</div>
         : items.map(n => (
-          <div key={n.id} style={{ padding:"12px 16px", borderBottom:`1px solid ${S.border}`,
-            backgroundColor: n.read ? "transparent" : `${S.rose}15` }}>
+          <div key={n.id} style={{ padding:"12px 16px", borderBottom:`1px solid ${S.border}`, backgroundColor: n.read ? "transparent" : `${S.rose}15` }}>
             <p style={{ color:S.text, fontSize:"13px", lineHeight:"1.5" }}>{n.msg}</p>
             <span style={{ color:S.muted, fontSize:"10px" }}>{new Date(n.date).toLocaleTimeString()}</span>
           </div>
@@ -1476,16 +1610,11 @@ function NotifPanel({ items, onRead, onClose, S }) {
   )
 }
 
-// ─── COOKIE BANNER ──────────────────────────────────────────────────────────
 function CookieBanner({ onAccept, S }) {
   return (
-    <div style={{ position:"fixed", bottom:"64px", left:0, right:0, zIndex:500,
-      background:S.card, borderTop:`1px solid ${S.border}`,
-      padding:"14px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
+    <div style={{ position:"fixed", bottom:"64px", left:0, right:0, zIndex:500, background:S.card, borderTop:`1px solid ${S.border}`, padding:"14px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
       <p style={{ color:S.muted, fontSize:"12px", margin:0 }}>🍪 We use cookies to make your experience sweeter.</p>
-      <button onClick={onAccept}
-        style={{ padding:"7px 20px", borderRadius:"40px", fontSize:"12px", fontWeight:"700",
-          background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Accept</button>
+      <button onClick={onAccept} style={{ padding:"7px 20px", borderRadius:"40px", fontSize:"12px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Accept</button>
     </div>
   )
 }
@@ -1519,11 +1648,10 @@ export default function App() {
   const [cookiesOk, setCookiesOk] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [loadingDb, setLoadingDb] = useState(true)
+  const [selectedPost, setSelectedPost] = useState(null) // FIX 2
   const dropRef = useRef(null)
 
-  // ─── INFINITE SCROLL STATE ────────────────────────────────────────────────
   const [displayedPosts, setDisplayedPosts] = useState([])
-  const [page, setPage] = useState(0)
   const [hasMore, setHasMore] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const observerRef = useRef(null)
@@ -1542,9 +1670,8 @@ export default function App() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        supabase.from("profiles").select("*").eq("id", session.user.id).single().then(({ data: profile }) => {
-          if (profile) setCurrentUser({ id:session.user.id, email:session.user.email,
-            name:profile.name, countryFlag:profile.country_flag, avatar:profile.avatar, joinDate:profile.created_at })
+        supabase.from("profiles").select("*").eq("id", session.user.id).single().then(({ data:profile }) => {
+          if (profile) setCurrentUser({ id:session.user.id, email:session.user.email, name:profile.name, countryFlag:profile.country_flag, avatar:profile.avatar, joinDate:profile.created_at })
         })
       }
     })
@@ -1556,8 +1683,8 @@ export default function App() {
       const { data, error } = await supabase.from("recipes").select("*").order("created_at", { ascending:false })
       if (!error && data) {
         const withComments = await Promise.all(data.map(async r => {
-          const { data: comments } = await supabase.from("comments").select("*").eq("recipe_id", r.id).order("created_at", { ascending:true })
-          return { ...r, comments: comments || [], liked:false, saved:false, reactions:{} }
+          const { data:comments } = await supabase.from("comments").select("*").eq("recipe_id", r.id).order("created_at", { ascending:true })
+          return { ...r, images: r.images || (r.image_url ? [r.image_url] : []), comments:comments||[], liked:false, saved:false, reactions:{} }
         }))
         setDbPosts(withComments)
       }
@@ -1574,20 +1701,56 @@ export default function App() {
   const handleLogout = async () => { await supabase.auth.signOut(); setCurrentUser(null); showToast("See you soon 👋") }
   const handleCreate = r => { setDbPosts(p => [r, ...p]); showToast("Recipe shared! ✨"); addNotif(`✨ "${r.title}" is now live!`) }
 
-  const handleLike = async id => {
+  // ── FIX 1: Delete handler ──
+  const handleDelete = async id => {
     const isDemo = String(id).startsWith("demo-")
-    if (isDemo) { setPosts(p => p.map(r => r.id === id ? { ...r, likes: r.liked ? r.likes-1 : r.likes+1, liked:!r.liked } : r)); return }
-    const post = dbPosts.find(r => r.id === id); if (!post || !currentUser) return
-    if (post.liked) {
-      await supabase.from("likes").delete().match({ recipe_id:id, user_id:currentUser.id })
-      await supabase.from("recipes").update({ likes: post.likes-1 }).eq("id", id)
-      setDbPosts(p => p.map(r => r.id === id ? { ...r, likes:r.likes-1, liked:false } : r))
+    if (isDemo) {
+      setPosts(p => p.filter(r => r.id !== id))
     } else {
-      await supabase.from("likes").insert({ recipe_id:id, user_id:currentUser.id })
-      await supabase.from("recipes").update({ likes: post.likes+1 }).eq("id", id)
-      setDbPosts(p => p.map(r => r.id === id ? { ...r, likes:r.likes+1, liked:true } : r))
+      await supabase.from("comments").delete().eq("recipe_id", id)
+      await supabase.from("likes").delete().eq("recipe_id", id)
+      await supabase.from("recipes").delete().eq("id", id)
+      setDbPosts(p => p.filter(r => r.id !== id))
     }
+    showToast("Recipe deleted 🗑️")
+    if (selectedPost?.id === id) setSelectedPost(null)
   }
+
+  // ── FIX 5: Like with proper optimistic update and Supabase upsert ──
+  const handleLike = useCallback(async id => {
+    const isDemo = String(id).startsWith("demo-")
+    if (isDemo) {
+      setPosts(p => p.map(r => r.id === id ? { ...r, likes: r.liked ? r.likes-1 : r.likes+1, liked:!r.liked } : r))
+      return
+    }
+    if (!currentUser) { setShowAuth(true); return }
+
+    // Optimistic update first
+    setDbPosts(p => p.map(r => {
+      if (r.id !== id) return r
+      return { ...r, likes: r.liked ? r.likes-1 : r.likes+1, liked: !r.liked }
+    }))
+
+    const post = dbPosts.find(r => r.id === id)
+    if (!post) return
+
+    try {
+      if (post.liked) {
+        await supabase.from("likes").delete().match({ recipe_id:id, user_id:currentUser.id })
+        await supabase.from("recipes").update({ likes: Math.max(0, post.likes - 1) }).eq("id", id)
+      } else {
+        await supabase.from("likes").upsert({ recipe_id:id, user_id:currentUser.id }, { onConflict:"recipe_id,user_id" })
+        await supabase.from("recipes").update({ likes: post.likes + 1 }).eq("id", id)
+      }
+    } catch (err) {
+      // Revert on error
+      setDbPosts(p => p.map(r => {
+        if (r.id !== id) return r
+        return { ...r, likes: post.liked ? r.likes+1 : r.likes-1, liked: post.liked }
+      }))
+      console.error("Like error:", err)
+    }
+  }, [currentUser, dbPosts])
 
   const handleSave = id => {
     const isDemo = String(id).startsWith("demo-")
@@ -1601,222 +1764,118 @@ export default function App() {
       r.author_name?.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-// ─── INFINITE SCROLL LOGIC ────────────────────────────────────────────────
-const loadMorePosts = () => {
-  if (loadingMore || !hasMore) return
-  
-  const currentCount = displayedPosts.length
-  if (currentCount >= filtered.length) {
-    setHasMore(false)
-    return
-  }
-  
-  setLoadingMore(true)
-
-  setTimeout(() => {
-    const nextBatch = filtered.slice(currentCount, currentCount + 5)
-    
-    if (nextBatch.length === 0) {
-      setHasMore(false)
-    } else {
-      setDisplayedPosts(prev => [...prev, ...nextBatch])
-    }
-    setLoadingMore(false)
-  }, 300)
-}
-
-useEffect(() => {
-  if (filtered.length > 0) {
-    setDisplayedPosts(filtered.slice(0, 5))
-    setHasMore(filtered.length > 5)
-    setPage(0)
-  } else {
-    setDisplayedPosts([])
-    setHasMore(false)
-  }
-  // Reset loading state when filters change
-  setLoadingMore(false)
-}, [selectedCat, searchTerm])
+  const loadMorePosts = useCallback(() => {
+    if (loadingMore || !hasMore) return
+    const currentCount = displayedPosts.length
+    if (currentCount >= filtered.length) { setHasMore(false); return }
+    setLoadingMore(true)
+    setTimeout(() => {
+      const nextBatch = filtered.slice(currentCount, currentCount + 5)
+      if (nextBatch.length === 0) { setHasMore(false) }
+      else { setDisplayedPosts(prev => [...prev, ...nextBatch]) }
+      setLoadingMore(false)
+    }, 300)
+  }, [loadingMore, hasMore, displayedPosts.length, filtered])
 
   useEffect(() => {
-  if (!hasMore || loadingMore) return
-  
-  // Check if we need to load more
-  if (displayedPosts.length >= filtered.length) {
-    setHasMore(false)
-    return
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      if (entries[0].isIntersecting && !loadingMore && hasMore) {
-        loadMorePosts()
-      }
-    },
-    { threshold: 0.1, rootMargin: "0px 0px 100px 0px" }
-  )
-
-  if (observerRef.current) {
-    observer.observe(observerRef.current)
-  }
-
-  return () => {
-    if (observerRef.current) {
-      observer.unobserve(observerRef.current)
+    if (filtered.length > 0) {
+      setDisplayedPosts(filtered.slice(0, 5))
+      setHasMore(filtered.length > 5)
+    } else {
+      setDisplayedPosts([])
+      setHasMore(false)
     }
-  }
-}, [hasMore, loadingMore, displayedPosts.length, filtered.length])
+    setLoadingMore(false)
+  }, [selectedCat, searchTerm])
+
+  useEffect(() => {
+    if (!hasMore || loadingMore) return
+    if (displayedPosts.length >= filtered.length) { setHasMore(false); return }
+    const observer = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !loadingMore && hasMore) loadMorePosts()
+    }, { threshold:0.1, rootMargin:"0px 0px 100px 0px" })
+    if (observerRef.current) observer.observe(observerRef.current)
+    return () => { if (observerRef.current) observer.unobserve(observerRef.current) }
+  }, [hasMore, loadingMore, displayedPosts.length, filtered.length, loadMorePosts])
 
   const featured = dbPosts[0] || posts[0]
   const openPost = () => { if (currentUser) setShowCreate(true); else setShowAuth(true) }
 
+  // ── FIX 2: Open post in detail modal ──
+  const handleOpenDetail = (post) => setSelectedPost(post)
+
   const pages = {
-    restaurants: <StubPage icon="🏪" title="Restaurants" body="Discover restaurants hiring near you." onBack={() => setCurrentPage("home")} S={S} />,
-    jobs:        <StubPage icon="💼" title="Food Industry Jobs" body="Find your next role." onBack={() => setCurrentPage("home")} S={S} />,
-    equipment:   <StubPage icon="🛒" title="Kitchen Equipment" body="Shop tools used by top chefs." onBack={() => setCurrentPage("home")} S={S} />,
-    business:    <StubPage icon="💡" title="Business Ideas" body="Start your food business." onBack={() => setCurrentPage("home")} S={S} />,
-    schools:     <StubPage icon="🏫" title="Culinary Schools" body="Find culinary schools near you." onBack={() => setCurrentPage("home")} S={S} />,
-    kids:        <StubPage icon="👶" title="Kids Nutrition" body="Healthy meals for growing children." onBack={() => setCurrentPage("home")} S={S} />,
-    donations:   <StubPage icon="❤️" title="Donate" body="Support food NGOs fighting hunger." onBack={() => setCurrentPage("home")} S={S} />,
-    books:       <StubPage icon="📚" title="Cookbooks" body="Curated cookbooks from chefs." onBack={() => setCurrentPage("home")} S={S} />,
-    about:       <StubPage icon="🌍" title="About BetterDays Eats" body="Born in South Africa. Built for the world." onBack={() => setCurrentPage("home")} S={S} />,
-    faq:         <StubPage icon="❓" title="FAQ" body="Free platform for food lovers. Post recipes, like, comment, and share!" onBack={() => setCurrentPage("home")} S={S} />,
-    contact:     <StubPage icon="📧" title="Contact" body="Email: senzomashaba85@gmail.com · WhatsApp: +27 76 222 6325" onBack={() => setCurrentPage("home")} S={S} />,
-    privacy:     <StubPage icon="🔒" title="Privacy" body="We never sell your data. Ever." onBack={() => setCurrentPage("home")} S={S} />,
-    terms:       <StubPage icon="⚖️" title="Terms" body="Be respectful. Be generous. Give credit." onBack={() => setCurrentPage("home")} S={S} />,
+    restaurants:<StubPage icon="🏪" title="Restaurants" body="Discover restaurants hiring near you." onBack={() => setCurrentPage("home")} S={S} />,
+    jobs:<StubPage icon="💼" title="Food Industry Jobs" body="Find your next role." onBack={() => setCurrentPage("home")} S={S} />,
+    equipment:<StubPage icon="🛒" title="Kitchen Equipment" body="Shop tools used by top chefs." onBack={() => setCurrentPage("home")} S={S} />,
+    business:<StubPage icon="💡" title="Business Ideas" body="Start your food business." onBack={() => setCurrentPage("home")} S={S} />,
+    schools:<StubPage icon="🏫" title="Culinary Schools" body="Find culinary schools near you." onBack={() => setCurrentPage("home")} S={S} />,
+    kids:<StubPage icon="👶" title="Kids Nutrition" body="Healthy meals for growing children." onBack={() => setCurrentPage("home")} S={S} />,
+    fasting:<StubPage icon="🕐" title="Fasting Guide" body="Intermittent fasting meal plans." onBack={() => setCurrentPage("home")} S={S} />,
+    disorders:<StubPage icon="💙" title="Food Wellness" body="Support for healthy relationships with food." onBack={() => setCurrentPage("home")} S={S} />,
+    donations:<StubPage icon="❤️" title="Donate" body="Support food NGOs fighting hunger." onBack={() => setCurrentPage("home")} S={S} />,
+    books:<StubPage icon="📚" title="Cookbooks" body="Curated cookbooks from chefs." onBack={() => setCurrentPage("home")} S={S} />,
+    about:<StubPage icon="🌍" title="About BetterDays Eats" body="Born in South Africa. Built for the world." onBack={() => setCurrentPage("home")} S={S} />,
+    faq:<StubPage icon="❓" title="FAQ" body="Free platform for food lovers. Post recipes, like, comment, and share!" onBack={() => setCurrentPage("home")} S={S} />,
+    contact:<StubPage icon="📧" title="Contact" body="Email: senzomashaba85@gmail.com · WhatsApp: +27 76 222 6325" onBack={() => setCurrentPage("home")} S={S} />,
+    privacy:<StubPage icon="🔒" title="Privacy" body="We never sell your data. Ever." onBack={() => setCurrentPage("home")} S={S} />,
+    terms:<StubPage icon="⚖️" title="Terms" body="Be respectful. Be generous. Give credit." onBack={() => setCurrentPage("home")} S={S} />,
   }
 
   return (
     <div style={{ backgroundColor:S.bg, minHeight:"100vh", color:S.text, transition:"background 0.3s, color 0.3s" }}>
 
-      <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)",
-        borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
+      <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)", borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
         <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
           <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
             <span style={{ fontSize:"26px" }}>🍽️</span>
-            <span 
-              key={isDark ? "logo-dark" : "logo-light"} 
-              style={{ 
-                fontFamily:"'Playfair Display',serif", 
-                fontSize:"18px", 
-                fontWeight:"900",
-                background:S.grad, 
-                WebkitBackgroundClip:"text", 
-                WebkitTextFillColor:"transparent" 
-              }}
-            >
-              BetterDays Eats
-            </span>
+            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"900", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>BetterDays Eats</span>
           </div>
-
           <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
             {!isMobile && (
               <div style={{ position:"relative" }}>
                 <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px",
-                    padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
+                  style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px", padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
                 <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
               </div>
             )}
             <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
             <div style={{ position:"relative" }}>
-              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
-                style={{ color:S.gold, position:"relative", padding:"4px" }}>
+              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ color:S.gold, position:"relative", padding:"4px" }}>
                 <FaBell size={18} />
-                {unread > 0 && (
-                  <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff",
-                    borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px",
-                    display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
-                )}
+                {unread > 0 && <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff", borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>}
               </button>
-              {showNotifs && <NotifPanel items={notifications}
-                onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }}
-                onClose={() => setShowNotifs(false)} S={S} />}
+              {showNotifs && <NotifPanel items={notifications} onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }} onClose={() => setShowNotifs(false)} S={S} />}
             </div>
             {currentUser ? (
               <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-                <img src={currentUser.avatar} alt={currentUser.name}
-                  style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+                <img src={currentUser.avatar} alt={currentUser.name} style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
                 {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
-                
-                {/* ⭐ MY POSTS BUTTON */}
-                <button 
-                  onClick={() => setCurrentPage("my-posts")}
-                  style={{
-                    background: currentPage === "my-posts" ? `${S.gold}30` : "none",
-                    color: currentPage === "my-posts" ? S.gold : S.muted,
-                    border: "none",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontSize: "12px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px"
-                  }}
-                >
+                <button onClick={() => setCurrentPage("my-posts")} style={{ background: currentPage === "my-posts" ? `${S.gold}30` : "none", color: currentPage === "my-posts" ? S.gold : S.muted, border:"none", padding:"8px 12px", borderRadius:"8px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px" }}>
                   <FaList size={14} /> My Posts
                 </button>
-
-                {/* ⭐ FAVORITES BUTTON */}
-                <button 
-                  onClick={() => setCurrentPage("favorites")}
-                  style={{
-                    background: currentPage === "favorites" ? `${S.gold}30` : "none",
-                    color: currentPage === "favorites" ? S.gold : S.muted,
-                    border: "none",
-                    padding: "8px 12px",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    fontSize: "12px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "4px"
-                  }}
-                >
+                <button onClick={() => setCurrentPage("favorites")} style={{ background: currentPage === "favorites" ? `${S.gold}30` : "none", color: currentPage === "favorites" ? S.gold : S.muted, border:"none", padding:"8px 12px", borderRadius:"8px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px" }}>
                   <FaStar size={14} /> Favorites
                 </button>
-
-                <button onClick={handleLogout}
-                  style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
-                    borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
-                {!isMobile && (
-                  <button onClick={() => setShowCreate(true)}
-                    style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-                      background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-                    ✨ Post
-                  </button>
-                )}
+                <button onClick={handleLogout} style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted, borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
+                {!isMobile && <button onClick={() => setShowCreate(true)} style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>✨ Post</button>}
               </div>
             ) : (
-              <button onClick={() => setShowAuth(true)}
-                style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700",
-                  background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-                Join Free
-              </button>
+              <button onClick={() => setShowAuth(true)} style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Join Free</button>
             )}
           </div>
         </div>
       </header>
 
-      <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)",
-        borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
+      <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)", borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
         <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", alignItems:"center", gap:"4px" }}>
           <button onClick={() => { setCurrentPage("home"); setShowDrop(false) }}
-            style={{ background: currentPage === "home" ? `${S.gold}18` : "none",
-              color: currentPage === "home" ? S.gold : S.muted, border:"none", borderRadius:"8px",
-              padding:"12px 16px", cursor:"pointer", fontSize:"13px",
-              fontWeight: currentPage === "home" ? "600" : "400",
-              borderBottom: currentPage === "home" ? `2px solid ${S.gold}` : "2px solid transparent" }}>
+            style={{ background: currentPage === "home" ? `${S.gold}18` : "none", color: currentPage === "home" ? S.gold : S.muted, border:"none", borderRadius:"8px", padding:"12px 16px", cursor:"pointer", fontSize:"13px", fontWeight: currentPage === "home" ? "600" : "400", borderBottom: currentPage === "home" ? `2px solid ${S.gold}` : "2px solid transparent" }}>
             🏠 Home
           </button>
           <div ref={dropRef} style={{ position:"relative", display:"inline-block", zIndex:99999 }}>
             <button onClick={() => { setShowDrop(!showDrop); if (showNotifs) setShowNotifs(false) }}
-              style={{ background: showDrop ? `${S.rose}18` : "none",
-                color: showDrop ? S.rose : S.muted, border:"none", borderRadius:"8px",
-                padding:"12px 16px", cursor:"pointer", fontSize:"13px",
-                display:"flex", alignItems:"center", gap:"6px",
-                borderBottom: showDrop ? `2px solid ${S.rose}` : "2px solid transparent" }}>
+              style={{ background: showDrop ? `${S.rose}18` : "none", color: showDrop ? S.rose : S.muted, border:"none", borderRadius:"8px", padding:"12px 16px", cursor:"pointer", fontSize:"13px", display:"flex", alignItems:"center", gap:"6px", borderBottom: showDrop ? `2px solid ${S.rose}` : "2px solid transparent" }}>
               More <FaChevronDown size={9} style={{ transform: showDrop ? "rotate(180deg)" : "rotate(0deg)" }} />
             </button>
             {showDrop && <DropMenu currentPage={currentPage} setCurrentPage={setCurrentPage} onClose={() => setShowDrop(false)} S={S} />}
@@ -1824,7 +1883,6 @@ useEffect(() => {
         </div>
       </nav>
 
-      {/* ─── PAGE ROUTING ────────────────────────────────────────────────────── */}
       {currentPage === "home" && (
         <>
           <HeroBanner recipe={featured} onSignup={() => setShowAuth(true)} currentUser={currentUser} onPost={() => setShowCreate(true)} S={S} isDark={isDark} />
@@ -1833,8 +1891,7 @@ useEffect(() => {
             <div style={{ padding:"12px 16px", background:S.card, borderBottom:`1px solid ${S.border}` }}>
               <div style={{ position:"relative" }}>
                 <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-                    borderRadius:"40px", padding:"10px 16px 10px 36px", color:S.text, fontSize:"13px", outline:"none" }} />
+                  style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px", padding:"10px 16px 10px 36px", color:S.text, fontSize:"13px", outline:"none" }} />
                 <FaSearch style={{ position:"absolute", left:"12px", top:"12px", color:S.muted, fontSize:"12px" }} />
               </div>
             </div>
@@ -1844,12 +1901,7 @@ useEffect(() => {
             <div style={{ display:"flex", gap:"6px", minWidth:"max-content" }}>
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => setSelectedCat(cat.id)}
-                  style={{ background: selectedCat === cat.id ? S.grad : "none",
-                    border: selectedCat === cat.id ? "none" : `1px solid ${S.border}`,
-                    borderRadius:"40px", padding:"6px 14px", cursor:"pointer", fontSize:"12px",
-                    display:"flex", alignItems:"center", gap:"4px", whiteSpace:"nowrap",
-                    fontWeight: selectedCat === cat.id ? "600" : "400",
-                    color: selectedCat === cat.id ? "#fff" : S.muted }}>
+                  style={{ background: selectedCat === cat.id ? S.grad : "none", border: selectedCat === cat.id ? "none" : `1px solid ${S.border}`, borderRadius:"40px", padding:"6px 14px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px", whiteSpace:"nowrap", fontWeight: selectedCat === cat.id ? "600" : "400", color: selectedCat === cat.id ? "#fff" : S.muted }}>
                   {cat.icon} {cat.name}
                 </button>
               ))}
@@ -1863,22 +1915,17 @@ useEffect(() => {
                 <p>Loading delicious recipes...</p>
               </div>
             ) : filtered.length === 0 ? (
-              <div style={{ textAlign:"center", padding:"80px 24px", background:S.card,
-                borderRadius:"24px", border:`1px solid ${S.border}` }}>
+              <div style={{ textAlign:"center", padding:"80px 24px", background:S.card, borderRadius:"24px", border:`1px solid ${S.border}` }}>
                 <div style={{ fontSize:"52px", marginBottom:"16px" }}>🍽️</div>
                 <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, marginBottom:"8px" }}>No recipes yet</h2>
                 <p style={{ color:S.muted, marginBottom:"24px" }}>Be the first to share something delicious.</p>
-                <button onClick={openPost}
-                  style={{ padding:"12px 28px", borderRadius:"40px", fontSize:"14px", fontWeight:"700",
-                    background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>
-                  Share a Recipe
-                </button>
+                <button onClick={openPost} style={{ padding:"12px 28px", borderRadius:"40px", fontSize:"14px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Share a Recipe</button>
               </div>
             ) : (
               <div style={{ columns: isMobile ? 1 : 2, columnGap:"20px" }}>
                 {(displayedPosts.length > 0 ? displayedPosts : filtered.slice(0, 5)).map(r => (
                   <div key={r.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-                    <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave} currentUser={currentUser} S={S} />
+                    <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} currentUser={currentUser} S={S} onOpenDetail={handleOpenDetail} />
                   </div>
                 ))}
               </div>
@@ -1889,14 +1936,11 @@ useEffect(() => {
                 {loadingMore ? (
                   <div>
                     <span style={{ display:"inline-block", animation:"shimmer 1.5s infinite", fontSize:"32px" }}>🍽️</span>
-                    <p style={{ fontSize:"13px", marginTop:"8px" }}>Loading more recipes...</p>
+                    <p style={{ fontSize:"13px", marginTop:"8px" }}>Loading more...</p>
                   </div>
-                ) : (
-                  <p style={{ fontSize:"13px" }}>👇 Scroll for more recipes</p>
-                )}
+                ) : <p style={{ fontSize:"13px" }}>👇 Scroll for more</p>}
               </div>
             )}
-
             {!hasMore && filtered.length > 0 && (
               <div style={{ textAlign:"center", padding:"20px 0", color:S.muted }}>
                 <p style={{ fontSize:"13px" }}>🎉 You've seen all {filtered.length} recipes!</p>
@@ -1906,71 +1950,52 @@ useEffect(() => {
         </>
       )}
 
-      {/* ─── MY POSTS PAGE ──────────────────────────────────────────────────── */}
       {currentPage === "my-posts" && (
-        <MyPostsPage 
-          currentUser={currentUser}
-          allPosts={allPosts}
-          onLike={handleLike}
-          onSave={handleSave}
-          S={S}
-          setShowCreate={setShowCreate}
-        />
+        <MyPostsPage currentUser={currentUser} allPosts={allPosts} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} S={S} setShowCreate={setShowCreate} onOpenDetail={handleOpenDetail} />
       )}
-
-      {/* ─── FAVORITES PAGE ──────────────────────────────────────────────────── */}
       {currentPage === "favorites" && (
-        <FavoritesPage 
-          allPosts={allPosts}
-          onLike={handleLike}
-          onSave={handleSave}
-          currentUser={currentUser}
-          S={S}
-        />
+        <FavoritesPage allPosts={allPosts} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} currentUser={currentUser} S={S} onOpenDetail={handleOpenDetail} />
       )}
-
-      {currentPage !== "home" && currentPage !== "my-posts" && currentPage !== "favorites" && (pages[currentPage] ||
-        <StubPage icon="🔍" title="Page not found" body="Head back home." onBack={() => setCurrentPage("home")} S={S} />)}
+      {currentPage !== "home" && currentPage !== "my-posts" && currentPage !== "favorites" && (
+        pages[currentPage] || <StubPage icon="🔍" title="Page not found" body="Head back home." onBack={() => setCurrentPage("home")} S={S} />
+      )}
 
       {currentPage === "home" && (
         <footer style={{ textAlign:"center", padding:"32px 24px 80px", borderTop:`1px solid ${S.border}` }}>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"16px",
-            background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent",
-            marginBottom:"4px", fontWeight:"700" }}>BetterDays Eats</div>
+          <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"16px", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", marginBottom:"4px", fontWeight:"700" }}>BetterDays Eats</div>
           <p style={{ color:S.muted, fontSize:"11px", marginBottom:"12px" }}>© 2026 BetterDays Agile Technologies · South Africa 🇿🇦</p>
           <div style={{ display:"flex", justifyContent:"center", gap:"16px", flexWrap:"wrap" }}>
             {["about","faq","contact","privacy","terms"].map(p => (
-              <button key={p} onClick={() => setCurrentPage(p)}
-                style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"12px" }}>{p}</button>
+              <button key={p} onClick={() => setCurrentPage(p)} style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"12px" }}>{p}</button>
             ))}
           </div>
         </footer>
       )}
 
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:`${S.bg}f5`,
-        backdropFilter:"blur(20px)", borderTop:`1px solid ${S.border}`,
-        display:"flex", justifyContent:"space-around", padding:"10px 0 14px", zIndex:100 }}>
-        <button className="bde-icon-btn" onClick={() => setCurrentPage("home")}
-          style={{ color: currentPage === "home" ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>🏠</button>
-        <button className="bde-icon-btn" onClick={() => setSelectedCat("trending")}
-          style={{ color: selectedCat === "trending" ? S.rose : S.muted, fontSize:"20px", padding:"4px 16px" }}>🔥</button>
-        <button onClick={openPost}
-          style={{ borderRadius:"50%", width:"48px", height:"48px", display:"flex", alignItems:"center",
-            justifyContent:"center", fontSize:"22px", marginTop:"-10px",
-            background:S.grad, color:"#fff", border:"none", cursor:"pointer",
-            boxShadow:`0 4px 20px ${S.rose}50` }}>+</button>
-        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)}
-          style={{ color:S.muted, fontSize:"20px", padding:"4px 16px", position:"relative" }}>
+      {/* Bottom nav */}
+      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:`${S.bg}f5`, backdropFilter:"blur(20px)", borderTop:`1px solid ${S.border}`, display:"flex", justifyContent:"space-around", padding:"10px 0 14px", zIndex:100 }}>
+        <button className="bde-icon-btn" onClick={() => setCurrentPage("home")} style={{ color: currentPage === "home" ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>🏠</button>
+        <button className="bde-icon-btn" onClick={() => setSelectedCat("trending")} style={{ color: selectedCat === "trending" ? S.rose : S.muted, fontSize:"20px", padding:"4px 16px" }}>🔥</button>
+        <button onClick={openPost} style={{ borderRadius:"50%", width:"48px", height:"48px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"22px", marginTop:"-10px", background:S.grad, color:"#fff", border:"none", cursor:"pointer", boxShadow:`0 4px 20px ${S.rose}50` }}>+</button>
+        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ color:S.muted, fontSize:"20px", padding:"4px 16px", position:"relative" }}>
           🔔
-          {unread > 0 && (
-            <span style={{ position:"absolute", top:0, right:"10px", background:"#ef4444", color:"#fff",
-              borderRadius:"50%", width:"14px", height:"14px", fontSize:"9px",
-              display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>
-          )}
+          {unread > 0 && <span style={{ position:"absolute", top:0, right:"10px", background:"#ef4444", color:"#fff", borderRadius:"50%", width:"14px", height:"14px", fontSize:"9px", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>}
         </button>
-        <button className="bde-icon-btn" onClick={() => currentUser ? null : setShowAuth(true)}
-          style={{ color: currentUser ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>👤</button>
+        <button className="bde-icon-btn" onClick={() => currentUser ? null : setShowAuth(true)} style={{ color: currentUser ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>👤</button>
       </div>
+
+      {/* ── FIX 2: Post detail modal ── */}
+      {selectedPost && (
+        <PostDetailModal
+          recipe={selectedPost}
+          onClose={() => setSelectedPost(null)}
+          onLike={handleLike}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          currentUser={currentUser}
+          S={S}
+        />
+      )}
 
       {showCreate && currentUser && <CreateModal onClose={() => setShowCreate(false)} onCreate={handleCreate} currentUser={currentUser} S={S} />}
       {showAuth && <AuthModal onClose={() => setShowAuth(false)} onLogin={handleLogin} S={S} />}
@@ -1979,4 +2004,3 @@ useEffect(() => {
     </div>
   )
 }
-
