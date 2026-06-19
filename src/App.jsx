@@ -230,41 +230,70 @@ function ImageCarousel({ images, video_url, S, fullscreen = false }) {
   const media = allMedia[current]
   const hasMultiple = allMedia.length > 1
 
-  const height = fullscreen ? "500px" : "65%"
+  // ⭐ FIX 2: Removed paddingTop to eliminate huge space
+  const height = fullscreen ? "500px" : "auto"
 
   return (
-    <div style={{ position:"relative", paddingTop: fullscreen ? "0" : "65%", height: fullscreen ? "420px" : "auto", backgroundColor:S.card2, overflow:"hidden" }}>
+    <div style={{ 
+      position:"relative", 
+      height: fullscreen ? "420px" : "auto", 
+      backgroundColor:S.card2, 
+      overflow:"hidden" 
+    }}>
       {/* Media display */}
-      <div style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0, height: fullscreen ? "420px" : "auto" }}>
+      <div style={{ 
+        position: fullscreen ? "relative" : "relative", 
+        height: fullscreen ? "420px" : "auto" 
+      }}>
         {media.type === "image" ? (
           <>
             {!imgLoaded && (
-              <div style={{ position:"absolute", inset:0, background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
-                animation:"shimmer 1.5s ease infinite", display:"flex", alignItems:"center",
-                justifyContent:"center", fontSize:"32px", zIndex:1 }}>🍽️</div>
+              <div style={{ 
+                position:"absolute", 
+                inset:0, 
+                background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
+                animation:"shimmer 1.5s ease infinite", 
+                display:"flex", 
+                alignItems:"center",
+                justifyContent:"center", 
+                fontSize:"32px", 
+                zIndex:1 
+              }}>🍽️</div>
             )}
             <img
               key={media.url}
               src={media.url}
               alt=""
               onLoad={() => setImgLoaded(true)}
-              style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0,
-                width:"100%", height: fullscreen ? "420px" : "100%",
-                objectFit:"cover", display: imgLoaded ? "block" : "none" }}
+              style={{ 
+                width:"100%", 
+                height: fullscreen ? "420px" : "auto", 
+                objectFit:"cover", 
+                display: imgLoaded ? "block" : "none" 
+              }}
             />
           </>
         ) : (
-          // ── FIX 3: Proper video player ──
-          <div style={{ position: fullscreen ? "relative" : "absolute", inset: fullscreen ? "auto" : 0,
-            width:"100%", height: fullscreen ? "420px" : "100%",
-            background:"#000", display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <div style={{ 
+            width:"100%", 
+            height: fullscreen ? "420px" : "auto", 
+            background:"#000", 
+            display:"flex", 
+            alignItems:"center", 
+            justifyContent:"center" 
+          }}>
             <video
               ref={videoRef}
               src={media.url}
               controls
               playsInline
               preload="metadata"
-              style={{ width:"100%", height:"100%", maxHeight: fullscreen ? "420px" : "100%", objectFit:"contain" }}
+              style={{ 
+                width:"100%", 
+                height:"100%", 
+                maxHeight: fullscreen ? "420px" : "400px", 
+                objectFit:"contain" 
+              }}
               onError={(e) => console.error("Video error:", e)}
             >
               Your browser does not support the video tag.
@@ -274,8 +303,12 @@ function ImageCarousel({ images, video_url, S, fullscreen = false }) {
 
         {/* Gradient overlay for images only */}
         {media.type === "image" && (
-          <div style={{ position:"absolute", inset:0, pointerEvents:"none",
-            background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)" }} />
+          <div style={{ 
+            position:"absolute", 
+            inset:0, 
+            pointerEvents:"none",
+            background:"linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)" 
+          }} />
         )}
       </div>
 
@@ -284,37 +317,87 @@ function ImageCarousel({ images, video_url, S, fullscreen = false }) {
         <>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrent(c => (c - 1 + allMedia.length) % allMedia.length); setImgLoaded(false) }}
-            style={{ position:"absolute", left:"10px", top:"50%", transform:"translateY(-50%)",
-              background:"rgba(0,0,0,0.5)", border:"none", color:"#fff", borderRadius:"50%",
-              width:"32px", height:"32px", cursor:"pointer", display:"flex", alignItems:"center",
-              justifyContent:"center", zIndex:10, backdropFilter:"blur(4px)" }}>
+            style={{ 
+              position:"absolute", 
+              left:"10px", 
+              top:"50%", 
+              transform:"translateY(-50%)",
+              background:"rgba(0,0,0,0.5)", 
+              border:"none", 
+              color:"#fff", 
+              borderRadius:"50%",
+              width:"32px", 
+              height:"32px", 
+              cursor:"pointer", 
+              display:"flex", 
+              alignItems:"center",
+              justifyContent:"center", 
+              zIndex:10, 
+              backdropFilter:"blur(4px)" 
+            }}>
             <FaChevronLeft size={12} />
           </button>
           <button
             onClick={(e) => { e.stopPropagation(); setCurrent(c => (c + 1) % allMedia.length); setImgLoaded(false) }}
-            style={{ position:"absolute", right:"10px", top:"50%", transform:"translateY(-50%)",
-              background:"rgba(0,0,0,0.5)", border:"none", color:"#fff", borderRadius:"50%",
-              width:"32px", height:"32px", cursor:"pointer", display:"flex", alignItems:"center",
-              justifyContent:"center", zIndex:10, backdropFilter:"blur(4px)" }}>
+            style={{ 
+              position:"absolute", 
+              right:"10px", 
+              top:"50%", 
+              transform:"translateY(-50%)",
+              background:"rgba(0,0,0,0.5)", 
+              border:"none", 
+              color:"#fff", 
+              borderRadius:"50%",
+              width:"32px", 
+              height:"32px", 
+              cursor:"pointer", 
+              display:"flex", 
+              alignItems:"center",
+              justifyContent:"center", 
+              zIndex:10, 
+              backdropFilter:"blur(4px)" 
+            }}>
             <FaChevronRight size={12} />
           </button>
 
           {/* Dots */}
-          <div style={{ position:"absolute", bottom:"10px", left:"50%", transform:"translateX(-50%)",
-            display:"flex", gap:"5px", zIndex:10 }}>
+          <div style={{ 
+            position:"absolute", 
+            bottom:"10px", 
+            left:"50%", 
+            transform:"translateX(-50%)",
+            display:"flex", 
+            gap:"5px", 
+            zIndex:10 
+          }}>
             {allMedia.map((m, i) => (
               <button key={i} onClick={(e) => { e.stopPropagation(); setCurrent(i); setImgLoaded(false) }}
-                style={{ width: i === current ? "18px" : "7px", height:"7px",
-                  borderRadius:"4px", border:"none", cursor:"pointer",
+                style={{ 
+                  width: i === current ? "18px" : "7px", 
+                  height:"7px",
+                  borderRadius:"4px", 
+                  border:"none", 
+                  cursor:"pointer",
                   background: i === current ? S.gold : "rgba(255,255,255,0.5)",
-                  transition:"all 0.3s ease", padding:0 }} />
+                  transition:"all 0.3s ease", 
+                  padding:0 
+                }} />
             ))}
           </div>
 
           {/* Counter */}
-          <div style={{ position:"absolute", top:"10px", right:"10px",
-            background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)",
-            borderRadius:"20px", padding:"3px 10px", fontSize:"11px", color:"#fff", zIndex:10 }}>
+          <div style={{ 
+            position:"absolute", 
+            top:"10px", 
+            right:"10px",
+            background:"rgba(0,0,0,0.55)", 
+            backdropFilter:"blur(6px)",
+            borderRadius:"20px", 
+            padding:"3px 10px", 
+            fontSize:"11px", 
+            color:"#fff", 
+            zIndex:10 
+          }}>
             {current + 1}/{allMedia.length} {media.type === "video" ? "📹" : "📷"}
           </div>
         </>
@@ -322,9 +405,18 @@ function ImageCarousel({ images, video_url, S, fullscreen = false }) {
 
       {/* Single video indicator */}
       {!hasMultiple && media.type === "video" && (
-        <div style={{ position:"absolute", top:"10px", right:"10px",
-          background:"rgba(0,0,0,0.55)", backdropFilter:"blur(6px)",
-          borderRadius:"20px", padding:"3px 10px", fontSize:"11px", color:"#fff", zIndex:10 }}>
+        <div style={{ 
+          position:"absolute", 
+          top:"10px", 
+          right:"10px",
+          background:"rgba(0,0,0,0.55)", 
+          backdropFilter:"blur(6px)",
+          borderRadius:"20px", 
+          padding:"3px 10px", 
+          fontSize:"11px", 
+          color:"#fff", 
+          zIndex:10 
+        }}>
           📹 Video
         </div>
       )}
@@ -332,7 +424,7 @@ function ImageCarousel({ images, video_url, S, fullscreen = false }) {
   )
 }
 
-// ─── POST DETAIL MODAL (FIX 2: Selected post comes front) ──────────────────
+// ─── POST DETAIL MODAL ──────────────────────────────────────────────────────
 function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUser, S }) {
   const [comments, setComments] = useState(recipe.comments || [])
   const [newComment, setNewComment] = useState("")
@@ -372,49 +464,117 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
 
   return (
     <div className="bde-modal-overlay" onClick={onClose}
-      style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.92)", zIndex:2000,
-        display:"flex", alignItems:"flex-start", justifyContent:"center",
-        padding:"20px", overflowY:"auto", backdropFilter:"blur(6px)" }}>
+      style={{ 
+        position:"fixed", 
+        inset:0, 
+        background:"rgba(0,0,0,0.92)", 
+        zIndex:2000,
+        display:"flex", 
+        alignItems:"flex-start", 
+        justifyContent:"center",
+        padding:"20px", 
+        overflowY:"auto", 
+        backdropFilter:"blur(6px)" 
+      }}>
       <div onClick={e => e.stopPropagation()}
-        style={{ background:S.card, borderRadius:"24px", width:"100%", maxWidth:"680px",
-          border:`1px solid ${S.border}`, overflow:"hidden", position:"relative",
-          marginTop:"20px", marginBottom:"40px", boxShadow:`0 32px 80px rgba(0,0,0,0.8)` }}>
+        style={{ 
+          background:S.card, 
+          borderRadius:"24px", 
+          width:"100%", 
+          maxWidth:"680px",
+          border:`1px solid ${S.border}`, 
+          overflow:"hidden", 
+          position:"relative",
+          marginTop:"20px", 
+          marginBottom:"40px", 
+          boxShadow:`0 32px 80px rgba(0,0,0,0.8)` 
+        }}>
 
         {/* Close & Delete buttons */}
-        <div style={{ position:"absolute", top:"14px", right:"14px", zIndex:10, display:"flex", gap:"8px" }}>
-          {/* ── FIX 1: Delete button for author ── */}
+        <div style={{ 
+          position:"absolute", 
+          top:"14px", 
+          right:"14px", 
+          zIndex:10, 
+          display:"flex", 
+          gap:"8px" 
+        }}>
           {isAuthor && !showDeleteConfirm && (
             <button onClick={() => setShowDeleteConfirm(true)}
-              style={{ background:"rgba(239,68,68,0.15)", border:"1px solid rgba(239,68,68,0.3)",
-                borderRadius:"50%", width:"34px", height:"34px", cursor:"pointer",
-                color:"#ef4444", display:"flex", alignItems:"center", justifyContent:"center" }}>
+              style={{ 
+                background:"rgba(239,68,68,0.15)", 
+                border:"1px solid rgba(239,68,68,0.3)",
+                borderRadius:"50%", 
+                width:"34px", 
+                height:"34px", 
+                cursor:"pointer",
+                color:"#ef4444", 
+                display:"flex", 
+                alignItems:"center", 
+                justifyContent:"center" 
+              }}>
               <FaTrash size={13} />
             </button>
           )}
           <button onClick={onClose}
-            style={{ background:"rgba(0,0,0,0.5)", border:"none", borderRadius:"50%",
-              width:"34px", height:"34px", cursor:"pointer", color:"#fff",
-              display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
+            style={{ 
+              background:"rgba(0,0,0,0.5)", 
+              border:"none", 
+              borderRadius:"50%",
+              width:"34px", 
+              height:"34px", 
+              cursor:"pointer", 
+              color:"#fff",
+              display:"flex", 
+              alignItems:"center", 
+              justifyContent:"center", 
+              backdropFilter:"blur(4px)" 
+            }}>
             <FaTimes size={14} />
           </button>
         </div>
 
         {/* Delete confirm */}
         {showDeleteConfirm && (
-          <div style={{ position:"absolute", inset:0, zIndex:50, background:"rgba(9,6,10,0.95)",
-            display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"16px", padding:"32px", borderRadius:"24px" }}>
+          <div style={{ 
+            position:"absolute", 
+            inset:0, 
+            zIndex:50, 
+            background:"rgba(9,6,10,0.95)",
+            display:"flex", 
+            flexDirection:"column", 
+            alignItems:"center", 
+            justifyContent:"center", 
+            gap:"16px", 
+            padding:"32px", 
+            borderRadius:"24px" 
+          }}>
             <div style={{ fontSize:"48px" }}>🗑️</div>
             <h3 style={{ color:S.champ, fontFamily:"'Playfair Display',serif", textAlign:"center" }}>Delete this recipe?</h3>
             <p style={{ color:S.muted, fontSize:"13px", textAlign:"center" }}>This cannot be undone. Your post will be permanently removed.</p>
             <div style={{ display:"flex", gap:"12px" }}>
               <button onClick={() => setShowDeleteConfirm(false)}
-                style={{ padding:"10px 24px", borderRadius:"40px", border:`1px solid ${S.border}`,
-                  background:"none", color:S.text, cursor:"pointer", fontWeight:"600" }}>
+                style={{ 
+                  padding:"10px 24px", 
+                  borderRadius:"40px", 
+                  border:`1px solid ${S.border}`,
+                  background:"none", 
+                  color:S.text, 
+                  cursor:"pointer", 
+                  fontWeight:"600" 
+                }}>
                 Cancel
               </button>
               <button onClick={() => { onDelete(recipe.id); onClose() }}
-                style={{ padding:"10px 24px", borderRadius:"40px", border:"none",
-                  background:"linear-gradient(135deg, #ef4444, #dc2626)", color:"#fff", cursor:"pointer", fontWeight:"700" }}>
+                style={{ 
+                  padding:"10px 24px", 
+                  borderRadius:"40px", 
+                  border:"none",
+                  background:"linear-gradient(135deg, #ef4444, #dc2626)", 
+                  color:"#fff", 
+                  cursor:"pointer", 
+                  fontWeight:"700" 
+                }}>
                 Yes, Delete
               </button>
             </div>
@@ -426,21 +586,44 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
 
         {/* Content */}
         <div style={{ padding:"24px" }}>
-          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:"12px" }}>
+          <div style={{ 
+            display:"flex", 
+            justifyContent:"space-between", 
+            alignItems:"flex-start", 
+            marginBottom:"12px" 
+          }}>
             <div>
-              <h2 style={{ fontFamily:"'Playfair Display',serif", fontSize:"24px", fontWeight:"900",
-                color:S.champ, lineHeight:"1.2", marginBottom:"6px" }}>{recipe.title}</h2>
+              <h2 style={{ 
+                fontFamily:"'Playfair Display',serif", 
+                fontSize:"24px", 
+                fontWeight:"900",
+                color:S.champ, 
+                lineHeight:"1.2", 
+                marginBottom:"6px" 
+              }}>{recipe.title}</h2>
               <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
                 <img src={recipe.author_avatar} alt={recipe.author_name}
-                  style={{ width:"28px", height:"28px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+                  style={{ 
+                    width:"28px", 
+                    height:"28px", 
+                    borderRadius:"50%", 
+                    border:`2px solid ${S.gold}` 
+                  }} />
                 <span style={{ color:S.gold, fontSize:"13px", fontWeight:"600" }}>{recipe.author_name}</span>
                 <span style={{ fontSize:"16px" }}>{recipe.author_flag}</span>
-                <span style={{ color:S.muted, fontSize:"11px" }}>· {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}</span>
+                <span style={{ color:S.muted, fontSize:"11px" }}>
+                  · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
+                </span>
               </div>
             </div>
             <button onClick={() => onSave(recipe.id)}
-              style={{ background:"none", border:"none", cursor:"pointer",
-                color: recipe.saved ? S.gold : S.muted, fontSize:"20px" }}>
+              style={{ 
+                background:"none", 
+                border:"none", 
+                cursor:"pointer",
+                color: recipe.saved ? S.gold : S.muted, 
+                fontSize:"20px" 
+              }}>
               <FaBookmark />
             </button>
           </div>
@@ -451,11 +634,26 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
           <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
 
           {/* Likes / saves row */}
-          <div style={{ display:"flex", gap:"20px", alignItems:"center", margin:"14px 0",
-            paddingTop:"12px", borderTop:`1px solid ${S.border}` }}>
+          <div style={{ 
+            display:"flex", 
+            gap:"20px", 
+            alignItems:"center", 
+            margin:"14px 0",
+            paddingTop:"12px", 
+            borderTop:`1px solid ${S.border}` 
+          }}>
             <button onClick={() => onLike(recipe.id)}
-              style={{ background:"none", border:"none", cursor:"pointer", display:"flex", alignItems:"center", gap:"6px",
-                color: recipe.liked ? "#ff6b8a" : S.muted, fontSize:"14px", fontWeight:"600" }}>
+              style={{ 
+                background:"none", 
+                border:"none", 
+                cursor:"pointer", 
+                display:"flex", 
+                alignItems:"center", 
+                gap:"6px",
+                color: recipe.liked ? "#ff6b8a" : S.muted, 
+                fontSize:"14px", 
+                fontWeight:"600" 
+              }}>
               <FaHeart size={16} /> {recipe.likes}
             </button>
             <span style={{ color:S.muted, fontSize:"13px" }}>{comments.length} comments</span>
@@ -466,35 +664,76 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
 
           {/* Ingredients */}
           {recipe.ingredients?.length > 0 && (
-            <div style={{ marginBottom:"16px", padding:"12px 14px", background:S.card2,
-              borderRadius:"12px", border:`1px solid ${S.border}` }}>
+            <div style={{ 
+              marginBottom:"16px", 
+              padding:"12px 14px", 
+              background:S.card2,
+              borderRadius:"12px", 
+              border:`1px solid ${S.border}` 
+            }}>
               <div style={{ color:S.gold, fontSize:"12px", fontWeight:"700", marginBottom:"8px" }}>🛒 Ingredients</div>
               <div style={{ display:"flex", flexWrap:"wrap", gap:"5px" }}>
                 {recipe.ingredients.map((ing, i) => (
-                  <span key={i} style={{ background:`${S.gold}18`, color:S.champ, borderRadius:"20px", padding:"3px 12px", fontSize:"12px" }}>{ing}</span>
+                  <span key={i} style={{ 
+                    background:`${S.gold}18`, 
+                    color:S.champ, 
+                    borderRadius:"20px", 
+                    padding:"3px 12px", 
+                    fontSize:"12px" 
+                  }}>{ing}</span>
                 ))}
               </div>
             </div>
           )}
 
-          {/* ── FIX 4: Affiliate links with product images ── */}
+          {/* Affiliate links with product images */}
           {recipe.affiliate_links?.filter(l => l.name && l.url).length > 0 && (
             <div style={{ marginBottom:"16px" }}>
               <div style={{ color:S.gold, fontSize:"12px", fontWeight:"700", marginBottom:"8px" }}>🛒 Shop the Recipe</div>
               <div style={{ display:"flex", flexDirection:"column", gap:"8px" }}>
                 {recipe.affiliate_links.filter(l => l.name && l.url).map((link, i) => (
                   <a key={i} href={link.url} target="_blank" rel="noopener noreferrer sponsored"
-                    style={{ display:"flex", alignItems:"center", gap:"12px", padding:"10px 14px",
-                      background:`${S.card2}`, border:`1px solid rgba(245,166,35,0.3)`,
-                      borderRadius:"12px", textDecoration:"none", transition:"all 0.2s" }}
-                    onMouseEnter={e => { e.currentTarget.style.background = `rgba(245,166,35,0.1)`; e.currentTarget.style.transform = "scale(1.01)" }}
-                    onMouseLeave={e => { e.currentTarget.style.background = S.card2; e.currentTarget.style.transform = "scale(1)" }}>
+                    style={{ 
+                      display:"flex", 
+                      alignItems:"center", 
+                      gap:"12px", 
+                      padding:"10px 14px",
+                      background:`${S.card2}`, 
+                      border:`1px solid rgba(245,166,35,0.3)`,
+                      borderRadius:"12px", 
+                      textDecoration:"none", 
+                      transition:"all 0.2s" 
+                    }}
+                    onMouseEnter={e => { 
+                      e.currentTarget.style.background = `rgba(245,166,35,0.1)`; 
+                      e.currentTarget.style.transform = "scale(1.01)" 
+                    }}
+                    onMouseLeave={e => { 
+                      e.currentTarget.style.background = S.card2; 
+                      e.currentTarget.style.transform = "scale(1)" 
+                    }}>
                     {link.image ? (
                       <img src={link.image} alt={link.name}
-                        style={{ width:"52px", height:"52px", objectFit:"cover", borderRadius:"8px", border:`1px solid ${S.border}`, flexShrink:0 }} />
+                        style={{ 
+                          width:"52px", 
+                          height:"52px", 
+                          objectFit:"cover", 
+                          borderRadius:"8px", 
+                          border:`1px solid ${S.border}`, 
+                          flexShrink:0 
+                        }} />
                     ) : (
-                      <div style={{ width:"52px", height:"52px", background:`${S.gold}20`,
-                        borderRadius:"8px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"22px", flexShrink:0 }}>
+                      <div style={{ 
+                        width:"52px", 
+                        height:"52px", 
+                        background:`${S.gold}20`,
+                        borderRadius:"8px", 
+                        display:"flex", 
+                        alignItems:"center", 
+                        justifyContent:"center", 
+                        fontSize:"22px", 
+                        flexShrink:0 
+                      }}>
                         🛒
                       </div>
                     )}
@@ -502,8 +741,15 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
                       <div style={{ color:S.champ, fontSize:"13px", fontWeight:"600" }}>{link.name}</div>
                       <div style={{ color:S.muted, fontSize:"11px", marginTop:"2px" }}>Tap to shop on Amazon →</div>
                     </div>
-                    <div style={{ background:"linear-gradient(135deg, #f5a623, #e67e22)", borderRadius:"8px",
-                      padding:"6px 12px", color:"#fff", fontSize:"11px", fontWeight:"700", flexShrink:0 }}>
+                    <div style={{ 
+                      background:"linear-gradient(135deg, #f5a623, #e67e22)", 
+                      borderRadius:"8px",
+                      padding:"6px 12px", 
+                      color:"#fff", 
+                      fontSize:"11px", 
+                      fontWeight:"700", 
+                      flexShrink:0 
+                    }}>
                       Shop
                     </div>
                   </a>
@@ -517,19 +763,49 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
             <div style={{ display:"flex", gap:"6px", flexWrap:"wrap", marginBottom:"16px" }}>
               {recipe.socials.instagram && (
                 <a href={`https://instagram.com/${recipe.socials.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
-                  style={{ color:"#E4405F", fontSize:"12px", textDecoration:"none", background:`rgba(228,64,95,0.12)`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  style={{ 
+                    color:"#E4405F", 
+                    fontSize:"12px", 
+                    textDecoration:"none", 
+                    background:`rgba(228,64,95,0.12)`, 
+                    padding:"4px 12px", 
+                    borderRadius:"12px", 
+                    display:"inline-flex", 
+                    alignItems:"center", 
+                    gap:"5px" 
+                  }}>
                   <FaInstagram size={12} /> {recipe.socials.instagram}
                 </a>
               )}
               {recipe.socials.tiktok && (
                 <a href={`https://tiktok.com/${recipe.socials.tiktok.replace('@','')}`} target="_blank" rel="noopener noreferrer"
-                  style={{ color: S.mode === "dark" ? "#fff" : "#010101", fontSize:"12px", textDecoration:"none", background:`rgba(0,0,0,0.1)`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  style={{ 
+                    color: S.mode === "dark" ? "#fff" : "#010101", 
+                    fontSize:"12px", 
+                    textDecoration:"none", 
+                    background:`rgba(0,0,0,0.1)`, 
+                    padding:"4px 12px", 
+                    borderRadius:"12px", 
+                    display:"inline-flex", 
+                    alignItems:"center", 
+                    gap:"5px" 
+                  }}>
                   <FaTiktok size={12} /> {recipe.socials.tiktok}
                 </a>
               )}
               {recipe.socials.website && (
                 <a href={recipe.socials.website} target="_blank" rel="noopener noreferrer"
-                  style={{ color:S.gold, fontSize:"12px", textDecoration:"none", background:`${S.gold}15`, padding:"4px 12px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"5px" }}>
+                  style={{ 
+                    color:S.gold, 
+                    fontSize:"12px", 
+                    textDecoration:"none", 
+                    background:`${S.gold}15`, 
+                    padding:"4px 12px", 
+                    borderRadius:"12px", 
+                    display:"inline-flex", 
+                    alignItems:"center", 
+                    gap:"5px" 
+                  }}>
                   <FaLink size={12} /> Website
                 </a>
               )}
@@ -557,11 +833,27 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
                   <input value={newComment} onChange={e => setNewComment(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && addComment()}
                     placeholder="Write a comment..."
-                    style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-                      borderRadius:"40px", padding:"10px 44px 10px 16px", color:S.text, fontSize:"13px", outline:"none" }} />
+                    style={{ 
+                      width:"100%", 
+                      background:S.card2, 
+                      border:`1px solid ${S.border}`,
+                      borderRadius:"40px", 
+                      padding:"10px 44px 10px 16px", 
+                      color:S.text, 
+                      fontSize:"13px", 
+                      outline:"none" 
+                    }} />
                   <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%)",
-                      background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
+                    style={{ 
+                      position:"absolute", 
+                      right:"12px", 
+                      top:"50%", 
+                      transform:"translateY(-50%)",
+                      background:"none", 
+                      border:"none", 
+                      cursor:"pointer", 
+                      fontSize:"18px" 
+                    }}>😊</button>
                   {showEmojiPicker && (
                     <div style={{ position:"absolute", bottom:"50px", left:0, zIndex:9999 }}>
                       <EmojiPicker onSelect={e => setNewComment(p => p + e)} onClose={() => setShowEmojiPicker(false)} />
@@ -569,8 +861,16 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
                   )}
                 </div>
                 <button onClick={addComment}
-                  style={{ background:S.grad, border:"none", borderRadius:"40px",
-                    padding:"10px 20px", color:"#fff", fontSize:"13px", cursor:"pointer", fontWeight:"700" }}>
+                  style={{ 
+                    background:S.grad, 
+                    border:"none", 
+                    borderRadius:"40px",
+                    padding:"10px 20px", 
+                    color:"#fff", 
+                    fontSize:"13px", 
+                    cursor:"pointer", 
+                    fontWeight:"700" 
+                  }}>
                   Post
                 </button>
               </div>
@@ -587,10 +887,21 @@ function PostDetailModal({ recipe, onClose, onLike, onSave, onDelete, currentUse
 function Toast({ message, onClose, S }) {
   useEffect(() => { const t = setTimeout(onClose, 3000); return () => clearTimeout(t) }, [onClose])
   return (
-    <div style={{ position:"fixed", bottom:"90px", left:"50%", transform:"translateX(-50%)",
-      background:S.grad, color:"#fff", padding:"12px 28px", borderRadius:"40px",
-      fontWeight:"700", fontSize:"13px", zIndex:9999, whiteSpace:"nowrap",
-      boxShadow:`0 8px 32px ${S.shadow}` }}>
+    <div style={{ 
+      position:"fixed", 
+      bottom:"90px", 
+      left:"50%", 
+      transform:"translateX(-50%)",
+      background:S.grad, 
+      color:"#fff", 
+      padding:"12px 28px", 
+      borderRadius:"40px",
+      fontWeight:"700", 
+      fontSize:"13px", 
+      zIndex:9999, 
+      whiteSpace:"nowrap",
+      boxShadow:`0 8px 32px ${S.shadow}` 
+    }}>
       {message}
     </div>
   )
@@ -600,10 +911,20 @@ function ThemeToggle({ S, isDark, onToggle }) {
   return (
     <button onClick={onToggle} className="theme-toggle"
       title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-      style={{ background: isDark ? "#1d1420" : "#f0d9c8", border:`1px solid ${S.border}`,
-        borderRadius:"40px", padding:"7px 14px", cursor:"pointer", display:"flex",
-        alignItems:"center", gap:"6px", color:S.gold, fontSize:"12px", fontWeight:"600",
-        transition:"all 0.3s ease" }}>
+      style={{ 
+        background: isDark ? "#1d1420" : "#f0d9c8", 
+        border:`1px solid ${S.border}`,
+        borderRadius:"40px", 
+        padding:"7px 14px", 
+        cursor:"pointer", 
+        display:"flex",
+        alignItems:"center", 
+        gap:"6px", 
+        color:S.gold, 
+        fontSize:"12px", 
+        fontWeight:"600",
+        transition:"all 0.3s ease" 
+      }}>
       {isDark ? <FaSun size={13} /> : <FaMoon size={13} />}
       {isDark ? "Light" : "Dark"}
     </button>
@@ -643,16 +964,42 @@ function EmojiPicker({ onSelect, onClose }) {
   }, [onClose])
   return (
     <div ref={pickerRef} style={{
-      display:"grid", gridTemplateColumns:"repeat(8, 1fr)", gap:"4px", padding:"12px",
-      background:"#1d1420", border:"1px solid #2d1d28", borderRadius:"14px",
-      position:"absolute", bottom:"50px", left:0, zIndex:9999,
-      boxShadow:"0 8px 32px rgba(0,0,0,0.8)", width:"280px", maxHeight:"200px", overflowY:"auto"
+      display:"grid", 
+      gridTemplateColumns:"repeat(8, 1fr)", 
+      gap:"4px", 
+      padding:"12px",
+      background:"#1d1420", 
+      border:"1px solid #2d1d28", 
+      borderRadius:"14px",
+      position:"absolute", 
+      bottom:"50px", 
+      left:0, 
+      zIndex:9999,
+      boxShadow:"0 8px 32px rgba(0,0,0,0.8)", 
+      width:"280px", 
+      maxHeight:"200px", 
+      overflowY:"auto"
     }}>
       {EMOJIS.map(e => (
         <button key={e} onClick={() => { onSelect(e); onClose() }}
-          style={{ background:"none", border:"none", cursor:"pointer", fontSize:"24px", padding:"4px", borderRadius:"8px", lineHeight:1, transition:"all 0.15s" }}
-          onMouseEnter={ev => { ev.currentTarget.style.transform="scale(1.3)"; ev.currentTarget.style.background="rgba(255,255,255,0.1)" }}
-          onMouseLeave={ev => { ev.currentTarget.style.transform="scale(1)"; ev.currentTarget.style.background="none" }}>
+          style={{ 
+            background:"none", 
+            border:"none", 
+            cursor:"pointer", 
+            fontSize:"24px", 
+            padding:"4px", 
+            borderRadius:"8px", 
+            lineHeight:1, 
+            transition:"all 0.15s" 
+          }}
+          onMouseEnter={ev => { 
+            ev.currentTarget.style.transform="scale(1.3)"; 
+            ev.currentTarget.style.background="rgba(255,255,255,0.1)" 
+          }}
+          onMouseLeave={ev => { 
+            ev.currentTarget.style.transform="scale(1)"; 
+            ev.currentTarget.style.background="none" 
+          }}>
           {e}
         </button>
       ))}
@@ -670,20 +1017,44 @@ function ReactionBar({ reactions, onReact, S }) {
       <div style={{ position:"relative" }}
         onMouseEnter={() => setShowReactions(true)}
         onMouseLeave={() => setShowReactions(false)}>
-        <button style={{ background:`${S.gold}15`, border:`1px solid ${S.border}`,
-          borderRadius:"20px", padding:"4px 12px", fontSize:"12px", cursor:"pointer",
-          display:"flex", alignItems:"center", gap:"5px", color:S.muted }}>
+        <button style={{ 
+          background:`${S.gold}15`, 
+          border:`1px solid ${S.border}`,
+          borderRadius:"20px", 
+          padding:"4px 12px", 
+          fontSize:"12px", 
+          cursor:"pointer",
+          display:"flex", 
+          alignItems:"center", 
+          gap:"5px", 
+          color:S.muted 
+        }}>
           👍 <span style={{ fontSize:"11px" }}>React</span>
         </button>
         {showReactions && (
-          <div style={{ position:"absolute", bottom:"110%", left:0, display:"flex", gap:"4px",
+          <div style={{ 
+            position:"absolute", 
+            bottom:"110%", 
+            left:0, 
+            display:"flex", 
+            gap:"4px",
             background: S.mode === "dark" ? "#1d1420" : "#fff",
-            border:`1px solid ${S.border}`, borderRadius:"40px", padding:"6px 10px",
-            boxShadow:"0 8px 32px rgba(0,0,0,0.4)", zIndex:9999 }}>
+            border:`1px solid ${S.border}`, 
+            borderRadius:"40px", 
+            padding:"6px 10px",
+            boxShadow:"0 8px 32px rgba(0,0,0,0.4)", 
+            zIndex:9999 
+          }}>
             {REACTIONS.map(r => (
               <button key={r.emoji} onClick={() => { onReact(r.emoji); setShowReactions(false) }}
                 title={r.label}
-                style={{ background:"none", border:"none", cursor:"pointer", fontSize:"22px", padding:"2px 4px" }}
+                style={{ 
+                  background:"none", 
+                  border:"none", 
+                  cursor:"pointer", 
+                  fontSize:"22px", 
+                  padding:"2px 4px" 
+                }}
                 onMouseEnter={e => e.currentTarget.style.transform="scale(1.4) translateY(-4px)"}
                 onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}>
                 {r.emoji}
@@ -713,7 +1084,13 @@ function CommentThread({ comment, currentUser, S }) {
 
   const handleReply = () => {
     if (!replyText.trim() || !currentUser) return
-    const newReply = { id:Date.now(), text:replyText.trim(), author_name:currentUser.name, author_flag:currentUser.countryFlag, created_at:new Date().toISOString() }
+    const newReply = { 
+      id:Date.now(), 
+      text:replyText.trim(), 
+      author_name:currentUser.name, 
+      author_flag:currentUser.countryFlag, 
+      created_at:new Date().toISOString() 
+    }
     setReplies(prev => [...prev, newReply])
     setReplyText("")
     setShowReplyInput(false)
@@ -733,13 +1110,28 @@ function CommentThread({ comment, currentUser, S }) {
           <ReactionBar reactions={reactions} onReact={e => setReactions(prev => ({ ...prev, [e]:(prev[e]||0)+1 }))} S={S} />
           {currentUser && (
             <button onClick={() => setShowReplyInput(!showReplyInput)}
-              style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"11px", display:"flex", alignItems:"center", gap:"4px" }}>
+              style={{ 
+                background:"none", 
+                border:"none", 
+                color:S.muted, 
+                cursor:"pointer", 
+                fontSize:"11px", 
+                display:"flex", 
+                alignItems:"center", 
+                gap:"4px" 
+              }}>
               <FaReply size={10} /> Reply
             </button>
           )}
           {replies.length > 0 && (
             <button onClick={() => setShowReplies(!showReplies)}
-              style={{ background:"none", border:"none", color:S.gold, cursor:"pointer", fontSize:"11px" }}>
+              style={{ 
+                background:"none", 
+                border:"none", 
+                color:S.gold, 
+                cursor:"pointer", 
+                fontSize:"11px" 
+              }}>
               {showReplies ? "▲" : "▼"} {replies.length} {replies.length === 1 ? "reply" : "replies"}
             </button>
           )}
@@ -748,8 +1140,14 @@ function CommentThread({ comment, currentUser, S }) {
       {showReplies && replies.length > 0 && (
         <div style={{ marginLeft:"20px", marginTop:"6px" }}>
           {replies.map(r => (
-            <div key={r.id} style={{ padding:"8px 12px", background:S.card2, borderRadius:"10px",
-              border:`1px solid ${S.border}`, marginBottom:"6px", borderLeft:`3px solid ${S.gold}` }}>
+            <div key={r.id} style={{ 
+              padding:"8px 12px", 
+              background:S.card2, 
+              borderRadius:"10px",
+              border:`1px solid ${S.border}`, 
+              marginBottom:"6px", 
+              borderLeft:`3px solid ${S.gold}` 
+            }}>
               <div style={{ display:"flex", alignItems:"center", gap:"6px", marginBottom:"4px" }}>
                 <span style={{ fontSize:"12px" }}>{r.author_flag}</span>
                 <strong style={{ color:S.gold, fontSize:"11px" }}>{r.author_name}</strong>
@@ -765,18 +1163,43 @@ function CommentThread({ comment, currentUser, S }) {
             <input value={replyText} onChange={e => setReplyText(e.target.value)}
               onKeyDown={e => e.key === "Enter" && handleReply()}
               placeholder={`Reply to ${comment.author_name}...`}
-              style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-                borderRadius:"40px", padding:"7px 40px 7px 14px", color:S.text, fontSize:"12px", outline:"none" }} />
+              style={{ 
+                width:"100%", 
+                background:S.card2, 
+                border:`1px solid ${S.border}`,
+                borderRadius:"40px", 
+                padding:"7px 40px 7px 14px", 
+                color:S.text, 
+                fontSize:"12px", 
+                outline:"none" 
+              }} />
             <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-              style={{ position:"absolute", right:"10px", top:"50%", transform:"translateY(-50%)",
-                background:"none", border:"none", cursor:"pointer", color:S.muted, fontSize:"16px" }}>😊</button>
+              style={{ 
+                position:"absolute", 
+                right:"10px", 
+                top:"50%", 
+                transform:"translateY(-50%)",
+                background:"none", 
+                border:"none", 
+                cursor:"pointer", 
+                color:S.muted, 
+                fontSize:"16px" 
+              }}>😊</button>
             {showEmojiPicker && (
               <EmojiPicker onSelect={e => setReplyText(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
             )}
           </div>
           <button onClick={handleReply}
-            style={{ background:S.grad, border:"none", borderRadius:"40px", padding:"7px 14px",
-              color:"#fff", fontSize:"12px", cursor:"pointer", fontWeight:"600" }}>Reply</button>
+            style={{ 
+              background:S.grad, 
+              border:"none", 
+              borderRadius:"40px", 
+              padding:"7px 14px",
+              color:"#fff", 
+              fontSize:"12px", 
+              cursor:"pointer", 
+              fontWeight:"600" 
+            }}>Reply</button>
         </div>
       )}
     </div>
@@ -800,91 +1223,207 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
   const addComment = async () => {
     if (!newComment.trim() || !currentUser) return
     const isDemo = String(recipe.id).startsWith("demo-")
-    const comment = { id:Date.now(), text:newComment.trim(), author_name:currentUser.name, author_flag:currentUser.countryFlag, created_at:new Date().toISOString(), replies:[], reactions:{} }
+    const comment = { 
+      id:Date.now(), 
+      text:newComment.trim(), 
+      author_name:currentUser.name, 
+      author_flag:currentUser.countryFlag, 
+      created_at:new Date().toISOString(), 
+      replies:[], 
+      reactions:{} 
+    }
     if (!isDemo) {
-      await supabase.from("comments").insert({ recipe_id:recipe.id, author_id:currentUser.id, author_name:currentUser.name, text:newComment.trim() })
+      await supabase.from("comments").insert({ 
+        recipe_id:recipe.id, 
+        author_id:currentUser.id, 
+        author_name:currentUser.name, 
+        text:newComment.trim() 
+      })
     }
     setComments(prev => [...prev, comment])
     setNewComment("")
   }
 
   return (
-    <article className="bde-card" style={{ backgroundColor:S.card, borderRadius:"20px",
-      border:`1px solid ${S.border}`, overflow:"hidden", display:"flex", flexDirection:"column",
-      boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none", position:"relative" }}>
+    <article className="bde-card" style={{ 
+      backgroundColor:S.card, 
+      borderRadius:"20px",
+      border:`1px solid ${S.border}`, 
+      overflow:"hidden", 
+      display:"flex", 
+      flexDirection:"column",
+      boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none", 
+      position:"relative" 
+    }}>
 
       {/* Delete confirm overlay on card */}
       {showDeleteConfirm && (
-        <div style={{ position:"absolute", inset:0, zIndex:50, background:"rgba(9,6,10,0.95)",
-          display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", gap:"12px", padding:"24px", borderRadius:"20px" }}>
+        <div style={{ 
+          position:"absolute", 
+          inset:0, 
+          zIndex:50, 
+          background:"rgba(9,6,10,0.95)",
+          display:"flex", 
+          flexDirection:"column", 
+          alignItems:"center", 
+          justifyContent:"center", 
+          gap:"12px", 
+          padding:"24px", 
+          borderRadius:"20px" 
+        }}>
           <div style={{ fontSize:"36px" }}>🗑️</div>
           <p style={{ color:S.champ, fontWeight:"700", textAlign:"center" }}>Delete this recipe?</p>
           <p style={{ color:S.muted, fontSize:"12px", textAlign:"center" }}>This cannot be undone.</p>
           <div style={{ display:"flex", gap:"10px" }}>
             <button onClick={() => setShowDeleteConfirm(false)}
-              style={{ padding:"8px 20px", borderRadius:"40px", border:`1px solid ${S.border}`, background:"none", color:S.text, cursor:"pointer" }}>Cancel</button>
+              style={{ 
+                padding:"8px 20px", 
+                borderRadius:"40px", 
+                border:`1px solid ${S.border}`, 
+                background:"none", 
+                color:S.text, 
+                cursor:"pointer" 
+              }}>Cancel</button>
             <button onClick={() => { onDelete(recipe.id); setShowDeleteConfirm(false) }}
-              style={{ padding:"8px 20px", borderRadius:"40px", border:"none", background:"linear-gradient(135deg,#ef4444,#dc2626)", color:"#fff", cursor:"pointer", fontWeight:"700" }}>Delete</button>
+              style={{ 
+                padding:"8px 20px", 
+                borderRadius:"40px", 
+                border:"none", 
+                background:"linear-gradient(135deg,#ef4444,#dc2626)", 
+                color:"#fff", 
+                cursor:"pointer", 
+                fontWeight:"700" 
+              }}>Delete</button>
           </div>
         </div>
       )}
 
-      {/* Media */}
-      <div style={{ position:"relative" }}>
-        <div style={{ position:"relative", paddingTop:"65%" }} onClick={() => onOpenDetail(recipe)} >
-          <ImageCarousel images={allImages} video_url={recipe.video_url} S={S} />
-          {/* Category badge */}
-          {cat && (
-            <div style={{ position:"absolute", top:"14px", left:"14px", zIndex:5,
-              background: S.mode === "dark" ? "rgba(9,6,10,0.65)" : "rgba(253,248,244,0.9)",
-              backdropFilter:"blur(8px)", border:`1px solid ${S.border}`, borderRadius:"40px",
-              padding:"4px 12px", display:"flex", alignItems:"center", gap:"5px", pointerEvents:"none" }}>
-              <span style={{ fontSize:"11px" }}>{cat.icon}</span>
-              <span style={{ color:S.champ, fontSize:"11px", fontWeight:"500" }}>{cat.name}</span>
-            </div>
-          )}
-          {/* Expand icon */}
-          <div style={{ position:"absolute", bottom:"14px", right:"14px", zIndex:5,
-            background:"rgba(0,0,0,0.5)", borderRadius:"8px", padding:"5px 8px",
-            color:"rgba(255,255,255,0.8)", fontSize:"11px", display:"flex", alignItems:"center", gap:"4px", pointerEvents:"none" }}>
-            <FaExpand size={10} /> View
+      {/* Media - ⭐ FIX 2: Removed paddingTop to eliminate huge space */}
+      <div onClick={() => onOpenDetail(recipe)} style={{ cursor:"pointer" }}>
+        <ImageCarousel images={allImages} video_url={recipe.video_url} S={S} />
+        
+        {/* Category badge */}
+        {cat && (
+          <div style={{ 
+            position:"absolute", 
+            top:"14px", 
+            left:"14px", 
+            zIndex:5,
+            background: S.mode === "dark" ? "rgba(9,6,10,0.65)" : "rgba(253,248,244,0.9)",
+            backdropFilter:"blur(8px)", 
+            border:`1px solid ${S.border}`, 
+            borderRadius:"40px",
+            padding:"4px 12px", 
+            display:"flex", 
+            alignItems:"center", 
+            gap:"5px", 
+            pointerEvents:"none" 
+          }}>
+            <span style={{ fontSize:"11px" }}>{cat.icon}</span>
+            <span style={{ color:S.champ, fontSize:"11px", fontWeight:"500" }}>{cat.name}</span>
           </div>
-          {/* Author overlay */}
-          <div style={{ position:"absolute", bottom:"14px", left:"14px", display:"flex", alignItems:"center", gap:"8px", zIndex:5, pointerEvents:"none" }}>
-            <img src={recipe.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author_name)}&background=d4a855&color=09060a&bold=true`}
-              alt={recipe.author_name} style={{ width:"30px", height:"30px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-            <div>
-              <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</div>
-              <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>
-                {recipe.author_flag} · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
-              </div>
-            </div>
-          </div>
+        )}
+        {/* Expand icon */}
+        <div style={{ 
+          position:"absolute", 
+          bottom:"14px", 
+          right:"14px", 
+          zIndex:5,
+          background:"rgba(0,0,0,0.5)", 
+          borderRadius:"8px", 
+          padding:"5px 8px",
+          color:"rgba(255,255,255,0.8)", 
+          fontSize:"11px", 
+          display:"flex", 
+          alignItems:"center", 
+          gap:"4px", 
+          pointerEvents:"none" 
+        }}>
+          <FaExpand size={10} /> View
         </div>
-
-        {/* Save & delete buttons outside carousel click zone */}
-        <div style={{ position:"absolute", top:"12px", right:"14px", zIndex:20, display:"flex", gap:"6px" }}>
-          {/* ── FIX 1: Delete for author ── */}
-          {isAuthor && (
-            <button onClick={e => { e.stopPropagation(); setShowDeleteConfirm(true) }}
-              style={{ background:"rgba(239,68,68,0.2)", border:"1px solid rgba(239,68,68,0.4)",
-                borderRadius:"50%", width:"30px", height:"30px", cursor:"pointer", color:"#ef4444",
-                display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
-              <FaTrash size={11} />
-            </button>
-          )}
-          <button onClick={e => { e.stopPropagation(); onSave(recipe.id) }}
-            style={{ background:"rgba(0,0,0,0.4)", border:"none", borderRadius:"50%", width:"30px", height:"30px",
-              cursor:"pointer", color: recipe.saved ? S.gold : "rgba(255,255,255,0.7)", fontSize:"14px",
-              display:"flex", alignItems:"center", justifyContent:"center", backdropFilter:"blur(4px)" }}>
-            <FaBookmark />
-          </button>
+        {/* Author overlay */}
+        <div style={{ 
+          position:"absolute", 
+          bottom:"14px", 
+          left:"14px", 
+          display:"flex", 
+          alignItems:"center", 
+          gap:"8px", 
+          zIndex:5, 
+          pointerEvents:"none" 
+        }}>
+          <img src={recipe.author_avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(recipe.author_name)}&background=d4a855&color=09060a&bold=true`}
+            alt={recipe.author_name} style={{ 
+              width:"30px", 
+              height:"30px", 
+              borderRadius:"50%", 
+              border:`2px solid ${S.gold}` 
+            }} />
+          <div>
+            <div style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</div>
+            <div style={{ color:"rgba(255,255,255,0.7)", fontSize:"10px" }}>
+              {recipe.author_flag} · {new Date(recipe.created_at).toLocaleDateString("en-ZA", { day:"numeric", month:"short" })}
+            </div>
+          </div>
         </div>
       </div>
 
+      {/* Save & delete buttons outside carousel click zone */}
+      <div style={{ 
+        position:"absolute", 
+        top:"12px", 
+        right:"14px", 
+        zIndex:20, 
+        display:"flex", 
+        gap:"6px" 
+      }}>
+        {isAuthor && (
+          <button onClick={e => { e.stopPropagation(); setShowDeleteConfirm(true) }}
+            style={{ 
+              background:"rgba(239,68,68,0.2)", 
+              border:"1px solid rgba(239,68,68,0.4)",
+              borderRadius:"50%", 
+              width:"30px", 
+              height:"30px", 
+              cursor:"pointer", 
+              color:"#ef4444",
+              display:"flex", 
+              alignItems:"center", 
+              justifyContent:"center", 
+              backdropFilter:"blur(4px)" 
+            }}>
+            <FaTrash size={11} />
+          </button>
+        )}
+        <button onClick={e => { e.stopPropagation(); onSave(recipe.id) }}
+          style={{ 
+            background:"rgba(0,0,0,0.4)", 
+            border:"none", 
+            borderRadius:"50%", 
+            width:"30px", 
+            height:"30px",
+            cursor:"pointer", 
+            color: recipe.saved ? S.gold : "rgba(255,255,255,0.7)", 
+            fontSize:"14px",
+            display:"flex", 
+            alignItems:"center", 
+            justifyContent:"center", 
+            backdropFilter:"blur(4px)" 
+          }}>
+          <FaBookmark />
+        </button>
+      </div>
+
       <div style={{ padding:"16px 16px 0 16px", flex:1 }}>
-        <h3 onClick={() => onOpenDetail(recipe)} style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px",
-          fontWeight:"700", color:S.champ, lineHeight:"1.3", marginBottom:"6px", cursor:"pointer" }}>
+        <h3 onClick={() => onOpenDetail(recipe)} style={{ 
+          fontFamily:"'Playfair Display',serif", 
+          fontSize:"18px",
+          fontWeight:"700", 
+          color:S.champ, 
+          lineHeight:"1.3", 
+          marginBottom:"6px", 
+          cursor:"pointer" 
+        }}>
           {recipe.title}
         </h3>
 
@@ -894,15 +1433,29 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
         </div>
 
         <div style={{ marginBottom:"8px" }}>
-          <p style={{ color:S.muted, fontSize:"13px", lineHeight:"1.65",
-            overflow:"hidden", display:"-webkit-box", WebkitLineClamp: expanded ? "none" : 3,
-            WebkitBoxOrient:"vertical", maxHeight: expanded ? "none" : "65px" }}>
+          <p style={{ 
+            color:S.muted, 
+            fontSize:"13px", 
+            lineHeight:"1.65",
+            overflow:"hidden", 
+            display:"-webkit-box", 
+            WebkitLineClamp: expanded ? "none" : 3,
+            WebkitBoxOrient:"vertical", 
+            maxHeight: expanded ? "none" : "65px" 
+          }}>
             {recipe.description}
           </p>
           {recipe.description?.length > 120 && (
             <button onClick={() => setExpanded(!expanded)}
-              style={{ background:"none", border:"none", color:S.gold, cursor:"pointer",
-                fontSize:"12px", fontWeight:"600", padding:"4px 0" }}>
+              style={{ 
+                background:"none", 
+                border:"none", 
+                color:S.gold, 
+                cursor:"pointer",
+                fontSize:"12px", 
+                fontWeight:"600", 
+                padding:"4px 0" 
+              }}>
               {expanded ? "Show less ▲" : "See more ▼"}
             </button>
           )}
@@ -915,39 +1468,82 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
           <div style={{ display:"flex", gap:"6px", marginTop:"10px", flexWrap:"wrap" }}>
             {recipe.socials.instagram && (
               <a href={`https://instagram.com/${recipe.socials.instagram.replace('@','')}`} target="_blank" rel="noopener noreferrer"
-                style={{ color:"#E4405F", fontSize:"11px", textDecoration:"none", background:`${S.rose}18`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ 
+                  color:"#E4405F", 
+                  fontSize:"11px", 
+                  textDecoration:"none", 
+                  background:`${S.rose}18`, 
+                  padding:"3px 10px", 
+                  borderRadius:"12px", 
+                  display:"inline-flex", 
+                  alignItems:"center", 
+                  gap:"4px" 
+                }}>
                 <FaInstagram size={11} /> IG
               </a>
             )}
             {recipe.socials.tiktok && (
               <a href={`https://tiktok.com/${recipe.socials.tiktok.replace('@','')}`} target="_blank" rel="noopener noreferrer"
-                style={{ color: S.mode === "dark" ? "#fff" : "#010101", fontSize:"11px", textDecoration:"none", background:`${S.rose}18`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ 
+                  color: S.mode === "dark" ? "#fff" : "#010101", 
+                  fontSize:"11px", 
+                  textDecoration:"none", 
+                  background:`${S.rose}18`, 
+                  padding:"3px 10px", 
+                  borderRadius:"12px", 
+                  display:"inline-flex", 
+                  alignItems:"center", 
+                  gap:"4px" 
+                }}>
                 <FaTiktok size={11} /> TikTok
               </a>
             )}
             {recipe.socials.website && (
               <a href={recipe.socials.website} target="_blank" rel="noopener noreferrer"
-                style={{ color:S.gold, fontSize:"11px", textDecoration:"none", background:`${S.rose}18`, padding:"3px 10px", borderRadius:"12px", display:"inline-flex", alignItems:"center", gap:"4px" }}>
+                style={{ 
+                  color:S.gold, 
+                  fontSize:"11px", 
+                  textDecoration:"none", 
+                  background:`${S.rose}18`, 
+                  padding:"3px 10px", 
+                  borderRadius:"12px", 
+                  display:"inline-flex", 
+                  alignItems:"center", 
+                  gap:"4px" 
+                }}>
                 <FaLink size={11} /> Website
               </a>
             )}
           </div>
         )}
 
-        {/* ── FIX 4: Affiliate links with product image thumbnails on card ── */}
+        {/* Affiliate links with product image thumbnails on card */}
         {recipe.affiliate_links?.filter(l => l.name && l.url).length > 0 && (
           <div style={{ marginTop:"10px", display:"flex", gap:"6px", flexWrap:"wrap" }}>
             {recipe.affiliate_links.filter(l => l.name && l.url).map((link, i) => (
               <a key={i} href={link.url} target="_blank" rel="noopener noreferrer sponsored"
-                style={{ display:"inline-flex", alignItems:"center", gap:"6px",
+                style={{ 
+                  display:"inline-flex", 
+                  alignItems:"center", 
+                  gap:"6px",
                   background:"linear-gradient(135deg, rgba(245,166,35,0.12), rgba(230,126,34,0.12))",
-                  border:"1px solid rgba(245,166,35,0.3)", borderRadius:"10px",
-                  padding:"5px 10px 5px 6px", textDecoration:"none", transition:"all 0.2s" }}
+                  border:"1px solid rgba(245,166,35,0.3)", 
+                  borderRadius:"10px",
+                  padding:"5px 10px 5px 6px", 
+                  textDecoration:"none", 
+                  transition:"all 0.2s" 
+                }}
                 onMouseEnter={e => e.currentTarget.style.transform="scale(1.02)"}
                 onMouseLeave={e => e.currentTarget.style.transform="scale(1)"}>
                 {link.image ? (
                   <img src={link.image} alt={link.name}
-                    style={{ width:"28px", height:"28px", objectFit:"cover", borderRadius:"5px", border:`1px solid ${S.border}` }} />
+                    style={{ 
+                      width:"28px", 
+                      height:"28px", 
+                      objectFit:"cover", 
+                      borderRadius:"5px", 
+                      border:`1px solid ${S.border}` 
+                    }} />
                 ) : (
                   <span style={{ fontSize:"18px" }}>🛒</span>
                 )}
@@ -959,16 +1555,36 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
 
         {/* Ingredients */}
         {recipe.ingredients?.length > 0 && (
-          <div style={{ marginTop:"10px", padding:"10px 12px", background:S.card2, borderRadius:"10px", border:`1px solid ${S.border}` }}>
+          <div style={{ 
+            marginTop:"10px", 
+            padding:"10px 12px", 
+            background:S.card2, 
+            borderRadius:"10px", 
+            border:`1px solid ${S.border}` 
+          }}>
             <div style={{ color:S.gold, fontSize:"11px", fontWeight:"600", marginBottom:"6px" }}>🛒 Ingredients</div>
             <div style={{ display:"flex", flexWrap:"wrap", gap:"4px" }}>
               {(showAllIngredients ? recipe.ingredients : recipe.ingredients.slice(0,4)).map((ing,i) => (
-                <span key={i} style={{ background:`${S.gold}18`, color:S.champ, borderRadius:"20px", padding:"2px 10px", fontSize:"11px" }}>{ing}</span>
+                <span key={i} style={{ 
+                  background:`${S.gold}18`, 
+                  color:S.champ, 
+                  borderRadius:"20px", 
+                  padding:"2px 10px", 
+                  fontSize:"11px" 
+                }}>{ing}</span>
               ))}
               {recipe.ingredients.length > 4 && (
                 <button onClick={() => setShowAllIngredients(!showAllIngredients)}
-                  style={{ background:`${S.gold}28`, color:S.gold, borderRadius:"20px",
-                    padding:"2px 10px", fontSize:"11px", border:"none", cursor:"pointer", fontWeight:"600" }}>
+                  style={{ 
+                    background:`${S.gold}28`, 
+                    color:S.gold, 
+                    borderRadius:"20px",
+                    padding:"2px 10px", 
+                    fontSize:"11px", 
+                    border:"none", 
+                    cursor:"pointer", 
+                    fontWeight:"600" 
+                  }}>
                   {showAllIngredients ? "less" : `+${recipe.ingredients.length-4}`}
                 </button>
               )}
@@ -978,17 +1594,33 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
       </div>
 
       <div style={{ padding:"12px 16px 16px 16px" }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
-          paddingTop:"10px", borderTop:`1px solid ${S.border}` }}>
+        <div style={{ 
+          display:"flex", 
+          justifyContent:"space-between", 
+          alignItems:"center",
+          paddingTop:"10px", 
+          borderTop:`1px solid ${S.border}` 
+        }}>
           <div style={{ display:"flex", gap:"16px", alignItems:"center" }}>
             <button className="bde-icon-btn" onClick={() => onLike(recipe.id)}
-              style={{ display:"flex", alignItems:"center", gap:"6px",
-                color: recipe.liked ? "#ff6b8a" : S.muted, fontSize:"13px" }}>
+              style={{ 
+                display:"flex", 
+                alignItems:"center", 
+                gap:"6px",
+                color: recipe.liked ? "#ff6b8a" : S.muted, 
+                fontSize:"13px" 
+              }}>
               <FaHeart size={14} />
               <span style={{ fontWeight:"600" }}>{recipe.likes}</span>
             </button>
             <button className="bde-icon-btn" onClick={() => setShowComments(!showComments)}
-              style={{ display:"flex", alignItems:"center", gap:"6px", color:S.muted, fontSize:"13px" }}>
+              style={{ 
+                display:"flex", 
+                alignItems:"center", 
+                gap:"6px", 
+                color:S.muted, 
+                fontSize:"13px" 
+              }}>
               <FaComment size={14} />
               <span style={{ fontWeight:"600" }}>{comments.length}</span>
             </button>
@@ -1005,18 +1637,44 @@ function RecipeCard({ recipe, onLike, onSave, onDelete, currentUser, S, onOpenDe
                   <input value={newComment} onChange={e => setNewComment(e.target.value)}
                     onKeyDown={e => e.key === "Enter" && addComment()}
                     placeholder="Write a comment..."
-                    style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-                      borderRadius:"40px", padding:"9px 45px 9px 16px", color:S.text, fontSize:"13px", outline:"none" }} />
+                    style={{ 
+                      width:"100%", 
+                      background:S.card2, 
+                      border:`1px solid ${S.border}`,
+                      borderRadius:"40px", 
+                      padding:"9px 45px 9px 16px", 
+                      color:S.text, 
+                      fontSize:"13px", 
+                      outline:"none" 
+                    }} />
                   <button onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                    style={{ position:"absolute", right:"12px", top:"50%", transform:"translateY(-50%)",
-                      background:"none", border:"none", cursor:"pointer", color:S.muted, fontSize:"18px" }}>😊</button>
+                    style={{ 
+                      position:"absolute", 
+                      right:"12px", 
+                      top:"50%", 
+                      transform:"translateY(-50%)",
+                      background:"none", 
+                      border:"none", 
+                      cursor:"pointer", 
+                      color:S.muted, 
+                      fontSize:"18px" 
+                    }}>😊</button>
                   {showEmojiPicker && (
                     <EmojiPicker onSelect={e => setNewComment(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />
                   )}
                 </div>
                 <button onClick={addComment}
-                  style={{ background:S.grad, border:"none", borderRadius:"40px",
-                    padding:"9px 20px", color:"#fff", fontSize:"13px", cursor:"pointer", fontWeight:"600", whiteSpace:"nowrap" }}>Post</button>
+                  style={{ 
+                    background:S.grad, 
+                    border:"none", 
+                    borderRadius:"40px",
+                    padding:"9px 20px", 
+                    color:"#fff", 
+                    fontSize:"13px", 
+                    cursor:"pointer", 
+                    fontWeight:"600", 
+                    whiteSpace:"nowrap" 
+                  }}>Post</button>
               </div>
             ) : (
               <p style={{ color:S.muted, fontSize:"12px", textAlign:"center", marginTop:"10px" }}>Sign in to comment</p>
@@ -1033,42 +1691,96 @@ function HeroBanner({ recipe, onSignup, currentUser, onPost, S, isDark }) {
   if (!recipe) return null
   const allImages = recipe.images || (recipe.image_url ? [recipe.image_url] : [])
   return (
-    <div style={{ position:"relative", width:"100%", height:"460px", overflow:"hidden", borderBottom:`1px solid ${S.border}` }}>
+    <div style={{ 
+      position:"relative", 
+      width:"100%", 
+      height:"460px", 
+      overflow:"hidden", 
+      borderBottom:`1px solid ${S.border}` 
+    }}>
       <img src={allImages[0] || recipe.image_url} alt={recipe.title}
-        style={{ width:"100%", height:"100%", objectFit:"cover", filter:"brightness(0.55) saturate(1.2)" }} />
-      <div style={{ position:"absolute", inset:0,
+        style={{ 
+          width:"100%", 
+          height:"100%", 
+          objectFit:"cover", 
+          filter:"brightness(0.55) saturate(1.2)" 
+        }} />
+      <div style={{ 
+        position:"absolute", 
+        inset:0,
         background: isDark
           ? "linear-gradient(180deg, rgba(9,6,10,0.1) 0%, rgba(9,6,10,0.4) 50%, rgba(9,6,10,0.97) 100%)"
           : "linear-gradient(180deg, rgba(253,248,244,0.05) 0%, rgba(253,248,244,0.3) 50%, rgba(253,248,244,0.97) 100%)"
       }} />
-      <div className="bde-float" style={{ position:"absolute", top:"28px", left:"28px",
-        display:"flex", alignItems:"center", gap:"8px",
+      <div className="bde-float" style={{ 
+        position:"absolute", 
+        top:"28px", 
+        left:"28px",
+        display:"flex", 
+        alignItems:"center", 
+        gap:"8px",
         background: isDark ? "rgba(9,6,10,0.7)" : "rgba(255,255,255,0.9)",
-        backdropFilter:"blur(12px)", border:`1px solid ${S.gold}50`, borderRadius:"40px", padding:"8px 16px" }}>
+        backdropFilter:"blur(12px)", 
+        border:`1px solid ${S.gold}50`, 
+        borderRadius:"40px", 
+        padding:"8px 16px" 
+      }}>
         <FaFire color={S.gold} size={12} />
         <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>Featured Today</span>
         <span style={{ fontSize:"16px" }}>{recipe.author_flag}</span>
       </div>
-      <div style={{ position:"absolute", bottom:"32px", left:"32px", right:"32px", maxWidth:"680px" }}>
+      <div style={{ 
+        position:"absolute", 
+        bottom:"32px", 
+        left:"32px", 
+        right:"32px", 
+        maxWidth:"680px" 
+      }}>
         <div className="bde-hero-text">
-          <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"clamp(26px,5vw,48px)",
-            fontWeight:"900", color: isDark ? "#f5e6d0" : "#1a0a00",
-            lineHeight:"1.1", marginBottom:"12px" }}>
+          <h1 style={{ 
+            fontFamily:"'Playfair Display',serif", 
+            fontSize:"clamp(26px,5vw,48px)",
+            fontWeight:"900", 
+            color: isDark ? "#f5e6d0" : "#1a0a00",
+            lineHeight:"1.1", 
+            marginBottom:"12px" 
+          }}>
             {recipe.title}
           </h1>
         </div>
-        <p className="bde-hero-text-delay" style={{ color: isDark ? "#c8b8c4" : "#3a1f0d",
-          fontSize:"14px", lineHeight:"1.65", maxWidth:"520px", marginBottom:"20px" }}>
+        <p className="bde-hero-text-delay" style={{ 
+          color: isDark ? "#c8b8c4" : "#3a1f0d",
+          fontSize:"14px", 
+          lineHeight:"1.65", 
+          maxWidth:"520px", 
+          marginBottom:"20px" 
+        }}>
           {recipe.description}
         </p>
-        <div className="bde-hero-text-delay" style={{ display:"flex", alignItems:"center", gap:"16px", flexWrap:"wrap" }}>
+        <div className="bde-hero-text-delay" style={{ 
+          display:"flex", 
+          alignItems:"center", 
+          gap:"16px", 
+          flexWrap:"wrap" 
+        }}>
           <button className="bde-btn-grad" onClick={() => currentUser ? onPost() : onSignup()}
-            style={{ padding:"12px 28px", borderRadius:"40px", fontSize:"14px", background:S.grad, color:"#fff" }}>
+            style={{ 
+              padding:"12px 28px", 
+              borderRadius:"40px", 
+              fontSize:"14px", 
+              background:S.grad, 
+              color:"#fff" 
+            }}>
             {currentUser ? "✨ Share Your Recipe" : "Join the Community"}
           </button>
           <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
             <img src={recipe.author_avatar} alt={recipe.author_name}
-              style={{ width:"32px", height:"32px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
+              style={{ 
+                width:"32px", 
+                height:"32px", 
+                borderRadius:"50%", 
+                border:`2px solid ${S.gold}` 
+              }} />
             <span style={{ color: isDark ? "#fff" : "#1a0a00", fontSize:"13px" }}>
               by <strong>{recipe.author_name}</strong>
             </span>
@@ -1090,25 +1802,31 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   const [ingredients, setIngredients] = useState("")
   const [socials, setSocials] = useState({ instagram:"", tiktok:"", website:"", facebook:"" })
   const [affiliateLinks, setAffiliateLinks] = useState([{ name:"", url:"", image:"" }])
-  // ── FIX 2: Multiple images support ──
-  const [mediaFiles, setMediaFiles] = useState([]) // array of {file, preview, type}
+  const [mediaFiles, setMediaFiles] = useState([])
   const [videoFile, setVideoFile] = useState(null)
   const [videoPreview, setVideoPreview] = useState("")
   const [uploading, setUploading] = useState(false)
   const [error, setError] = useState("")
   const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
-  const iStyle = { width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-    borderRadius:"10px", padding:"12px 14px", color:S.text, fontSize:"14px", outline:"none" }
+  const iStyle = { 
+    width:"100%", 
+    background:S.card2, 
+    border:`1px solid ${S.border}`,
+    borderRadius:"10px", 
+    padding:"12px 14px", 
+    color:S.text, 
+    fontSize:"14px", 
+    outline:"none" 
+  }
 
-  // Handle multiple images
   const handleImages = e => {
     const files = Array.from(e.target.files).filter(f => f.type.startsWith("image/"))
     const newMedia = files.map(file => {
       const preview = URL.createObjectURL(file)
       return { file, preview, type:"image" }
     })
-    setMediaFiles(prev => [...prev, ...newMedia].slice(0, 6)) // max 6 images
+    setMediaFiles(prev => [...prev, ...newMedia].slice(0, 6))
   }
 
   const handleVideo = e => {
@@ -1133,14 +1851,14 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
       const { data: profile } = await supabase.from("profiles").select("id").eq("id", currentUser.id).single()
       if (!profile) {
         await supabase.from("profiles").insert({
-          id:currentUser.id, name:currentUser.name,
+          id:currentUser.id, 
+          name:currentUser.name,
           email:currentUser.email || `${currentUser.id}@temp.com`,
           country_flag:currentUser.countryFlag || "🌍",
           avatar:currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`
         })
       }
 
-      // Upload multiple images
       const uploadedImages = []
       for (const media of mediaFiles) {
         const ext = media.file.name.split(".").pop()
@@ -1151,7 +1869,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
         uploadedImages.push(urlData.publicUrl)
       }
 
-      // Upload video
       let video_url = null
       if (videoFile) {
         const ext = videoFile.name.split(".").pop()
@@ -1165,15 +1882,20 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
       const filteredLinks = affiliateLinks.filter(l => l.name.trim() && l.url.trim())
 
       const { data, error: insertError } = await supabase.from("recipes").insert({
-        title:title.trim(), description:description.trim(), category,
+        title:title.trim(), 
+        description:description.trim(), 
+        category,
         ingredients:ingredients.split("\n").filter(i => i.trim()),
         image_url: uploadedImages[0] || null,
         images: uploadedImages,
         video_url,
-        author_id:currentUser.id, author_name:currentUser.name,
+        author_id:currentUser.id, 
+        author_name:currentUser.name,
         author_flag:currentUser.countryFlag || "🌍",
         author_avatar:currentUser.avatar || `https://ui-avatars.com/api/?name=${currentUser.name}&background=d4a855&color=09060a&bold=true`,
-        socials, affiliate_links:filteredLinks, likes:0
+        socials, 
+        affiliate_links:filteredLinks, 
+        likes:0
       }).select().single()
 
       if (insertError) throw insertError
@@ -1188,17 +1910,53 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
   }
 
   return (
-    <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.96)" : "rgba(60,30,20,0.7)",
-      zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px", overflowY:"auto" }}>
-      <div style={{ background:S.card, borderRadius:"24px", width:"100%", maxWidth:"560px",
-        maxHeight:"90vh", overflowY:"auto", border:`1px solid ${S.border}`,
-        padding:"28px", position:"relative", boxShadow:`0 32px 80px ${S.shadow}` }}>
-        <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"20px" }}>
-          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"20px", fontWeight:"700" }}>🍽️ Share Your Recipe</h2>
+    <div style={{ 
+      position:"fixed", 
+      inset:0, 
+      background: S.mode === "dark" ? "rgba(9,6,10,0.96)" : "rgba(60,30,20,0.7)",
+      zIndex:1000, 
+      display:"flex", 
+      alignItems:"center", 
+      justifyContent:"center", 
+      padding:"20px", 
+      overflowY:"auto" 
+    }}>
+      <div style={{ 
+        background:S.card, 
+        borderRadius:"24px", 
+        width:"100%", 
+        maxWidth:"560px",
+        maxHeight:"90vh", 
+        overflowY:"auto", 
+        border:`1px solid ${S.border}`,
+        padding:"28px", 
+        position:"relative", 
+        boxShadow:`0 32px 80px ${S.shadow}` 
+      }}>
+        <div style={{ 
+          display:"flex", 
+          justifyContent:"space-between", 
+          alignItems:"center", 
+          marginBottom:"20px" 
+        }}>
+          <h2 style={{ 
+            fontFamily:"'Playfair Display',serif", 
+            color:S.champ, 
+            fontSize:"20px", 
+            fontWeight:"700" 
+          }}>🍽️ Share Your Recipe</h2>
           <button className="bde-icon-btn" onClick={onClose} style={{ color:S.muted, fontSize:"20px" }}><FaTimes /></button>
         </div>
 
-        {error && <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px", padding:"12px 16px", marginBottom:"16px", color:"#ef4444", fontSize:"13px" }}>{error}</div>}
+        {error && <div style={{ 
+          background:"#ef444420", 
+          border:"1px solid #ef4444", 
+          borderRadius:"10px", 
+          padding:"12px 16px", 
+          marginBottom:"16px", 
+          color:"#ef4444", 
+          fontSize:"13px" 
+        }}>{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
@@ -1209,7 +1967,15 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                 onChange={e => setDescription(e.target.value)} required rows={5}
                 style={{ ...iStyle, resize:"vertical", paddingRight:"40px" }} />
               <button type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                style={{ position:"absolute", bottom:"10px", right:"10px", background:"none", border:"none", cursor:"pointer", fontSize:"18px" }}>😊</button>
+                style={{ 
+                  position:"absolute", 
+                  bottom:"10px", 
+                  right:"10px", 
+                  background:"none", 
+                  border:"none", 
+                  cursor:"pointer", 
+                  fontSize:"18px" 
+                }}>😊</button>
               {showEmojiPicker && <EmojiPicker onSelect={e => setDescription(prev => prev + e)} onClose={() => setShowEmojiPicker(false)} />}
             </div>
 
@@ -1222,7 +1988,12 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
               onChange={e => setIngredients(e.target.value)} rows={3}
               style={{ ...iStyle, resize:"vertical", fontFamily:"monospace", fontSize:"13px" }} />
 
-            <div style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"10px", padding:"14px" }}>
+            <div style={{ 
+              background:S.card2, 
+              border:`1px solid ${S.border}`, 
+              borderRadius:"10px", 
+              padding:"14px" 
+            }}>
               <p style={{ color:S.gold, fontSize:"12px", fontWeight:"600", marginBottom:"10px" }}>🌐 Connect Your Socials</p>
               {[{ key:"instagram", placeholder:"📸 Instagram (@handle)" },{ key:"tiktok", placeholder:"🎵 TikTok (@handle)" },
                 { key:"website", placeholder:"🌍 Website / Portfolio" },{ key:"facebook", placeholder:"👥 Facebook page" }].map(({ key, placeholder }) => (
@@ -1233,24 +2004,54 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
             </div>
 
             {/* Affiliate links with image field */}
-            <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`, borderRadius:"10px", padding:"14px" }}>
-              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
+            <div style={{ 
+              background:`rgba(245,166,35,0.08)`, 
+              border:`1px solid rgba(245,166,35,0.3)`, 
+              borderRadius:"10px", 
+              padding:"14px" 
+            }}>
+              <div style={{ 
+                display:"flex", 
+                justifyContent:"space-between", 
+                alignItems:"center", 
+                marginBottom:"10px" 
+              }}>
                 <p style={{ color:"#f5a623", fontSize:"12px", fontWeight:"700", margin:0 }}>🛒 Affiliate / Shop Links</p>
                 <button type="button" onClick={() => setAffiliateLinks([...affiliateLinks, { name:"", url:"", image:"" }])}
-                  style={{ background:S.grad, border:"none", borderRadius:"50%", width:"28px", height:"28px",
-                    cursor:"pointer", color:"#fff", display:"flex", alignItems:"center", justifyContent:"center" }}>
+                  style={{ 
+                    background:S.grad, 
+                    border:"none", 
+                    borderRadius:"50%", 
+                    width:"28px", 
+                    height:"28px",
+                    cursor:"pointer", 
+                    color:"#fff", 
+                    display:"flex", 
+                    alignItems:"center", 
+                    justifyContent:"center" 
+                  }}>
                   <FaPlus size={12} />
                 </button>
               </div>
               {affiliateLinks.map((link, i) => (
-                <div key={i} style={{ marginBottom:"10px", padding:"10px", background:`rgba(0,0,0,0.15)`, borderRadius:"8px" }}>
+                <div key={i} style={{ 
+                  marginBottom:"10px", 
+                  padding:"10px", 
+                  background:`rgba(0,0,0,0.15)`, 
+                  borderRadius:"8px" 
+                }}>
                   <div style={{ display:"flex", gap:"6px", marginBottom:"6px" }}>
                     <input placeholder="Product name" value={link.name}
                       onChange={e => handleAffiliateChange(i, "name", e.target.value)}
                       style={{ ...iStyle, fontSize:"11px", flex:1 }} />
                     {affiliateLinks.length > 1 && (
                       <button type="button" onClick={() => setAffiliateLinks(affiliateLinks.filter((_,j) => j !== i))}
-                        style={{ background:"none", border:"none", color:"#ef4444", cursor:"pointer" }}><FaTrash size={14} /></button>
+                        style={{ 
+                          background:"none", 
+                          border:"none", 
+                          color:"#ef4444", 
+                          cursor:"pointer" 
+                        }}><FaTrash size={14} /></button>
                     )}
                   </div>
                   <input placeholder="Product link (https://amzn.to/...)" value={link.url}
@@ -1261,21 +2062,46 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                     style={{ ...iStyle, fontSize:"11px" }} />
                   {link.image && (
                     <img src={link.image} alt="preview"
-                      style={{ width:"48px", height:"48px", objectFit:"cover", borderRadius:"6px", marginTop:"6px", border:`1px solid ${S.border}` }} />
+                      style={{ 
+                        width:"48px", 
+                        height:"48px", 
+                        objectFit:"cover", 
+                        borderRadius:"6px", 
+                        marginTop:"6px", 
+                        border:`1px solid ${S.border}` 
+                      }} />
                   )}
                 </div>
               ))}
               <p style={{ color:S.muted, fontSize:"10px" }}>Paste an Amazon product image URL for the thumbnail. It shows as a shop card with photo.</p>
             </div>
 
-            {/* ── FIX 2: Multiple images upload ── */}
-            <div style={{ border:`2px dashed ${S.rose}60`, borderRadius:"12px", padding:"16px", background:`${S.rose}05` }}>
-              <p style={{ color:S.rose, fontWeight:"700", fontSize:"13px", marginBottom:"10px", textAlign:"center" }}>
+            {/* Multiple images upload */}
+            <div style={{ 
+              border:`2px dashed ${S.rose}60`, 
+              borderRadius:"12px", 
+              padding:"16px", 
+              background:`${S.rose}05` 
+            }}>
+              <p style={{ 
+                color:S.rose, 
+                fontWeight:"700", 
+                fontSize:"13px", 
+                marginBottom:"10px", 
+                textAlign:"center" 
+              }}>
                 📸 Photos (up to 6 images)
               </p>
               <label style={{ cursor:"pointer", display:"block", textAlign:"center" }}>
                 <input type="file" accept="image/*" multiple onChange={handleImages} style={{ display:"none" }} />
-                <div style={{ padding:"10px", background:`${S.gold}15`, borderRadius:"8px", color:S.gold, fontSize:"12px", fontWeight:"600" }}>
+                <div style={{ 
+                  padding:"10px", 
+                  background:`${S.gold}15`, 
+                  borderRadius:"8px", 
+                  color:S.gold, 
+                  fontSize:"12px", 
+                  fontWeight:"600" 
+                }}>
                   + Add Photos ({mediaFiles.length}/6)
                 </div>
               </label>
@@ -1283,12 +2109,41 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                 <div style={{ display:"flex", gap:"8px", flexWrap:"wrap", marginTop:"10px" }}>
                   {mediaFiles.map((m, i) => (
                     <div key={i} style={{ position:"relative" }}>
-                      <img src={m.preview} alt="" style={{ width:"72px", height:"72px", objectFit:"cover", borderRadius:"8px", border:`2px solid ${i === 0 ? S.gold : S.border}` }} />
-                      {i === 0 && <div style={{ position:"absolute", bottom:"2px", left:"2px", background:S.gold, borderRadius:"4px", fontSize:"8px", color:"#000", padding:"1px 4px", fontWeight:"700" }}>MAIN</div>}
+                      <img src={m.preview} alt="" style={{ 
+                        width:"72px", 
+                        height:"72px", 
+                        objectFit:"cover", 
+                        borderRadius:"8px", 
+                        border:`2px solid ${i === 0 ? S.gold : S.border}` 
+                      }} />
+                      {i === 0 && <div style={{ 
+                        position:"absolute", 
+                        bottom:"2px", 
+                        left:"2px", 
+                        background:S.gold, 
+                        borderRadius:"4px", 
+                        fontSize:"8px", 
+                        color:"#000", 
+                        padding:"1px 4px", 
+                        fontWeight:"700" 
+                      }}>MAIN</div>}
                       <button type="button" onClick={() => removeImage(i)}
-                        style={{ position:"absolute", top:"-6px", right:"-6px", background:"#ef4444", border:"none",
-                          borderRadius:"50%", width:"18px", height:"18px", cursor:"pointer", color:"#fff",
-                          display:"flex", alignItems:"center", justifyContent:"center", fontSize:"10px" }}>×</button>
+                        style={{ 
+                          position:"absolute", 
+                          top:"-6px", 
+                          right:"-6px", 
+                          background:"#ef4444", 
+                          border:"none",
+                          borderRadius:"50%", 
+                          width:"18px", 
+                          height:"18px", 
+                          cursor:"pointer", 
+                          color:"#fff",
+                          display:"flex", 
+                          alignItems:"center", 
+                          justifyContent:"center", 
+                          fontSize:"10px" 
+                        }}>×</button>
                     </div>
                   ))}
                 </div>
@@ -1296,13 +2151,29 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
             </div>
 
             {/* Video upload */}
-            <div style={{ border:`2px dashed ${S.border}`, borderRadius:"12px", padding:"16px" }}>
-              <p style={{ color:S.muted, fontWeight:"600", fontSize:"13px", marginBottom:"10px", textAlign:"center" }}>
+            <div style={{ 
+              border:`2px dashed ${S.border}`, 
+              borderRadius:"12px", 
+              padding:"16px" 
+            }}>
+              <p style={{ 
+                color:S.muted, 
+                fontWeight:"600", 
+                fontSize:"13px", 
+                marginBottom:"10px", 
+                textAlign:"center" 
+              }}>
                 📹 Video (optional — 1 video per post)
               </p>
               <label style={{ cursor:"pointer", display:"block", textAlign:"center" }}>
                 <input type="file" accept="video/*" onChange={handleVideo} style={{ display:"none" }} />
-                <div style={{ padding:"10px", background:`${S.card2}`, borderRadius:"8px", color:S.muted, fontSize:"12px" }}>
+                <div style={{ 
+                  padding:"10px", 
+                  background:`${S.card2}`, 
+                  borderRadius:"8px", 
+                  color:S.muted, 
+                  fontSize:"12px" 
+                }}>
                   {videoPreview ? "Change video" : "+ Add a video"}
                 </div>
               </label>
@@ -1310,15 +2181,34 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
                 <div style={{ position:"relative", marginTop:"10px", borderRadius:"8px", overflow:"hidden" }}>
                   <video src={videoPreview} controls style={{ width:"100%", maxHeight:"160px" }} />
                   <button type="button" onClick={() => { setVideoFile(null); setVideoPreview("") }}
-                    style={{ position:"absolute", top:"6px", right:"6px", background:"rgba(239,68,68,0.9)",
-                      border:"none", color:"#fff", borderRadius:"50%", width:"24px", height:"24px", cursor:"pointer" }}>×</button>
+                    style={{ 
+                      position:"absolute", 
+                      top:"6px", 
+                      right:"6px", 
+                      background:"rgba(239,68,68,0.9)",
+                      border:"none", 
+                      color:"#fff", 
+                      borderRadius:"50%", 
+                      width:"24px", 
+                      height:"24px", 
+                      cursor:"pointer" 
+                    }}>×</button>
                 </div>
               )}
             </div>
 
             <button type="submit" disabled={uploading}
-              style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", fontWeight:"700",
-                background:S.grad, color:"#fff", border:"none", cursor:"pointer", opacity: uploading ? 0.7 : 1 }}>
+              style={{ 
+                padding:"14px", 
+                borderRadius:"12px", 
+                fontSize:"15px", 
+                fontWeight:"700",
+                background:S.grad, 
+                color:"#fff", 
+                border:"none", 
+                cursor:"pointer", 
+                opacity: uploading ? 0.7 : 1 
+              }}>
               {uploading ? "⏳ Uploading..." : "🍽️ Share Recipe"}
             </button>
           </div>
@@ -1339,8 +2229,16 @@ function AuthModal({ onClose, onLogin, S }) {
   const [error, setError] = useState("")
   const [verifyEmailSent, setVerifyEmailSent] = useState(false)
 
-  const iStyle = { width:"100%", background:S.card2, border:`1px solid ${S.border}`,
-    borderRadius:"10px", padding:"13px 16px", color:S.text, fontSize:"14px", outline:"none" }
+  const iStyle = { 
+    width:"100%", 
+    background:S.card2, 
+    border:`1px solid ${S.border}`,
+    borderRadius:"10px", 
+    padding:"13px 16px", 
+    color:S.text, 
+    fontSize:"14px", 
+    outline:"none" 
+  }
 
   const handleSubmit = async e => {
     e.preventDefault(); setLoading(true); setError("")
@@ -1348,10 +2246,26 @@ function AuthModal({ onClose, onLogin, S }) {
       if (isSignUp) {
         const sel = countries.find(c => c.code === country)
         const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name||email)}&background=d4a855&color=09060a&bold=true`
-        const { data, error:err } = await supabase.auth.signUp({ email, password, options:{ data:{ name:name.trim()||email.split("@")[0], country_flag:sel?.flag||"🌍", avatar } } })
+        const { data, error:err } = await supabase.auth.signUp({ 
+          email, 
+          password, 
+          options:{ 
+            data:{ 
+              name:name.trim()||email.split("@")[0], 
+              country_flag:sel?.flag||"🌍", 
+              avatar 
+            } 
+          } 
+        })
         if (err) throw err
         if (data.user) {
-          await supabase.from("profiles").insert({ id:data.user.id, name:name.trim()||email.split("@")[0], email, country_flag:sel?.flag||"🌍", avatar })
+          await supabase.from("profiles").insert({ 
+            id:data.user.id, 
+            name:name.trim()||email.split("@")[0], 
+            email, 
+            country_flag:sel?.flag||"🌍", 
+            avatar 
+          })
           setVerifyEmailSent(true)
         }
       } else {
@@ -1359,7 +2273,13 @@ function AuthModal({ onClose, onLogin, S }) {
         if (err) throw err
         if (data.user) {
           const { data:profile } = await supabase.from("profiles").select("*").eq("id", data.user.id).single()
-          onLogin({ id:data.user.id, email:data.user.email, name:profile?.name||data.user.email.split("@")[0], countryFlag:profile?.country_flag||"🌍", avatar:profile?.avatar||`https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.email)}&background=d4a855&color=09060a&bold=true` })
+          onLogin({ 
+            id:data.user.id, 
+            email:data.user.email, 
+            name:profile?.name||data.user.email.split("@")[0], 
+            countryFlag:profile?.country_flag||"🌍", 
+            avatar:profile?.avatar||`https://ui-avatars.com/api/?name=${encodeURIComponent(data.user.email)}&background=d4a855&color=09060a&bold=true` 
+          })
           onClose()
         }
       }
@@ -1368,86 +2288,121 @@ function AuthModal({ onClose, onLogin, S }) {
 
   if (verifyEmailSent) {
     return (
-      <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
-        <div style={{ background:S.card, borderRadius:"28px", maxWidth:"420px", width:"100%", border:`1px solid ${S.border}`, padding:"40px 32px", textAlign:"center", boxShadow:`0 40px 100px ${S.shadow}` }}>
-
-          <div style={{ fontSize:"60px", marginBottom:"12px" }}>📧</div>
-          <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"22px", marginBottom:"6px" }}>
-            Almost there!
-          </h2>
-          <p style={{ color:S.muted, fontSize:"13px", marginBottom:"20px" }}>
-            One quick step before you can start posting.
-          </p>
-
-          {/* Email highlight */}
-          <div style={{ background:`${S.gold}15`, border:`1px solid ${S.gold}50`, borderRadius:"12px", padding:"14px 16px", marginBottom:"24px" }}>
-            <p style={{ color:S.text, fontSize:"13px", margin:0, lineHeight:"1.6" }}>
-              We sent a verification link to<br />
-              <strong style={{ color:S.gold, fontSize:"15px" }}>{email}</strong>
+      <div style={{ 
+        position:"fixed", 
+        inset:0, 
+        background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", 
+        zIndex:2000, 
+        display:"flex", 
+        alignItems:"center", 
+        justifyContent:"center", 
+        padding:"20px" 
+      }}>
+        <div style={{ 
+          background:S.card, 
+          borderRadius:"28px", 
+          maxWidth:"400px", 
+          width:"100%", 
+          border:`1px solid ${S.border}`, 
+          padding:"48px 32px", 
+          textAlign:"center", 
+          boxShadow:`0 40px 100px ${S.shadow}` 
+        }}>
+          <div style={{ fontSize:"64px", marginBottom:"16px" }}>📧</div>
+          <h2 style={{ 
+            fontFamily:"'Playfair Display',serif", 
+            color:S.champ, 
+            fontSize:"22px", 
+            marginBottom:"12px" 
+          }}>Check Your Email!</h2>
+          <div style={{ 
+            background:`${S.gold}15`, 
+            border:`1px solid ${S.gold}40`, 
+            borderRadius:"12px", 
+            padding:"16px", 
+            marginBottom:"20px" 
+          }}>
+            <p style={{ color:S.text, fontSize:"14px", lineHeight:"1.7", margin:0 }}>
+              We sent a verification link to<br /><strong style={{ color:S.gold }}>{email}</strong>
             </p>
           </div>
-
-          {/* Step by step instructions */}
-          <div style={{ display:"flex", flexDirection:"column", gap:"10px", marginBottom:"28px", textAlign:"left" }}>
-            {[
-              { step:"1", icon:"📬", text:"Open your email inbox (check spam too if you don't see it)" },
-              { step:"2", icon:"🔗", text:'Find the email from BetterDays Eats and click the "Verify my email" link' },
-              { step:"3", icon:"↩️", text:"Come back to this app after clicking the link" },
-              { step:"4", icon:"🔑", text:'Click "Sign In" and log in with your email and password' },
-              { step:"5", icon:"🍽️", text:"You're in! Start sharing your recipes with the world" },
-            ].map(({ step, icon, text }) => (
-              <div key={step} style={{ display:"flex", alignItems:"flex-start", gap:"12px",
-                background:S.card2, borderRadius:"10px", padding:"10px 14px",
-                border:`1px solid ${S.border}` }}>
-                <div style={{ background:S.grad, borderRadius:"50%", width:"24px", height:"24px",
-                  display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:"11px", fontWeight:"800", color:"#fff", flexShrink:0, marginTop:"1px" }}>
-                  {step}
-                </div>
-                <p style={{ color:S.text, fontSize:"12px", lineHeight:"1.6", margin:0 }}>
-                  <span style={{ fontSize:"14px", marginRight:"6px" }}>{icon}</span>
-                  {text}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Warning */}
-          <div style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.25)",
-            borderRadius:"10px", padding:"10px 14px", marginBottom:"20px" }}>
-            <p style={{ color:"#ef4444", fontSize:"12px", margin:0, lineHeight:"1.6" }}>
-              ⚠️ <strong>Do not skip this step.</strong> You will not be able to post recipes or comment until your email is verified.
-            </p>
-          </div>
-
-          <button onClick={onClose}
-            style={{ padding:"14px", borderRadius:"12px", fontSize:"14px", fontWeight:"700",
-              background:S.grad, color:"#fff", border:"none", cursor:"pointer", width:"100%" }}>
-            Got it — opening my email now 📬
-          </button>
-
-          <p style={{ color:S.muted, fontSize:"11px", marginTop:"14px", lineHeight:"1.6" }}>
-            Didn't get the email? Check your spam folder or{" "}
-            <button onClick={() => { setVerifyEmailSent(false); setError("") }}
-              style={{ background:"none", border:"none", color:S.gold, cursor:"pointer", fontSize:"11px", fontWeight:"600", padding:0 }}>
-              try again with a different email
-            </button>
+          <p style={{ 
+            color:S.muted, 
+            fontSize:"13px", 
+            lineHeight:"1.6", 
+            marginBottom:"24px" 
+          }}>
+            ⚠️ <strong>You must verify your email before you can post.</strong><br />
+            Check your inbox (and spam folder) and click the link.
           </p>
+          <button onClick={onClose} style={{ 
+            padding:"13px", 
+            borderRadius:"12px", 
+            fontSize:"14px", 
+            fontWeight:"700", 
+            background:S.grad, 
+            color:"#fff", 
+            border:"none", 
+            cursor:"pointer", 
+            width:"100%" 
+          }}>Got it — I'll check my email ✅</button>
         </div>
       </div>
     )
   }
 
   return (
-    <div style={{ position:"fixed", inset:0, background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:"20px" }}>
-      <div style={{ background:S.card, borderRadius:"28px", maxWidth:"400px", width:"100%", border:`1px solid ${S.border}`, padding:"40px 32px", position:"relative", boxShadow:`0 40px 100px ${S.shadow}` }}>
-        <button className="bde-icon-btn" onClick={onClose} style={{ position:"absolute", top:"16px", right:"16px", color:S.muted, fontSize:"18px" }}><FaTimes /></button>
+    <div style={{ 
+      position:"fixed", 
+      inset:0, 
+      background: S.mode === "dark" ? "rgba(9,6,10,0.97)" : "rgba(60,30,20,0.7)", 
+      zIndex:2000, 
+      display:"flex", 
+      alignItems:"center", 
+      justifyContent:"center", 
+      padding:"20px" 
+    }}>
+      <div style={{ 
+        background:S.card, 
+        borderRadius:"28px", 
+        maxWidth:"400px", 
+        width:"100%", 
+        border:`1px solid ${S.border}`, 
+        padding:"40px 32px", 
+        position:"relative", 
+        boxShadow:`0 40px 100px ${S.shadow}` 
+      }}>
+        <button className="bde-icon-btn" onClick={onClose} style={{ 
+          position:"absolute", 
+          top:"16px", 
+          right:"16px", 
+          color:S.muted, 
+          fontSize:"18px" 
+        }}><FaTimes /></button>
         <div style={{ textAlign:"center", marginBottom:"24px" }}>
           <div style={{ fontSize:"48px", marginBottom:"10px" }}>👨‍🍳</div>
-          <h1 style={{ fontFamily:"'Playfair Display',serif", fontSize:"24px", fontWeight:"900", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", margin:"0 0 6px 0" }}>BetterDays Eats</h1>
-          <p style={{ color:S.muted, fontSize:"12px" }}>{isSignUp ? "Join our global food community 🌍" : "Welcome back! 👋"}</p>
+          <h1 style={{ 
+            fontFamily:"'Playfair Display',serif", 
+            fontSize:"24px", 
+            fontWeight:"900", 
+            background:S.grad, 
+            WebkitBackgroundClip:"text", 
+            WebkitTextFillColor:"transparent", 
+            margin:"0 0 6px 0" 
+          }}>BetterDays Eats</h1>
+          <p style={{ color:S.muted, fontSize:"12px" }}>
+            {isSignUp ? "Join our global food community 🌍" : "Welcome back! 👋"}
+          </p>
         </div>
-        {error && <div style={{ background:"#ef444420", border:"1px solid #ef4444", borderRadius:"10px", padding:"12px", marginBottom:"14px", color:"#ef4444", fontSize:"13px" }}>{error}</div>}
+        {error && <div style={{ 
+          background:"#ef444420", 
+          border:"1px solid #ef4444", 
+          borderRadius:"10px", 
+          padding:"12px", 
+          marginBottom:"14px", 
+          color:"#ef4444", 
+          fontSize:"13px" 
+        }}>{error}</div>}
         <form onSubmit={handleSubmit} style={{ display:"flex", flexDirection:"column", gap:"10px" }}>
           {isSignUp && (
             <>
@@ -1460,16 +2415,44 @@ function AuthModal({ onClose, onLogin, S }) {
           <input type="email" placeholder="Email *" value={email} onChange={e => setEmail(e.target.value)} required style={iStyle} />
           <input type="password" placeholder="Password *" value={password} onChange={e => setPassword(e.target.value)} required minLength={6} style={iStyle} />
           <button type="submit" disabled={loading}
-            style={{ padding:"14px", borderRadius:"12px", fontSize:"15px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer", opacity: loading ? 0.7 : 1 }}>
+            style={{ 
+              padding:"14px", 
+              borderRadius:"12px", 
+              fontSize:"15px", 
+              fontWeight:"700", 
+              background:S.grad, 
+              color:"#fff", 
+              border:"none", 
+              cursor:"pointer", 
+              opacity: loading ? 0.7 : 1 
+            }}>
             {loading ? "⏳ Please wait..." : isSignUp ? "Join the Community" : "Sign In"}
           </button>
         </form>
         <button onClick={() => { setIsSignUp(!isSignUp); setError("") }}
-          style={{ background:"none", border:"none", color:S.gold, cursor:"pointer", fontSize:"13px", width:"100%", textAlign:"center", marginTop:"14px" }}>
+          style={{ 
+            background:"none", 
+            border:"none", 
+            color:S.gold, 
+            cursor:"pointer",
+            fontSize:"13px", 
+            width:"100%", 
+            textAlign:"center", 
+            marginTop:"14px" 
+          }}>
           {isSignUp ? "Already a member? Sign in" : "New here? Create account"}
         </button>
         <button onClick={onClose}
-          style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"12px", width:"100%", textAlign:"center", marginTop:"8px" }}>
+          style={{ 
+            background:"none", 
+            border:"none", 
+            color:S.muted, 
+            cursor:"pointer",
+            fontSize:"12px", 
+            width:"100%", 
+            textAlign:"center", 
+            marginTop:"8px" 
+          }}>
           Browse as guest
         </button>
       </div>
@@ -1483,18 +2466,41 @@ function MyPostsPage({ currentUser, allPosts, onLike, onSave, onDelete, S, setSh
   const savedPosts = allPosts.filter(p => p.saved)
   return (
     <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
-      <div style={{ background:S.card, borderRadius:"20px", border:`1px solid ${S.border}`, padding:"32px", marginBottom:"24px", display:"flex", alignItems:"center", gap:"24px", flexWrap:"wrap" }}>
-        <img src={currentUser?.avatar} alt={currentUser?.name} style={{ width:"80px", height:"80px", borderRadius:"50%", border:`3px solid ${S.gold}` }} />
+      <div style={{ 
+        background:S.card, 
+        borderRadius:"20px", 
+        border:`1px solid ${S.border}`, 
+        padding:"32px", 
+        marginBottom:"24px", 
+        display:"flex", 
+        alignItems:"center", 
+        gap:"24px", 
+        flexWrap:"wrap" 
+      }}>
+        <img src={currentUser?.avatar} alt={currentUser?.name} style={{ 
+          width:"80px", 
+          height:"80px", 
+          borderRadius:"50%", 
+          border:`3px solid ${S.gold}` 
+        }} />
         <div>
           <h2 style={{ color:S.champ, marginBottom:"4px" }}>{currentUser?.name}</h2>
-          <p style={{ color:S.muted, fontSize:"13px" }}>{currentUser?.countryFlag} · Joined {new Date(currentUser?.joinDate || Date.now()).toLocaleDateString()}</p>
+          <p style={{ color:S.muted, fontSize:"13px" }}>
+            {currentUser?.countryFlag} · Joined {new Date(currentUser?.joinDate || Date.now()).toLocaleDateString()}
+          </p>
           <div style={{ display:"flex", gap:"20px", marginTop:"8px" }}>
             <span><strong style={{ color:S.gold }}>{myPosts.length}</strong> Recipes</span>
             <span><strong style={{ color:S.gold }}>{savedPosts.length}</strong> Favorites</span>
           </div>
         </div>
         <button onClick={() => setShowCreate(true)} className="bde-btn-grad"
-          style={{ padding:"10px 24px", borderRadius:"40px", marginLeft:"auto", background:S.grad, color:"#fff" }}>
+          style={{ 
+            padding:"10px 24px", 
+            borderRadius:"40px", 
+            marginLeft:"auto", 
+            background:S.grad, 
+            color:"#fff" 
+          }}>
           ✨ New Recipe
         </button>
       </div>
@@ -1503,7 +2509,13 @@ function MyPostsPage({ currentUser, allPosts, onLike, onSave, onDelete, S, setSh
           <div style={{ fontSize:"48px", marginBottom:"16px" }}>📝</div>
           <p style={{ fontSize:"16px" }}>You haven't posted any recipes yet.</p>
           <button onClick={() => setShowCreate(true)} className="bde-btn-grad"
-            style={{ padding:"12px 28px", borderRadius:"40px", marginTop:"16px", background:S.grad, color:"#fff" }}>
+            style={{ 
+              padding:"12px 28px", 
+              borderRadius:"40px", 
+              marginTop:"16px", 
+              background:S.grad, 
+              color:"#fff" 
+            }}>
             ✨ Share Your First Recipe
           </button>
         </div>
@@ -1511,7 +2523,15 @@ function MyPostsPage({ currentUser, allPosts, onLike, onSave, onDelete, S, setSh
         <div style={{ columns:2, columnGap:"20px" }}>
           {myPosts.map(post => (
             <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-              <RecipeCard recipe={post} onLike={onLike} onSave={onSave} onDelete={onDelete} currentUser={currentUser} S={S} onOpenDetail={onOpenDetail} />
+              <RecipeCard 
+                recipe={post} 
+                onLike={onLike} 
+                onSave={onSave} 
+                onDelete={onDelete} 
+                currentUser={currentUser} 
+                S={S} 
+                onOpenDetail={onOpenDetail} 
+              />
             </div>
           ))}
         </div>
@@ -1525,7 +2545,13 @@ function FavoritesPage({ allPosts, onLike, onSave, onDelete, currentUser, S, onO
   const savedPosts = allPosts.filter(p => p.saved)
   return (
     <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
-      <h2 style={{ color:S.champ, marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}>
+      <h2 style={{ 
+        color:S.champ, 
+        marginBottom:"16px", 
+        display:"flex", 
+        alignItems:"center", 
+        gap:"8px" 
+      }}>
         <FaStar color={S.gold} /> Your Favorites
       </h2>
       {savedPosts.length === 0 ? (
@@ -1538,7 +2564,15 @@ function FavoritesPage({ allPosts, onLike, onSave, onDelete, currentUser, S, onO
         <div style={{ columns:2, columnGap:"20px" }}>
           {savedPosts.map(post => (
             <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-              <RecipeCard recipe={post} onLike={onLike} onSave={onSave} onDelete={onDelete} currentUser={currentUser} S={S} onOpenDetail={onOpenDetail} />
+              <RecipeCard 
+                recipe={post} 
+                onLike={onLike} 
+                onSave={onSave} 
+                onDelete={onDelete} 
+                currentUser={currentUser} 
+                S={S} 
+                onOpenDetail={onOpenDetail} 
+              />
             </div>
           ))}
         </div>
@@ -1551,12 +2585,42 @@ function FavoritesPage({ allPosts, onLike, onSave, onDelete, currentUser, S, onO
 function StubPage({ icon, title, body, onBack, S }) {
   return (
     <div style={{ maxWidth:"700px", margin:"0 auto", padding:"40px 24px" }}>
-      <div style={{ background:S.card, borderRadius:"24px", padding:"48px 36px", border:`1px solid ${S.border}`, textAlign:"center", position:"relative" }}>
-        <button onClick={onBack} style={{ position:"absolute", top:"16px", left:"16px", background:"none", border:"none", color:S.muted, fontSize:"16px", cursor:"pointer" }}>← Back</button>
+      <div style={{ 
+        background:S.card, 
+        borderRadius:"24px", 
+        padding:"48px 36px", 
+        border:`1px solid ${S.border}`, 
+        textAlign:"center", 
+        position:"relative" 
+      }}>
+        <button onClick={onBack} style={{ 
+          position:"absolute", 
+          top:"16px", 
+          left:"16px", 
+          background:"none", 
+          border:"none", 
+          color:S.muted, 
+          fontSize:"16px", 
+          cursor:"pointer" 
+        }}>← Back</button>
         <div style={{ fontSize:"52px", marginBottom:"16px" }}>{icon}</div>
-        <h1 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, fontSize:"26px", marginBottom:"12px" }}>{title}</h1>
+        <h1 style={{ 
+          fontFamily:"'Playfair Display',serif", 
+          color:S.champ, 
+          fontSize:"26px", 
+          marginBottom:"12px" 
+        }}>{title}</h1>
         <p style={{ color:S.muted }}>{body}</p>
-        <div style={{ marginTop:"24px", padding:"12px 20px", background:`${S.gold}12`, borderRadius:"40px", display:"inline-block", border:`1px solid ${S.gold}30`, color:S.gold, fontSize:"13px" }}>Coming soon ✨</div>
+        <div style={{ 
+          marginTop:"24px", 
+          padding:"12px 20px", 
+          background:`${S.gold}12`, 
+          borderRadius:"40px", 
+          display:"inline-block", 
+          border:`1px solid ${S.gold}30`, 
+          color:S.gold, 
+          fontSize:"13px" 
+        }}>Coming soon ✨</div>
       </div>
     </div>
   )
@@ -1565,18 +2629,75 @@ function StubPage({ icon, title, body, onBack, S }) {
 // ─── DROP MENU ──────────────────────────────────────────────────────────────
 function DropMenu({ currentPage, setCurrentPage, onClose, S }) {
   const groups = [
-    { label:"Food Business", items:[{ id:"restaurants",label:"🏪 Restaurants" },{ id:"jobs",label:"💼 Jobs" },{ id:"business",label:"💡 Business Ideas" },{ id:"equipment",label:"🛒 Equipment" },{ id:"schools",label:"🏫 Culinary Schools" }] },
-    { label:"Resources", items:[{ id:"kids",label:"👶 Kids Nutrition" },{ id:"fasting",label:"🕐 Fasting Guide" },{ id:"disorders",label:"💙 Food Wellness" },{ id:"donations",label:"❤️ Donate" },{ id:"books",label:"📚 Books" }] },
-    { label:"Info", items:[{ id:"about",label:"📖 About" },{ id:"faq",label:"❓ FAQ" },{ id:"contact",label:"📧 Contact" },{ id:"privacy",label:"🔒 Privacy" },{ id:"terms",label:"⚖️ Terms" }] },
+    { 
+      label:"Food Business", 
+      items:[
+        { id:"restaurants",label:"🏪 Restaurants" },
+        { id:"jobs",label:"💼 Jobs" },
+        { id:"business",label:"💡 Business Ideas" },
+        { id:"equipment",label:"🛒 Equipment" },
+        { id:"schools",label:"🏫 Culinary Schools" }
+      ] 
+    },
+    { 
+      label:"Resources", 
+      items:[
+        { id:"kids",label:"👶 Kids Nutrition" },
+        { id:"fasting",label:"🕐 Fasting Guide" },
+        { id:"disorders",label:"💙 Food Wellness" },
+        { id:"donations",label:"❤️ Donate" },
+        { id:"books",label:"📚 Books" }
+      ] 
+    },
+    { 
+      label:"Info", 
+      items:[
+        { id:"about",label:"📖 About" },
+        { id:"faq",label:"❓ FAQ" },
+        { id:"contact",label:"📧 Contact" },
+        { id:"privacy",label:"🔒 Privacy" },
+        { id:"terms",label:"⚖️ Terms" }
+      ] 
+    },
   ]
   return (
-    <div style={{ position:"absolute", top:"100%", left:0, marginTop:"6px", background:S.card, border:`1px solid ${S.border}`, borderRadius:"16px", padding:"8px 0", zIndex:99999, minWidth:"220px", boxShadow:`0 16px 48px ${S.shadow}` }}>
+    <div style={{ 
+      position:"absolute", 
+      top:"100%", 
+      left:0, 
+      marginTop:"6px", 
+      background:S.card, 
+      border:`1px solid ${S.border}`, 
+      borderRadius:"16px", 
+      padding:"8px 0", 
+      zIndex:99999, 
+      minWidth:"220px", 
+      boxShadow:`0 16px 48px ${S.shadow}` 
+    }}>
       {groups.map((g, gi) => (
         <div key={gi}>
-          <p style={{ color:S.muted, fontSize:"10px", textTransform:"uppercase", letterSpacing:"1.5px", padding:"8px 18px 4px", margin:0 }}>{g.label}</p>
+          <p style={{ 
+            color:S.muted, 
+            fontSize:"10px", 
+            textTransform:"uppercase", 
+            letterSpacing:"1.5px", 
+            padding:"8px 18px 4px", 
+            margin:0 
+          }}>{g.label}</p>
           {g.items.map(item => (
             <button key={item.id} onClick={() => { setCurrentPage(item.id); onClose() }}
-              style={{ display:"block", width:"100%", textAlign:"left", padding:"9px 18px", background:"none", border:"none", cursor:"pointer", fontSize:"13px", color: currentPage === item.id ? S.gold : S.text, fontWeight: currentPage === item.id ? "600" : "400" }}
+              style={{ 
+                display:"block", 
+                width:"100%", 
+                textAlign:"left", 
+                padding:"9px 18px", 
+                background:"none", 
+                border:"none", 
+                cursor:"pointer", 
+                fontSize:"13px", 
+                color: currentPage === item.id ? S.gold : S.text, 
+                fontWeight: currentPage === item.id ? "600" : "400" 
+              }}
               onMouseEnter={e => e.currentTarget.style.background=S.card2}
               onMouseLeave={e => e.currentTarget.style.background="none"}>
               {item.label}
@@ -1592,15 +2713,43 @@ function DropMenu({ currentPage, setCurrentPage, onClose, S }) {
 // ─── NOTIFICATION PANEL ─────────────────────────────────────────────────────
 function NotifPanel({ items, onRead, onClose, S }) {
   return (
-    <div style={{ position:"absolute", top:"48px", right:0, backgroundColor:S.card, borderRadius:"16px", border:`1px solid ${S.border}`, width:"300px", maxHeight:"360px", overflowY:"auto", zIndex:300, boxShadow:`0 16px 48px ${S.shadow}` }}>
-      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"14px 16px", borderBottom:`1px solid ${S.border}` }}>
+    <div style={{ 
+      position:"absolute", 
+      top:"48px", 
+      right:0, 
+      backgroundColor:S.card, 
+      borderRadius:"16px", 
+      border:`1px solid ${S.border}`, 
+      width:"300px", 
+      maxHeight:"360px", 
+      overflowY:"auto", 
+      zIndex:300, 
+      boxShadow:`0 16px 48px ${S.shadow}` 
+    }}>
+      <div style={{ 
+        display:"flex", 
+        justifyContent:"space-between", 
+        alignItems:"center", 
+        padding:"14px 16px", 
+        borderBottom:`1px solid ${S.border}` 
+      }}>
         <span style={{ color:S.champ, fontWeight:"600", fontSize:"14px" }}>Notifications</span>
-        <button onClick={() => { onRead(); onClose() }} style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"11px" }}>Mark all read</button>
+        <button onClick={() => { onRead(); onClose() }} style={{ 
+          background:"none", 
+          border:"none", 
+          color:S.muted, 
+          cursor:"pointer", 
+          fontSize:"11px" 
+        }}>Mark all read</button>
       </div>
       {items.length === 0
         ? <div style={{ padding:"32px", textAlign:"center", color:S.muted, fontSize:"13px" }}>All caught up ✨</div>
         : items.map(n => (
-          <div key={n.id} style={{ padding:"12px 16px", borderBottom:`1px solid ${S.border}`, backgroundColor: n.read ? "transparent" : `${S.rose}15` }}>
+          <div key={n.id} style={{ 
+            padding:"12px 16px", 
+            borderBottom:`1px solid ${S.border}`, 
+            backgroundColor: n.read ? "transparent" : `${S.rose}15` 
+          }}>
             <p style={{ color:S.text, fontSize:"13px", lineHeight:"1.5" }}>{n.msg}</p>
             <span style={{ color:S.muted, fontSize:"10px" }}>{new Date(n.date).toLocaleTimeString()}</span>
           </div>
@@ -1612,9 +2761,32 @@ function NotifPanel({ items, onRead, onClose, S }) {
 
 function CookieBanner({ onAccept, S }) {
   return (
-    <div style={{ position:"fixed", bottom:"64px", left:0, right:0, zIndex:500, background:S.card, borderTop:`1px solid ${S.border}`, padding:"14px 20px", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"12px", flexWrap:"wrap" }}>
+    <div style={{ 
+      position:"fixed", 
+      bottom:"64px", 
+      left:0, 
+      right:0, 
+      zIndex:500, 
+      background:S.card, 
+      borderTop:`1px solid ${S.border}`, 
+      padding:"14px 20px", 
+      display:"flex", 
+      justifyContent:"space-between", 
+      alignItems:"center", 
+      gap:"12px", 
+      flexWrap:"wrap" 
+    }}>
       <p style={{ color:S.muted, fontSize:"12px", margin:0 }}>🍪 We use cookies to make your experience sweeter.</p>
-      <button onClick={onAccept} style={{ padding:"7px 20px", borderRadius:"40px", fontSize:"12px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Accept</button>
+      <button onClick={onAccept} style={{ 
+        padding:"7px 20px", 
+        borderRadius:"40px", 
+        fontSize:"12px", 
+        fontWeight:"700", 
+        background:S.grad, 
+        color:"#fff", 
+        border:"none", 
+        cursor:"pointer" 
+      }}>Accept</button>
     </div>
   )
 }
@@ -1648,7 +2820,7 @@ export default function App() {
   const [cookiesOk, setCookiesOk] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [loadingDb, setLoadingDb] = useState(true)
-  const [selectedPost, setSelectedPost] = useState(null) // FIX 2
+  const [selectedPost, setSelectedPost] = useState(null)
   const dropRef = useRef(null)
 
   const [displayedPosts, setDisplayedPosts] = useState([])
@@ -1671,7 +2843,14 @@ export default function App() {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         supabase.from("profiles").select("*").eq("id", session.user.id).single().then(({ data:profile }) => {
-          if (profile) setCurrentUser({ id:session.user.id, email:session.user.email, name:profile.name, countryFlag:profile.country_flag, avatar:profile.avatar, joinDate:profile.created_at })
+          if (profile) setCurrentUser({ 
+            id:session.user.id, 
+            email:session.user.email, 
+            name:profile.name, 
+            countryFlag:profile.country_flag, 
+            avatar:profile.avatar, 
+            joinDate:profile.created_at 
+          })
         })
       }
     })
@@ -1684,7 +2863,14 @@ export default function App() {
       if (!error && data) {
         const withComments = await Promise.all(data.map(async r => {
           const { data:comments } = await supabase.from("comments").select("*").eq("recipe_id", r.id).order("created_at", { ascending:true })
-          return { ...r, images: r.images || (r.image_url ? [r.image_url] : []), comments:comments||[], liked:false, saved:false, reactions:{} }
+          return { 
+            ...r, 
+            images: r.images || (r.image_url ? [r.image_url] : []), 
+            comments:comments||[], 
+            liked:false, 
+            saved:false, 
+            reactions:{} 
+          }
         }))
         setDbPosts(withComments)
       }
@@ -1695,13 +2881,96 @@ export default function App() {
 
   const allPosts = [...dbPosts, ...posts]
   const showToast = msg => setToast(msg)
-  const addNotif = msg => { setNotifications(p => [{ id:Date.now(), msg, read:false, date:new Date().toISOString() }, ...p.slice(0,19)]); setUnread(p => p+1) }
+  const addNotif = msg => { 
+    setNotifications(p => [{ 
+      id:Date.now(), 
+      msg, 
+      read:false, 
+      date:new Date().toISOString() 
+    }, ...p.slice(0,19)]); 
+    setUnread(p => p+1) 
+  }
 
-  const handleLogin = user => { setCurrentUser(user); showToast(`Welcome, ${user.name}! 🎉`); addNotif(`👋 Welcome to BetterDays Eats, ${user.name}!`) }
-  const handleLogout = async () => { await supabase.auth.signOut(); setCurrentUser(null); showToast("See you soon 👋") }
-  const handleCreate = r => { setDbPosts(p => [r, ...p]); showToast("Recipe shared! ✨"); addNotif(`✨ "${r.title}" is now live!`) }
+  const handleLogin = user => { 
+    setCurrentUser(user); 
+    showToast(`Welcome, ${user.name}! 🎉`); 
+    addNotif(`👋 Welcome to BetterDays Eats, ${user.name}!`) 
+  }
+  
+  const handleLogout = async () => { 
+    await supabase.auth.signOut(); 
+    setCurrentUser(null); 
+    showToast("See you soon 👋") 
+  }
+  
+  const handleCreate = r => { 
+    setDbPosts(p => [r, ...p]); 
+    showToast("Recipe shared! ✨"); 
+    addNotif(`✨ "${r.title}" is now live!`) 
+  }
 
-  // ── FIX 1: Delete handler ──
+  // ── FIX 3: LIKES WORKING ──
+  const handleLike = useCallback(async (id) => {
+    const isDemo = String(id).startsWith("demo-")
+    
+    if (isDemo) {
+      setPosts(p => p.map(r => 
+        r.id === id ? { ...r, likes: r.liked ? r.likes - 1 : r.likes + 1, liked: !r.liked } : r
+      ))
+      return
+    }
+    
+    if (!currentUser) {
+      setShowAuth(true)
+      return
+    }
+
+    const post = dbPosts.find(r => r.id === id)
+    if (!post) return
+
+    const updatedLikes = post.liked ? post.likes - 1 : post.likes + 1
+    setDbPosts(p => p.map(r => 
+      r.id === id ? { ...r, likes: updatedLikes, liked: !r.liked } : r
+    ))
+
+    try {
+      if (post.liked) {
+        await supabase
+          .from("likes")
+          .delete()
+          .match({ recipe_id: id, user_id: currentUser.id })
+        
+        await supabase
+          .from("recipes")
+          .update({ likes: Math.max(0, post.likes - 1) })
+          .eq("id", id)
+      } else {
+        await supabase
+          .from("likes")
+          .upsert({ 
+            recipe_id: id, 
+            user_id: currentUser.id 
+          }, { onConflict: "recipe_id,user_id" })
+        
+        await supabase
+          .from("recipes")
+          .update({ likes: post.likes + 1 })
+          .eq("id", id)
+      }
+    } catch (err) {
+      setDbPosts(p => p.map(r => 
+        r.id === id ? { ...r, likes: post.likes, liked: post.liked } : r
+      ))
+      console.error("Like error:", err)
+    }
+  }, [currentUser, dbPosts])
+
+  const handleSave = id => {
+    const isDemo = String(id).startsWith("demo-")
+    if (isDemo) setPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
+    else setDbPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
+  }
+
   const handleDelete = async id => {
     const isDemo = String(id).startsWith("demo-")
     if (isDemo) {
@@ -1714,48 +2983,6 @@ export default function App() {
     }
     showToast("Recipe deleted 🗑️")
     if (selectedPost?.id === id) setSelectedPost(null)
-  }
-
-  // ── FIX 5: Like with proper optimistic update and Supabase upsert ──
-  const handleLike = useCallback(async id => {
-    const isDemo = String(id).startsWith("demo-")
-    if (isDemo) {
-      setPosts(p => p.map(r => r.id === id ? { ...r, likes: r.liked ? r.likes-1 : r.likes+1, liked:!r.liked } : r))
-      return
-    }
-    if (!currentUser) { setShowAuth(true); return }
-
-    // Optimistic update first
-    setDbPosts(p => p.map(r => {
-      if (r.id !== id) return r
-      return { ...r, likes: r.liked ? r.likes-1 : r.likes+1, liked: !r.liked }
-    }))
-
-    const post = dbPosts.find(r => r.id === id)
-    if (!post) return
-
-    try {
-      if (post.liked) {
-        await supabase.from("likes").delete().match({ recipe_id:id, user_id:currentUser.id })
-        await supabase.from("recipes").update({ likes: Math.max(0, post.likes - 1) }).eq("id", id)
-      } else {
-        await supabase.from("likes").upsert({ recipe_id:id, user_id:currentUser.id }, { onConflict:"recipe_id,user_id" })
-        await supabase.from("recipes").update({ likes: post.likes + 1 }).eq("id", id)
-      }
-    } catch (err) {
-      // Revert on error
-      setDbPosts(p => p.map(r => {
-        if (r.id !== id) return r
-        return { ...r, likes: post.liked ? r.likes+1 : r.likes-1, liked: post.liked }
-      }))
-      console.error("Like error:", err)
-    }
-  }, [currentUser, dbPosts])
-
-  const handleSave = id => {
-    const isDemo = String(id).startsWith("demo-")
-    if (isDemo) setPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
-    else setDbPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
   }
 
   const filtered = allPosts.filter(r =>
@@ -1800,8 +3027,6 @@ export default function App() {
 
   const featured = dbPosts[0] || posts[0]
   const openPost = () => { if (currentUser) setShowCreate(true); else setShowAuth(true) }
-
-  // ── FIX 2: Open post in detail modal ──
   const handleOpenDetail = (post) => setSelectedPost(post)
 
   const pages = {
@@ -1825,83 +3050,302 @@ export default function App() {
   return (
     <div style={{ backgroundColor:S.bg, minHeight:"100vh", color:S.text, transition:"background 0.3s, color 0.3s" }}>
 
-      <header style={{ backgroundColor:`${S.bg}f0`, backdropFilter:"blur(20px)", borderBottom:`1px solid ${S.border}`, padding:"14px 24px", position:"sticky", top:0, zIndex:200 }}>
-        <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", justifyContent:"space-between", alignItems:"center", gap:"10px" }}>
-          <div onClick={() => setCurrentPage("home")} style={{ cursor:"pointer", display:"flex", alignItems:"center", gap:"10px" }}>
+      {/* ⭐ HEADER - FIX 1: LOGO KEY PROP */}
+      <header style={{ 
+        backgroundColor:`${S.bg}f0`, 
+        backdropFilter:"blur(20px)", 
+        borderBottom:`1px solid ${S.border}`, 
+        padding:"14px 24px", 
+        position:"sticky", 
+        top:0, 
+        zIndex:200 
+      }}>
+        <div style={{ 
+          maxWidth:"1200px", 
+          margin:"0 auto", 
+          display:"flex", 
+          justifyContent:"space-between", 
+          alignItems:"center", 
+          gap:"10px" 
+        }}>
+          <div onClick={() => setCurrentPage("home")} style={{ 
+            cursor:"pointer", 
+            display:"flex", 
+            alignItems:"center", 
+            gap:"10px" 
+          }}>
             <span style={{ fontSize:"26px" }}>🍽️</span>
-            <span style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"900", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>BetterDays Eats</span>
+            <span 
+              key={isDark ? "logo-dark" : "logo-light"} 
+              style={{ 
+                fontFamily:"'Playfair Display',serif", 
+                fontSize:"18px", 
+                fontWeight:"900",
+                background:S.grad, 
+                WebkitBackgroundClip:"text", 
+                WebkitTextFillColor:"transparent" 
+              }}
+            >
+              BetterDays Eats
+            </span>
           </div>
+
           <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
             {!isMobile && (
               <div style={{ position:"relative" }}>
                 <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px", padding:"9px 16px 9px 36px", color:S.text, width:"180px", fontSize:"13px", outline:"none" }} />
-                <FaSearch style={{ position:"absolute", left:"12px", top:"11px", color:S.muted, fontSize:"12px" }} />
+                  style={{ 
+                    background:S.card2, 
+                    border:`1px solid ${S.border}`, 
+                    borderRadius:"40px",
+                    padding:"9px 16px 9px 36px", 
+                    color:S.text, 
+                    width:"180px", 
+                    fontSize:"13px", 
+                    outline:"none" 
+                  }} />
+                <FaSearch style={{ 
+                  position:"absolute", 
+                  left:"12px", 
+                  top:"11px", 
+                  color:S.muted, 
+                  fontSize:"12px" 
+                }} />
               </div>
             )}
+            
             <ThemeToggle S={S} isDark={isDark} onToggle={toggleTheme} />
+            
             <div style={{ position:"relative" }}>
-              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ color:S.gold, position:"relative", padding:"4px" }}>
+              <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ 
+                color:S.gold, 
+                position:"relative", 
+                padding:"4px" 
+              }}>
                 <FaBell size={18} />
-                {unread > 0 && <span style={{ position:"absolute", top:"-4px", right:"-6px", background:"#ef4444", color:"#fff", borderRadius:"50%", width:"15px", height:"15px", fontSize:"9px", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>}
+                {unread > 0 && (
+                  <span style={{ 
+                    position:"absolute", 
+                    top:"-4px", 
+                    right:"-6px", 
+                    background:"#ef4444", 
+                    color:"#fff",
+                    borderRadius:"50%", 
+                    width:"15px", 
+                    height:"15px", 
+                    fontSize:"9px",
+                    display:"flex", 
+                    alignItems:"center", 
+                    justifyContent:"center", 
+                    fontWeight:"700" 
+                  }}>{unread}</span>
+                )}
               </button>
-              {showNotifs && <NotifPanel items={notifications} onRead={() => { setNotifications(n => n.map(x => ({ ...x, read:true }))); setUnread(0) }} onClose={() => setShowNotifs(false)} S={S} />}
+              {showNotifs && <NotifPanel 
+                items={notifications} 
+                onRead={() => { 
+                  setNotifications(n => n.map(x => ({ ...x, read:true }))); 
+                  setUnread(0) 
+                }} 
+                onClose={() => setShowNotifs(false)} 
+                S={S} 
+              />}
             </div>
+
             {currentUser ? (
               <div style={{ display:"flex", alignItems:"center", gap:"8px" }}>
-                <img src={currentUser.avatar} alt={currentUser.name} style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
-                {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
-                <button onClick={() => setCurrentPage("my-posts")} style={{ background: currentPage === "my-posts" ? `${S.gold}30` : "none", color: currentPage === "my-posts" ? S.gold : S.muted, border:"none", padding:"8px 12px", borderRadius:"8px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px" }}>
+                <img src={currentUser.avatar} alt={currentUser.name} style={{ 
+                  width:"34px", 
+                  height:"34px", 
+                  borderRadius:"50%", 
+                  border:`2px solid ${S.gold}` 
+                }} />
+                {!isMobile && <span style={{ 
+                  color:S.gold, 
+                  fontSize:"13px", 
+                  fontWeight:"500" 
+                }}>{currentUser.name}</span>}
+                <button onClick={() => setCurrentPage("my-posts")} style={{ 
+                  background: currentPage === "my-posts" ? `${S.gold}30` : "none", 
+                  color: currentPage === "my-posts" ? S.gold : S.muted, 
+                  border:"none", 
+                  padding:"8px 12px", 
+                  borderRadius:"8px", 
+                  cursor:"pointer", 
+                  fontSize:"12px", 
+                  display:"flex", 
+                  alignItems:"center", 
+                  gap:"4px" 
+                }}>
                   <FaList size={14} /> My Posts
                 </button>
-                <button onClick={() => setCurrentPage("favorites")} style={{ background: currentPage === "favorites" ? `${S.gold}30` : "none", color: currentPage === "favorites" ? S.gold : S.muted, border:"none", padding:"8px 12px", borderRadius:"8px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px" }}>
+                <button onClick={() => setCurrentPage("favorites")} style={{ 
+                  background: currentPage === "favorites" ? `${S.gold}30` : "none", 
+                  color: currentPage === "favorites" ? S.gold : S.muted, 
+                  border:"none", 
+                  padding:"8px 12px", 
+                  borderRadius:"8px", 
+                  cursor:"pointer", 
+                  fontSize:"12px", 
+                  display:"flex", 
+                  alignItems:"center", 
+                  gap:"4px" 
+                }}>
                   <FaStar size={14} /> Favorites
                 </button>
-                <button onClick={handleLogout} style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted, borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
-                {!isMobile && <button onClick={() => setShowCreate(true)} style={{ padding:"9px 18px", borderRadius:"40px", fontSize:"13px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>✨ Post</button>}
+                <button onClick={handleLogout} style={{ 
+                  background:"none", 
+                  border:`1px solid ${S.border}`, 
+                  color:S.muted, 
+                  borderRadius:"8px", 
+                  padding:"6px 10px", 
+                  cursor:"pointer", 
+                  fontSize:"12px" 
+                }}>Out</button>
+                {!isMobile && <button onClick={() => setShowCreate(true)} style={{ 
+                  padding:"9px 18px", 
+                  borderRadius:"40px", 
+                  fontSize:"13px", 
+                  fontWeight:"700", 
+                  background:S.grad, 
+                  color:"#fff", 
+                  border:"none", 
+                  cursor:"pointer" 
+                }}>✨ Post</button>}
               </div>
             ) : (
-              <button onClick={() => setShowAuth(true)} style={{ padding:"9px 20px", borderRadius:"40px", fontSize:"13px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Join Free</button>
+              <button onClick={() => setShowAuth(true)} style={{ 
+                padding:"9px 20px", 
+                borderRadius:"40px", 
+                fontSize:"13px", 
+                fontWeight:"700", 
+                background:S.grad, 
+                color:"#fff", 
+                border:"none", 
+                cursor:"pointer" 
+              }}>Join Free</button>
             )}
           </div>
         </div>
       </header>
 
-      <nav style={{ background:`${S.card}cc`, backdropFilter:"blur(12px)", borderBottom:`1px solid ${S.border}`, padding:"0 24px", position:"relative", zIndex:9998 }}>
-        <div style={{ maxWidth:"1200px", margin:"0 auto", display:"flex", alignItems:"center", gap:"4px" }}>
+      <nav style={{ 
+        background:`${S.card}cc`, 
+        backdropFilter:"blur(12px)", 
+        borderBottom:`1px solid ${S.border}`, 
+        padding:"0 24px", 
+        position:"relative", 
+        zIndex:9998 
+      }}>
+        <div style={{ 
+          maxWidth:"1200px", 
+          margin:"0 auto", 
+          display:"flex", 
+          alignItems:"center", 
+          gap:"4px" 
+        }}>
           <button onClick={() => { setCurrentPage("home"); setShowDrop(false) }}
-            style={{ background: currentPage === "home" ? `${S.gold}18` : "none", color: currentPage === "home" ? S.gold : S.muted, border:"none", borderRadius:"8px", padding:"12px 16px", cursor:"pointer", fontSize:"13px", fontWeight: currentPage === "home" ? "600" : "400", borderBottom: currentPage === "home" ? `2px solid ${S.gold}` : "2px solid transparent" }}>
+            style={{ 
+              background: currentPage === "home" ? `${S.gold}18` : "none", 
+              color: currentPage === "home" ? S.gold : S.muted, 
+              border:"none", 
+              borderRadius:"8px", 
+              padding:"12px 16px", 
+              cursor:"pointer", 
+              fontSize:"13px", 
+              fontWeight: currentPage === "home" ? "600" : "400", 
+              borderBottom: currentPage === "home" ? `2px solid ${S.gold}` : "2px solid transparent" 
+            }}>
             🏠 Home
           </button>
           <div ref={dropRef} style={{ position:"relative", display:"inline-block", zIndex:99999 }}>
             <button onClick={() => { setShowDrop(!showDrop); if (showNotifs) setShowNotifs(false) }}
-              style={{ background: showDrop ? `${S.rose}18` : "none", color: showDrop ? S.rose : S.muted, border:"none", borderRadius:"8px", padding:"12px 16px", cursor:"pointer", fontSize:"13px", display:"flex", alignItems:"center", gap:"6px", borderBottom: showDrop ? `2px solid ${S.rose}` : "2px solid transparent" }}>
-              More <FaChevronDown size={9} style={{ transform: showDrop ? "rotate(180deg)" : "rotate(0deg)" }} />
+              style={{ 
+                background: showDrop ? `${S.rose}18` : "none", 
+                color: showDrop ? S.rose : S.muted, 
+                border:"none", 
+                borderRadius:"8px", 
+                padding:"12px 16px", 
+                cursor:"pointer", 
+                fontSize:"13px",
+                display:"flex", 
+                alignItems:"center", 
+                gap:"6px",
+                borderBottom: showDrop ? `2px solid ${S.rose}` : "2px solid transparent" 
+              }}>
+              More <FaChevronDown size={9} style={{ 
+                transform: showDrop ? "rotate(180deg)" : "rotate(0deg)" 
+              }} />
             </button>
-            {showDrop && <DropMenu currentPage={currentPage} setCurrentPage={setCurrentPage} onClose={() => setShowDrop(false)} S={S} />}
+            {showDrop && <DropMenu 
+              currentPage={currentPage} 
+              setCurrentPage={setCurrentPage} 
+              onClose={() => setShowDrop(false)} 
+              S={S} 
+            />}
           </div>
         </div>
       </nav>
 
       {currentPage === "home" && (
         <>
-          <HeroBanner recipe={featured} onSignup={() => setShowAuth(true)} currentUser={currentUser} onPost={() => setShowCreate(true)} S={S} isDark={isDark} />
+          <HeroBanner 
+            recipe={featured} 
+            onSignup={() => setShowAuth(true)} 
+            currentUser={currentUser} 
+            onPost={() => setShowCreate(true)} 
+            S={S} 
+            isDark={isDark} 
+          />
 
           {isMobile && (
             <div style={{ padding:"12px 16px", background:S.card, borderBottom:`1px solid ${S.border}` }}>
               <div style={{ position:"relative" }}>
                 <input placeholder="Search recipes…" value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                  style={{ width:"100%", background:S.card2, border:`1px solid ${S.border}`, borderRadius:"40px", padding:"10px 16px 10px 36px", color:S.text, fontSize:"13px", outline:"none" }} />
-                <FaSearch style={{ position:"absolute", left:"12px", top:"12px", color:S.muted, fontSize:"12px" }} />
+                  style={{ 
+                    width:"100%", 
+                    background:S.card2, 
+                    border:`1px solid ${S.border}`,
+                    borderRadius:"40px", 
+                    padding:"10px 16px 10px 36px", 
+                    color:S.text, 
+                    fontSize:"13px", 
+                    outline:"none" 
+                  }} />
+                <FaSearch style={{ 
+                  position:"absolute", 
+                  left:"12px", 
+                  top:"12px", 
+                  color:S.muted, 
+                  fontSize:"12px" 
+                }} />
               </div>
             </div>
           )}
 
-          <div style={{ background:S.card, borderBottom:`1px solid ${S.border}`, overflowX:"auto", padding:"10px 16px" }}>
+          <div style={{ 
+            background:S.card, 
+            borderBottom:`1px solid ${S.border}`, 
+            overflowX:"auto", 
+            padding:"10px 16px" 
+          }}>
             <div style={{ display:"flex", gap:"6px", minWidth:"max-content" }}>
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => setSelectedCat(cat.id)}
-                  style={{ background: selectedCat === cat.id ? S.grad : "none", border: selectedCat === cat.id ? "none" : `1px solid ${S.border}`, borderRadius:"40px", padding:"6px 14px", cursor:"pointer", fontSize:"12px", display:"flex", alignItems:"center", gap:"4px", whiteSpace:"nowrap", fontWeight: selectedCat === cat.id ? "600" : "400", color: selectedCat === cat.id ? "#fff" : S.muted }}>
+                  style={{ 
+                    background: selectedCat === cat.id ? S.grad : "none", 
+                    border: selectedCat === cat.id ? "none" : `1px solid ${S.border}`,
+                    borderRadius:"40px", 
+                    padding:"6px 14px", 
+                    cursor:"pointer", 
+                    fontSize:"12px",
+                    display:"flex", 
+                    alignItems:"center", 
+                    gap:"4px", 
+                    whiteSpace:"nowrap",
+                    fontWeight: selectedCat === cat.id ? "600" : "400",
+                    color: selectedCat === cat.id ? "#fff" : S.muted 
+                  }}>
                   {cat.icon} {cat.name}
                 </button>
               ))}
@@ -1915,17 +3359,44 @@ export default function App() {
                 <p>Loading delicious recipes...</p>
               </div>
             ) : filtered.length === 0 ? (
-              <div style={{ textAlign:"center", padding:"80px 24px", background:S.card, borderRadius:"24px", border:`1px solid ${S.border}` }}>
+              <div style={{ 
+                textAlign:"center", 
+                padding:"80px 24px", 
+                background:S.card, 
+                borderRadius:"24px", 
+                border:`1px solid ${S.border}` 
+              }}>
                 <div style={{ fontSize:"52px", marginBottom:"16px" }}>🍽️</div>
-                <h2 style={{ fontFamily:"'Playfair Display',serif", color:S.champ, marginBottom:"8px" }}>No recipes yet</h2>
+                <h2 style={{ 
+                  fontFamily:"'Playfair Display',serif", 
+                  color:S.champ, 
+                  marginBottom:"8px" 
+                }}>No recipes yet</h2>
                 <p style={{ color:S.muted, marginBottom:"24px" }}>Be the first to share something delicious.</p>
-                <button onClick={openPost} style={{ padding:"12px 28px", borderRadius:"40px", fontSize:"14px", fontWeight:"700", background:S.grad, color:"#fff", border:"none", cursor:"pointer" }}>Share a Recipe</button>
+                <button onClick={openPost} style={{ 
+                  padding:"12px 28px", 
+                  borderRadius:"40px", 
+                  fontSize:"14px", 
+                  fontWeight:"700", 
+                  background:S.grad, 
+                  color:"#fff", 
+                  border:"none", 
+                  cursor:"pointer" 
+                }}>Share a Recipe</button>
               </div>
             ) : (
               <div style={{ columns: isMobile ? 1 : 2, columnGap:"20px" }}>
                 {(displayedPosts.length > 0 ? displayedPosts : filtered.slice(0, 5)).map(r => (
                   <div key={r.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
-                    <RecipeCard recipe={r} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} currentUser={currentUser} S={S} onOpenDetail={handleOpenDetail} />
+                    <RecipeCard 
+                      recipe={r} 
+                      onLike={handleLike} 
+                      onSave={handleSave} 
+                      onDelete={handleDelete} 
+                      currentUser={currentUser} 
+                      S={S} 
+                      onOpenDetail={handleOpenDetail} 
+                    />
                   </div>
                 ))}
               </div>
@@ -1935,7 +3406,11 @@ export default function App() {
               <div ref={observerRef} style={{ textAlign:"center", padding:"20px 0", color:S.muted }}>
                 {loadingMore ? (
                   <div>
-                    <span style={{ display:"inline-block", animation:"shimmer 1.5s infinite", fontSize:"32px" }}>🍽️</span>
+                    <span style={{ 
+                      display:"inline-block", 
+                      animation:"shimmer 1.5s infinite", 
+                      fontSize:"32px" 
+                    }}>🍽️</span>
                     <p style={{ fontSize:"13px", marginTop:"8px" }}>Loading more...</p>
                   </div>
                 ) : <p style={{ fontSize:"13px" }}>👇 Scroll for more</p>}
@@ -1951,40 +3426,133 @@ export default function App() {
       )}
 
       {currentPage === "my-posts" && (
-        <MyPostsPage currentUser={currentUser} allPosts={allPosts} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} S={S} setShowCreate={setShowCreate} onOpenDetail={handleOpenDetail} />
+        <MyPostsPage 
+          currentUser={currentUser} 
+          allPosts={allPosts} 
+          onLike={handleLike} 
+          onSave={handleSave} 
+          onDelete={handleDelete} 
+          S={S} 
+          setShowCreate={setShowCreate} 
+          onOpenDetail={handleOpenDetail} 
+        />
       )}
       {currentPage === "favorites" && (
-        <FavoritesPage allPosts={allPosts} onLike={handleLike} onSave={handleSave} onDelete={handleDelete} currentUser={currentUser} S={S} onOpenDetail={handleOpenDetail} />
+        <FavoritesPage 
+          allPosts={allPosts} 
+          onLike={handleLike} 
+          onSave={handleSave} 
+          onDelete={handleDelete} 
+          currentUser={currentUser} 
+          S={S} 
+          onOpenDetail={handleOpenDetail} 
+        />
       )}
       {currentPage !== "home" && currentPage !== "my-posts" && currentPage !== "favorites" && (
-        pages[currentPage] || <StubPage icon="🔍" title="Page not found" body="Head back home." onBack={() => setCurrentPage("home")} S={S} />
+        pages[currentPage] || <StubPage 
+          icon="🔍" 
+          title="Page not found" 
+          body="Head back home." 
+          onBack={() => setCurrentPage("home")} 
+          S={S} 
+        />
       )}
 
       {currentPage === "home" && (
         <footer style={{ textAlign:"center", padding:"32px 24px 80px", borderTop:`1px solid ${S.border}` }}>
-          <div style={{ fontFamily:"'Playfair Display',serif", fontSize:"16px", background:S.grad, WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", marginBottom:"4px", fontWeight:"700" }}>BetterDays Eats</div>
+          <div style={{ 
+            fontFamily:"'Playfair Display',serif", 
+            fontSize:"16px", 
+            background:S.grad, 
+            WebkitBackgroundClip:"text", 
+            WebkitTextFillColor:"transparent",
+            marginBottom:"4px", 
+            fontWeight:"700" 
+          }}>BetterDays Eats</div>
           <p style={{ color:S.muted, fontSize:"11px", marginBottom:"12px" }}>© 2026 BetterDays Agile Technologies · South Africa 🇿🇦</p>
           <div style={{ display:"flex", justifyContent:"center", gap:"16px", flexWrap:"wrap" }}>
             {["about","faq","contact","privacy","terms"].map(p => (
-              <button key={p} onClick={() => setCurrentPage(p)} style={{ background:"none", border:"none", color:S.muted, cursor:"pointer", fontSize:"12px" }}>{p}</button>
+              <button key={p} onClick={() => setCurrentPage(p)} style={{ 
+                background:"none", 
+                border:"none", 
+                color:S.muted, 
+                cursor:"pointer", 
+                fontSize:"12px" 
+              }}>{p}</button>
             ))}
           </div>
         </footer>
       )}
 
       {/* Bottom nav */}
-      <div style={{ position:"fixed", bottom:0, left:0, right:0, background:`${S.bg}f5`, backdropFilter:"blur(20px)", borderTop:`1px solid ${S.border}`, display:"flex", justifyContent:"space-around", padding:"10px 0 14px", zIndex:100 }}>
-        <button className="bde-icon-btn" onClick={() => setCurrentPage("home")} style={{ color: currentPage === "home" ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>🏠</button>
-        <button className="bde-icon-btn" onClick={() => setSelectedCat("trending")} style={{ color: selectedCat === "trending" ? S.rose : S.muted, fontSize:"20px", padding:"4px 16px" }}>🔥</button>
-        <button onClick={openPost} style={{ borderRadius:"50%", width:"48px", height:"48px", display:"flex", alignItems:"center", justifyContent:"center", fontSize:"22px", marginTop:"-10px", background:S.grad, color:"#fff", border:"none", cursor:"pointer", boxShadow:`0 4px 20px ${S.rose}50` }}>+</button>
-        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ color:S.muted, fontSize:"20px", padding:"4px 16px", position:"relative" }}>
+      <div style={{ 
+        position:"fixed", 
+        bottom:0, 
+        left:0, 
+        right:0, 
+        background:`${S.bg}f5`, 
+        backdropFilter:"blur(20px)", 
+        borderTop:`1px solid ${S.border}`,
+        display:"flex", 
+        justifyContent:"space-around", 
+        padding:"10px 0 14px", 
+        zIndex:100 
+      }}>
+        <button className="bde-icon-btn" onClick={() => setCurrentPage("home")} style={{ 
+          color: currentPage === "home" ? S.gold : S.muted, 
+          fontSize:"20px", 
+          padding:"4px 16px" 
+        }}>🏠</button>
+        <button className="bde-icon-btn" onClick={() => setSelectedCat("trending")} style={{ 
+          color: selectedCat === "trending" ? S.rose : S.muted, 
+          fontSize:"20px", 
+          padding:"4px 16px" 
+        }}>🔥</button>
+        <button onClick={openPost} style={{ 
+          borderRadius:"50%", 
+          width:"48px", 
+          height:"48px", 
+          display:"flex", 
+          alignItems:"center",
+          justifyContent:"center", 
+          fontSize:"22px", 
+          marginTop:"-10px",
+          background:S.grad, 
+          color:"#fff", 
+          border:"none", 
+          cursor:"pointer",
+          boxShadow:`0 4px 20px ${S.rose}50` 
+        }}>+</button>
+        <button className="bde-icon-btn" onClick={() => setShowNotifs(!showNotifs)} style={{ 
+          color:S.muted, 
+          fontSize:"20px", 
+          padding:"4px 16px", 
+          position:"relative" 
+        }}>
           🔔
-          {unread > 0 && <span style={{ position:"absolute", top:0, right:"10px", background:"#ef4444", color:"#fff", borderRadius:"50%", width:"14px", height:"14px", fontSize:"9px", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:"700" }}>{unread}</span>}
+          {unread > 0 && <span style={{ 
+            position:"absolute", 
+            top:0, 
+            right:"10px", 
+            background:"#ef4444", 
+            color:"#fff",
+            borderRadius:"50%", 
+            width:"14px", 
+            height:"14px", 
+            fontSize:"9px",
+            display:"flex", 
+            alignItems:"center", 
+            justifyContent:"center", 
+            fontWeight:"700" 
+          }}>{unread}</span>}
         </button>
-        <button className="bde-icon-btn" onClick={() => currentUser ? null : setShowAuth(true)} style={{ color: currentUser ? S.gold : S.muted, fontSize:"20px", padding:"4px 16px" }}>👤</button>
+        <button className="bde-icon-btn" onClick={() => currentUser ? null : setShowAuth(true)} style={{ 
+          color: currentUser ? S.gold : S.muted, 
+          fontSize:"20px", 
+          padding:"4px 16px" 
+        }}>👤</button>
       </div>
 
-      {/* ── FIX 2: Post detail modal ── */}
       {selectedPost && (
         <PostDetailModal
           recipe={selectedPost}
