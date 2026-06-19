@@ -5,7 +5,7 @@ import {
   FaHeart, FaComment, FaBookmark, FaSearch,
   FaBell, FaTimes, FaChevronDown, FaFire,
   FaInstagram, FaYoutube, FaLink, FaMoon, FaSun,
-  FaReply, FaPlus, FaTrash
+  FaReply, FaPlus, FaTrash, FaUser, FaStar, FaList
 } from "react-icons/fa"
 
 const supabase = createClient(
@@ -76,6 +76,7 @@ const DEMO = [
     category:"african",
     image_url:"https://images.unsplash.com/photo-1604329760661-e71dc83f8f26?w=800&q=80",
     author_name:"Chef Amara", author_flag:"🇳🇬",
+    author_id:"demo-user-1",
     author_avatar:"https://ui-avatars.com/api/?name=Chef+Amara&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*1).toISOString(),
     likes:284, liked:false, saved:false,
@@ -90,6 +91,7 @@ const DEMO = [
     category:"breakfast",
     image_url:"https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&q=80",
     author_name:"Maya Torres", author_flag:"🇿🇦",
+    author_id:"demo-user-2",
     author_avatar:"https://ui-avatars.com/api/?name=Maya+Torres&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*2).toISOString(),
     likes:412, liked:false, saved:false,
@@ -104,6 +106,7 @@ const DEMO = [
     category:"pasta",
     image_url:"https://images.unsplash.com/photo-1612874742237-6526221588e3?w=800&q=80",
     author_name:"Marco Rossi", author_flag:"🇮🇹",
+    author_id:"demo-user-3",
     author_avatar:"https://ui-avatars.com/api/?name=Marco+Rossi&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*3).toISOString(),
     likes:356, liked:false, saved:false,
@@ -117,6 +120,7 @@ const DEMO = [
     category:"desserts",
     image_url:"https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=800&q=80",
     author_name:"Chef Céleste", author_flag:"🇫🇷",
+    author_id:"demo-user-4",
     author_avatar:"https://ui-avatars.com/api/?name=Chef+Celeste&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*4).toISOString(),
     likes:527, liked:false, saved:false,
@@ -131,6 +135,7 @@ const DEMO = [
     category:"smoothies",
     image_url:"https://images.unsplash.com/photo-1511690743698-d9d85f2fbf38?w=800&q=80",
     author_name:"Bella Santos", author_flag:"🇧🇷",
+    author_id:"demo-user-5",
     author_avatar:"https://ui-avatars.com/api/?name=Bella+Santos&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*5).toISOString(),
     likes:389, liked:false, saved:false,
@@ -144,6 +149,7 @@ const DEMO = [
     category:"african",
     image_url:"https://images.unsplash.com/photo-1574484284002-952d92456975?w=800&q=80",
     author_name:"BetterDays Chef", author_flag:"🇿🇦",
+    author_id:"demo-user-6",
     author_avatar:"https://ui-avatars.com/api/?name=BetterDays+Chef&background=d4a855&color=09060a&bold=true",
     created_at: new Date(Date.now()-86400000*6).toISOString(),
     likes:631, liked:false, saved:false,
@@ -518,7 +524,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
       border:`1px solid ${S.border}`, overflow:"hidden", display:"flex", flexDirection:"column",
       boxShadow: S.mode === "light" ? "0 4px 24px rgba(0,0,0,0.08)" : "none" }}>
 
-      {/* Image */}
       <div style={{ position:"relative", paddingTop:"65%", backgroundColor:S.card2 }}>
         {!imgLoaded && (
           <div style={{ position:"absolute", inset:0, background:`linear-gradient(135deg, ${S.card2}, ${S.border})`,
@@ -560,7 +565,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
         </div>
       </div>
 
-      {/* Content */}
       <div style={{ padding:"16px 16px 0 16px", flex:1 }}>
         <h3 style={{ fontFamily:"'Playfair Display',serif", fontSize:"18px", fontWeight:"700",
           color:S.champ, lineHeight:"1.3", marginBottom:"6px" }}>
@@ -572,7 +576,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           <span style={{ color:S.gold, fontSize:"12px", fontWeight:"600" }}>{recipe.author_name}</span>
         </div>
 
-        {/* Expandable Description */}
         <div style={{ marginBottom:"8px" }}>
           <p style={{ 
             color:S.muted, 
@@ -607,10 +610,8 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           )}
         </div>
 
-        {/* Reactions */}
         <ReactionBar reactions={reactions} onReact={handleReact} S={S} />
 
-        {/* Socials */}
         {recipe.socials && Object.keys(recipe.socials).some(k => recipe.socials[k]) && (
           <div style={{ display:"flex", gap:"6px", marginTop:"10px", flexWrap:"wrap" }}>
             {recipe.socials.instagram && (
@@ -640,7 +641,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           </div>
         )}
 
-        {/* AFFILIATE LINKS - DISPLAY */}
         {recipe.affiliate_links && recipe.affiliate_links.length > 0 && (
           <div style={{ marginTop:"10px", display:"flex", flexWrap:"wrap", gap:"6px" }}>
             {recipe.affiliate_links.map((link, index) => (
@@ -669,7 +669,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           </div>
         )}
 
-        {/* Ingredients */}
         {recipe.ingredients?.length > 0 && (
           <div style={{ marginTop:"10px", padding:"10px 12px", background:S.card2,
             borderRadius:"10px", border:`1px solid ${S.border}` }}>
@@ -690,7 +689,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
         )}
       </div>
 
-      {/* Actions */}
       <div style={{ padding:"12px 16px 16px 16px" }}>
         <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center",
           paddingTop:"10px", borderTop:`1px solid ${S.border}` }}>
@@ -710,7 +708,6 @@ function RecipeCard({ recipe, onLike, onSave, currentUser, S }) {
           <ShareRow post={recipe} />
         </div>
 
-        {/* Comments */}
         {showComments && (
           <div style={{ marginTop:"12px" }}>
             {comments.map(c => (
@@ -870,7 +867,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     const r = new FileReader(); r.onloadend = () => setMediaPreview(r.result); r.readAsDataURL(file)
   }
 
-  // AFFILIATE LINK FUNCTIONS
   const handleAffiliateChange = (index, field, value) => {
     const updated = [...affiliateLinks]
     updated[index][field] = value
@@ -894,7 +890,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
     setError("");
 
     try {
-      // Check if profile exists
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("id")
@@ -911,7 +906,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
         });
       }
 
-      // Upload media
       let image_url = null, video_url = null;
       if (mediaFile) {
         const ext = mediaFile.name.split(".").pop();
@@ -927,10 +921,8 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
         else video_url = urlData.publicUrl;
       }
 
-      // Filter out empty affiliate links
       const filteredLinks = affiliateLinks.filter(link => link.name.trim() && link.url.trim());
 
-      // Insert recipe with affiliate links
       const { data, error: insertError } = await supabase
         .from("recipes")
         .insert({
@@ -1020,7 +1012,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
               onChange={e => setIngredients(e.target.value)} rows={3}
               style={{ ...iStyle, resize:"vertical", fontFamily:"monospace", fontSize:"13px" }} />
 
-            {/* Socials */}
             <div style={{ background:S.card2, border:`1px solid ${S.border}`, borderRadius:"10px", padding:"14px" }}>
               <p style={{ color:S.gold, fontSize:"12px", fontWeight:"600", marginBottom:"10px" }}>🌐 Connect Your Socials</p>
               {[
@@ -1035,7 +1026,6 @@ function CreateModal({ onClose, onCreate, currentUser, S }) {
               ))}
             </div>
 
-            {/* AFFILIATE LINKS - WITH + BUTTON */}
             <div style={{ background:`rgba(245,166,35,0.08)`, border:`1px solid rgba(245,166,35,0.3)`,
               borderRadius:"10px", padding:"14px" }}>
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:"10px" }}>
@@ -1265,6 +1255,134 @@ function AuthModal({ onClose, onLogin, S }) {
   )
 }
 
+// ─── MY POSTS PAGE ──────────────────────────────────────────────────────────
+function MyPostsPage({ currentUser, allPosts, onLike, onSave, S, setShowCreate }) {
+  const myPosts = allPosts.filter(p => p.author_id === currentUser?.id)
+  const savedPosts = allPosts.filter(p => p.saved)
+
+  return (
+    <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
+      {/* Profile Header */}
+      <div style={{
+        background:S.card,
+        borderRadius:"20px",
+        border:`1px solid ${S.border}`,
+        padding:"32px",
+        marginBottom:"24px",
+        display:"flex",
+        alignItems:"center",
+        gap:"24px",
+        flexWrap:"wrap"
+      }}>
+        <img 
+          src={currentUser?.avatar} 
+          alt={currentUser?.name}
+          style={{ width:"80px", height:"80px", borderRadius:"50%", border:`3px solid ${S.gold}` }}
+        />
+        <div>
+          <h2 style={{ color:S.champ, marginBottom:"4px" }}>{currentUser?.name}</h2>
+          <p style={{ color:S.muted, fontSize:"13px" }}>
+            {currentUser?.countryFlag} · Joined {new Date(currentUser?.joinDate || Date.now()).toLocaleDateString()}
+          </p>
+          <div style={{ display:"flex", gap:"20px", marginTop:"8px" }}>
+            <span><strong style={{ color:S.gold }}>{myPosts.length}</strong> Recipes</span>
+            <span><strong style={{ color:S.gold }}>{savedPosts.length}</strong> Favorites</span>
+          </div>
+        </div>
+        <button 
+          onClick={() => setShowCreate(true)}
+          className="bde-btn-grad"
+          style={{ padding:"10px 24px", borderRadius:"40px", marginLeft:"auto" }}
+        >
+          ✨ New Recipe
+        </button>
+      </div>
+
+      {/* Tabs */}
+      <div style={{ display:"flex", gap:"8px", marginBottom:"16px", borderBottom:`1px solid ${S.border}`, paddingBottom:"12px" }}>
+        <button 
+          style={{ 
+            background:S.grad, 
+            color:"#fff", 
+            border:"none", 
+            padding:"10px 20px", 
+            borderRadius:"8px",
+            display:"flex",
+            alignItems:"center",
+            gap:"6px"
+          }}
+        >
+          <FaList size={14} /> My Recipes ({myPosts.length})
+        </button>
+      </div>
+
+      {/* Recipe Grid */}
+      {myPosts.length === 0 ? (
+        <div style={{ textAlign:"center", padding:"60px", color:S.muted }}>
+          <div style={{ fontSize:"48px", marginBottom:"16px" }}>📝</div>
+          <p style={{ fontSize:"16px" }}>You haven't posted any recipes yet.</p>
+          <button 
+            onClick={() => setShowCreate(true)}
+            className="bde-btn-grad"
+            style={{ padding:"12px 28px", borderRadius:"40px", marginTop:"16px" }}
+          >
+            ✨ Share Your First Recipe
+          </button>
+        </div>
+      ) : (
+        <div style={{ columns: 2, columnGap:"20px" }}>
+          {myPosts.map(post => (
+            <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
+              <RecipeCard 
+                recipe={post} 
+                onLike={onLike} 
+                onSave={onSave} 
+                currentUser={currentUser} 
+                S={S} 
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── FAVORITES PAGE ──────────────────────────────────────────────────────────
+function FavoritesPage({ allPosts, onLike, onSave, currentUser, S }) {
+  const savedPosts = allPosts.filter(p => p.saved)
+
+  return (
+    <div style={{ maxWidth:"1100px", margin:"0 auto", padding:"24px" }}>
+      <h2 style={{ color:S.champ, marginBottom:"16px", display:"flex", alignItems:"center", gap:"8px" }}>
+        <FaStar color={S.gold} /> Your Favorites
+      </h2>
+
+      {savedPosts.length === 0 ? (
+        <div style={{ textAlign:"center", padding:"60px", color:S.muted }}>
+          <div style={{ fontSize:"48px", marginBottom:"16px" }}>⭐</div>
+          <p style={{ fontSize:"16px" }}>No favorites yet.</p>
+          <p style={{ fontSize:"13px" }}>Save recipes you love by clicking the bookmark icon!</p>
+        </div>
+      ) : (
+        <div style={{ columns: 2, columnGap:"20px" }}>
+          {savedPosts.map(post => (
+            <div key={post.id} style={{ breakInside:"avoid", marginBottom:"20px" }}>
+              <RecipeCard 
+                recipe={post} 
+                onLike={onLike} 
+                onSave={onSave} 
+                currentUser={currentUser} 
+                S={S} 
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ─── STUB PAGE ──────────────────────────────────────────────────────────────
 function StubPage({ icon, title, body, onBack, S }) {
   return (
@@ -1426,7 +1544,7 @@ export default function App() {
       if (session?.user) {
         supabase.from("profiles").select("*").eq("id", session.user.id).single().then(({ data: profile }) => {
           if (profile) setCurrentUser({ id:session.user.id, email:session.user.email,
-            name:profile.name, countryFlag:profile.country_flag, avatar:profile.avatar })
+            name:profile.name, countryFlag:profile.country_flag, avatar:profile.avatar, joinDate:profile.created_at })
         })
       }
     })
@@ -1477,7 +1595,6 @@ export default function App() {
     else setDbPosts(p => p.map(r => r.id === id ? { ...r, saved:!r.saved } : r))
   }
 
-  // ─── FILTERED POSTS ──────────────────────────────────────────────────────
   const filtered = allPosts.filter(r =>
     (selectedCat === "all" || selectedCat === "trending" || r.category === selectedCat) &&
     (!searchTerm || r.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -1488,11 +1605,9 @@ export default function App() {
   const loadMorePosts = () => {
     if (loadingMore || !hasMore || filtered.length <= displayedPosts.length) return
     setLoadingMore(true)
-
     setTimeout(() => {
       const currentCount = displayedPosts.length
       const nextBatch = filtered.slice(currentCount, currentCount + 5)
-      
       if (nextBatch.length === 0) {
         setHasMore(false)
       } else {
@@ -1502,7 +1617,6 @@ export default function App() {
     }, 500)
   }
 
-  // Reset pagination when filters change
   useEffect(() => {
     if (filtered.length > 0) {
       setDisplayedPosts(filtered.slice(0, 5))
@@ -1514,27 +1628,17 @@ export default function App() {
     }
   }, [selectedCat, searchTerm, filtered])
 
-  // Infinite scroll observer
   useEffect(() => {
     if (!hasMore || loadingMore || filtered.length <= displayedPosts.length) return
-
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting) {
-          loadMorePosts()
-        }
+        if (entries[0].isIntersecting) { loadMorePosts() }
       },
       { threshold: 0.1, rootMargin: "0px 0px 100px 0px" }
     )
-
-    if (observerRef.current) {
-      observer.observe(observerRef.current)
-    }
-
+    if (observerRef.current) { observer.observe(observerRef.current) }
     return () => {
-      if (observerRef.current) {
-        observer.unobserve(observerRef.current)
-      }
+      if (observerRef.current) { observer.unobserve(observerRef.current) }
     }
   }, [hasMore, loadingMore, filtered.length, displayedPosts.length])
 
@@ -1609,6 +1713,45 @@ export default function App() {
                 <img src={currentUser.avatar} alt={currentUser.name}
                   style={{ width:"34px", height:"34px", borderRadius:"50%", border:`2px solid ${S.gold}` }} />
                 {!isMobile && <span style={{ color:S.gold, fontSize:"13px", fontWeight:"500" }}>{currentUser.name}</span>}
+                
+                {/* ⭐ MY POSTS BUTTON */}
+                <button 
+                  onClick={() => setCurrentPage("my-posts")}
+                  style={{
+                    background: currentPage === "my-posts" ? `${S.gold}30` : "none",
+                    color: currentPage === "my-posts" ? S.gold : S.muted,
+                    border: "none",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  <FaList size={14} /> My Posts
+                </button>
+
+                {/* ⭐ FAVORITES BUTTON */}
+                <button 
+                  onClick={() => setCurrentPage("favorites")}
+                  style={{
+                    background: currentPage === "favorites" ? `${S.gold}30` : "none",
+                    color: currentPage === "favorites" ? S.gold : S.muted,
+                    border: "none",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
+                    fontSize: "12px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "4px"
+                  }}
+                >
+                  <FaStar size={14} /> Favorites
+                </button>
+
                 <button onClick={handleLogout}
                   style={{ background:"none", border:`1px solid ${S.border}`, color:S.muted,
                     borderRadius:"8px", padding:"6px 10px", cursor:"pointer", fontSize:"12px" }}>Out</button>
@@ -1656,6 +1799,7 @@ export default function App() {
         </div>
       </nav>
 
+      {/* ─── PAGE ROUTING ────────────────────────────────────────────────────── */}
       {currentPage === "home" && (
         <>
           <HeroBanner recipe={featured} onSignup={() => setShowAuth(true)} currentUser={currentUser} onPost={() => setShowCreate(true)} S={S} isDark={isDark} />
@@ -1715,7 +1859,6 @@ export default function App() {
               </div>
             )}
 
-            {/* ─── INFINITE SCROLL TRIGGER ────────────────────────────────── */}
             {hasMore && filtered.length > displayedPosts.length && (
               <div ref={observerRef} style={{ textAlign:"center", padding:"20px 0", color:S.muted }}>
                 {loadingMore ? (
@@ -1738,7 +1881,30 @@ export default function App() {
         </>
       )}
 
-      {currentPage !== "home" && (pages[currentPage] ||
+      {/* ─── MY POSTS PAGE ──────────────────────────────────────────────────── */}
+      {currentPage === "my-posts" && (
+        <MyPostsPage 
+          currentUser={currentUser}
+          allPosts={allPosts}
+          onLike={handleLike}
+          onSave={handleSave}
+          S={S}
+          setShowCreate={setShowCreate}
+        />
+      )}
+
+      {/* ─── FAVORITES PAGE ──────────────────────────────────────────────────── */}
+      {currentPage === "favorites" && (
+        <FavoritesPage 
+          allPosts={allPosts}
+          onLike={handleLike}
+          onSave={handleSave}
+          currentUser={currentUser}
+          S={S}
+        />
+      )}
+
+      {currentPage !== "home" && currentPage !== "my-posts" && currentPage !== "favorites" && (pages[currentPage] ||
         <StubPage icon="🔍" title="Page not found" body="Head back home." onBack={() => setCurrentPage("home")} S={S} />)}
 
       {currentPage === "home" && (
