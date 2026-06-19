@@ -1601,46 +1601,71 @@ export default function App() {
       r.author_name?.toLowerCase().includes(searchTerm.toLowerCase()))
   )
 
-  // ─── INFINITE SCROLL LOGIC ────────────────────────────────────────────────
-  const loadMorePosts = () => {
-    if (loadingMore || !hasMore || filtered.length <= displayedPosts.length) return
-    setLoadingMore(true)
-    setTimeout(() => {
-      const currentCount = displayedPosts.length
-      const nextBatch = filtered.slice(currentCount, currentCount + 5)
-      if (nextBatch.length === 0) {
-        setHasMore(false)
-      } else {
-        setDisplayedPosts(prev => [...prev, ...nextBatch])
-      }
-      setLoadingMore(false)
-    }, 500)
+// ─── INFINITE SCROLL LOGIC ────────────────────────────────────────────────
+const loadMorePosts = () => {
+  if (loadingMore || !hasMore) return
+  
+  const currentCount = displayedPosts.length
+  if (currentCount >= filtered.length) {
+    setHasMore(false)
+    return
+  }
+  
+  setLoadingMore(true)
+
+  setTimeout(() => {
+    const nextBatch = filtered.slice(currentCount, currentCount + 5)
+    
+    if (nextBatch.length === 0) {
+      setHasMore(false)
+    } else {
+      setDisplayedPosts(prev => [...prev, ...nextBatch])
+    }
+    setLoadingMore(false)
+  }, 300)
+}
+
+useEffect(() => {
+  if (filtered.length > 0) {
+    setDisplayedPosts(filtered.slice(0, 5))
+    setHasMore(filtered.length > 5)
+    setPage(0)
+  } else {
+    setDisplayedPosts([])
+    setHasMore(false)
+  }
+  // Reset loading state when filters change
+  setLoadingMore(false)
+}, [selectedCat, searchTerm])
+
+  useEffect(() => {
+  if (!hasMore || loadingMore) return
+  
+  // Check if we need to load more
+  if (displayedPosts.length >= filtered.length) {
+    setHasMore(false)
+    return
   }
 
-  useEffect(() => {
-    if (filtered.length > 0) {
-      setDisplayedPosts(filtered.slice(0, 5))
-      setHasMore(filtered.length > 5)
-      setPage(0)
-    } else {
-      setDisplayedPosts([])
-      setHasMore(false)
-    }
-  }, [selectedCat, searchTerm, filtered])
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (entries[0].isIntersecting && !loadingMore && hasMore) {
+        loadMorePosts()
+      }
+    },
+    { threshold: 0.1, rootMargin: "0px 0px 100px 0px" }
+  )
 
-  useEffect(() => {
-    if (!hasMore || loadingMore || filtered.length <= displayedPosts.length) return
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) { loadMorePosts() }
-      },
-      { threshold: 0.1, rootMargin: "0px 0px 100px 0px" }
-    )
-    if (observerRef.current) { observer.observe(observerRef.current) }
-    return () => {
-      if (observerRef.current) { observer.unobserve(observerRef.current) }
+  if (observerRef.current) {
+    observer.observe(observerRef.current)
+  }
+
+  return () => {
+    if (observerRef.current) {
+      observer.unobserve(observerRef.current)
     }
-  }, [hasMore, loadingMore, filtered.length, displayedPosts.length])
+  }
+}, [hasMore, loadingMore, displayedPosts.length, filtered.length])
 
   const featured = dbPosts[0] || posts[0]
   const openPost = () => { if (currentUser) setShowCreate(true); else setShowAuth(true) }
@@ -1954,3 +1979,4 @@ export default function App() {
     </div>
   )
 }
+
